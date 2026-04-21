@@ -6,6 +6,7 @@ import com.nightwielder.apothiccompat.compat.ArmageddonCompat;
 import com.nightwielder.apothiccompat.compat.CataclysmWeaponryCompat;
 import com.nightwielder.apothiccompat.compat.DreadSteelCompat;
 import com.nightwielder.apothiccompat.compat.DungeonsAndCombatCompat;
+import com.nightwielder.apothiccompat.compat.EpicKnightsCompat;
 import com.nightwielder.apothiccompat.compat.IronsSpellbooksCompat;
 import com.nightwielder.apothiccompat.compat.LEnderCataclysmCompat;
 import com.nightwielder.apothiccompat.compat.MowziesMobsCompat;
@@ -65,6 +66,7 @@ public class ApothicCompat {
         if (ModList.get().isLoaded("dungeons_and_combat")) DungeonsAndCombatCompat.send();
         if (ModList.get().isLoaded("spartanweaponry")) SpartanWeaponryCompat.send();
         if (ModList.get().isLoaded("armageddon")) ArmageddonCompat.send();
+        if (ModList.get().isLoaded("epicknights")) EpicKnightsCompat.send();
         UniversalCompat.send();
         ApothicCompatConfig.load();
     }
