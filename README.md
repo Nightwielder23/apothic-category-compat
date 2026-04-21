@@ -22,7 +22,7 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Mowzie's Mobs**: weapons and masks/armor by explicit ID.
 - **Spartan Shields**: everything that's a `ShieldItem`.
 - **Dungeons and Combat**: class-based plus suffix matching for polearms/hammers that extend `SwordItem`.
-- **Spartan Weaponry**: tag-based, so every material variant is covered. Daggers/longswords/katanas/sabers/rapiers/cestuses → sword, the big stuff → heavy weapon, longbows → bow, heavy crossbows → crossbow. Throwing weapons are skipped (Apotheosis has no category for them).
+- **Spartan Weaponry**: suffix-matched, so every material variant is covered. Daggers/parrying daggers/longswords/katanas/sabers/rapiers → sword, the big stuff (battleaxes, battle hammers, warhammers, flanged maces, greatswords, glaives, halberds, lances, pikes, spears, quarterstaves, scythes, clubs, cestuses) → heavy weapon, longbows → bow, heavy crossbows → crossbow. Throwing weapons are skipped (Apotheosis has no category for them).
 - **Armageddon**: placeholder. Most of the mod's weapons extend vanilla classes and are covered by the universal fallback.
 - **Epic Knights**: explicit overrides for shields and for polearms/mauls that extend `SwordItem` but should roll heavy weapon affixes. Everything else goes through the universal fallback.
 - **Spartan and Fire**: picks up the Spartan Weaponry tag registrations, so installing SW alongside is enough.
