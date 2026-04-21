@@ -2,6 +2,7 @@ package com.nightwielder.apothiccompat;
 
 import com.mojang.logging.LogUtils;
 import com.nightwielder.apothiccompat.compat.AquamiraeCompat;
+import com.nightwielder.apothiccompat.compat.ArmageddonCompat;
 import com.nightwielder.apothiccompat.compat.CataclysmWeaponryCompat;
 import com.nightwielder.apothiccompat.compat.DreadSteelCompat;
 import com.nightwielder.apothiccompat.compat.DungeonsAndCombatCompat;
@@ -11,6 +12,7 @@ import com.nightwielder.apothiccompat.compat.MowziesMobsCompat;
 import com.nightwielder.apothiccompat.compat.SamuraiDynastyCompat;
 import com.nightwielder.apothiccompat.compat.SimplySwordsCompat;
 import com.nightwielder.apothiccompat.compat.SpartanShieldsCompat;
+import com.nightwielder.apothiccompat.compat.SpartanWeaponryCompat;
 import com.nightwielder.apothiccompat.compat.TetraCompat;
 import com.nightwielder.apothiccompat.compat.UniversalCompat;
 import com.nightwielder.apothiccompat.compat.WeaponsOfMiraclesCompat;
@@ -61,6 +63,8 @@ public class ApothicCompat {
         if (ModList.get().isLoaded("mowziesmobs")) MowziesMobsCompat.send();
         if (ModList.get().isLoaded("spartanshields")) SpartanShieldsCompat.send();
         if (ModList.get().isLoaded("dungeons_and_combat")) DungeonsAndCombatCompat.send();
+        if (ModList.get().isLoaded("spartanweaponry")) SpartanWeaponryCompat.send();
+        if (ModList.get().isLoaded("armageddon")) ArmageddonCompat.send();
         UniversalCompat.send();
         ApothicCompatConfig.load();
     }
