@@ -24,6 +24,9 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Dungeons and Combat**: class-based plus suffix matching for polearms/hammers that extend `SwordItem`.
 - **Spartan Weaponry**: tag-based, so every material variant is covered. Daggers/longswords/katanas/sabers/rapiers/cestuses → sword, the big stuff → heavy weapon, longbows → bow, heavy crossbows → crossbow. Throwing weapons are skipped (Apotheosis has no category for them).
 - **Armageddon**: placeholder. Most of the mod's weapons extend vanilla classes and are covered by the universal fallback.
+- **Epic Knights**: explicit overrides for shields and for polearms/mauls that extend `SwordItem` but should roll heavy weapon affixes. Everything else goes through the universal fallback.
+- **Spartan and Fire**: picks up the Spartan Weaponry tag registrations, so installing SW alongside is enough.
+- **Immersive Armors**: handled by the universal fallback, since every piece extends `ArmorItem`.
 - **Universal fallback**: anything Apotheosis didn't already categorize gets assigned by Java class (swords, axes, bows, crossbows, tridents, pickaxes, shovels, armor slots).
 
 ## Config
