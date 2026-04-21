@@ -1,44 +1,34 @@
 # Apothic Compat
 
-A lightweight server side Minecraft 1.20.1 Forge mod that adds Apotheosis loot category compatibility for popular weapon mods that are missing it. Uses the official Apotheosis IMC override API for maximum compatibility.
+A small server-side 1.20.1 Forge mod that fills in Apotheosis loot-category assignments for weapon/armor mods that don't ship them. Uses Apotheosis's own IMC override API, so nothing is patched or mixin'd.
 
-## What This Mod Does
+## What it does
 
-Apotheosis assigns loot categories to items to determine what affixes and gem sockets they can receive. Many popular weapon mods are missing these assignments or have incorrect ones, meaning their weapons cannot receive Apotheosis affixes or gems. This mod injects the correct categories at load time using Apotheosis's own IMC override system.
+Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. A lot of modded weapons either don't have a category at all or get the wrong one, so affixes never appear on them. This mod sends the right categories at load time.
 
-## Supported Mods
+## Supported mods
 
-All compat modules are soft dependencies. Each module only activates if both Apotheosis and the target mod are present.
+Every module is a soft dep. A module only runs when both Apotheosis and the target mod are loaded.
 
-**Samurai Dynasty** Katanas registered as swords, spears as heavy weapons, kama and sai as swords.
+- **Samurai Dynasty** — katanas, kama, and sai as swords; spears as heavy weapons.
+- **Dread Steel** — Dreadsteel Scythe → heavy weapon, Dreadsteel Shield → shield.
+- **Tetra** — fixes Tetra bows/crossbows being miscategorized, and weapons upgraded with Planar Stabilizers being seen as pickaxes. Picks sword vs. heavy-weapon by attack damage.
+- **Weapons of Miracles** — explicit overrides for named weapons/armor, plus a class-based fallback for anything else in the `wom` namespace.
+- **L'Ender's Cataclysm** — full set of weapons, shields, and armor categorized by explicit ID.
+- **Cataclysm Weaponry** — categorized by item class (sword / axe / bow / crossbow).
+- **Simply Swords** — suffix-matched: greathammers/greataxes/spears/glaives as heavy weapons, the sword-like variants as swords.
+- **Iron's Spellbooks** — only the straight melee weapons (staves, scythes, blades); magic items are left alone.
+- **Aquamirae** — weapons and armor by explicit ID.
+- **Mowzie's Mobs** — weapons and masks/armor by explicit ID.
+- **Spartan Shields** — everything that's a `ShieldItem`.
+- **Dungeons and Combat** — class-based plus suffix matching for polearms/hammers that extend `SwordItem`.
+- **Spartan Weaponry** — tag-based, so every material variant is covered. Daggers/longswords/katanas/sabers/rapiers/cestuses → sword, the big stuff → heavy weapon, longbows → bow, heavy crossbows → crossbow. Throwing weapons are skipped (Apotheosis has no category for them).
+- **Armageddon** — placeholder; most of the mod's weapons extend vanilla classes and are covered by the universal fallback.
+- **Universal fallback** — anything Apotheosis didn't already categorize gets assigned by Java class (swords, axes, bows, crossbows, tridents, pickaxes, shovels, armor slots).
 
-**Dread Steel** The Dreadsteel Scythe registered as a heavy weapon. The Dreadsteel Shield registered as a shield.
+## Config
 
-**Tetra** Fixes Tetra bows and crossbows being miscategorized. Fixes weapons upgraded with Planar Stabilizers being miscategorized as pickaxes. Categories assigned by item class and attack damage.
-
-**Weapons of Miracles** All weapons registered with correct categories. Note: this mod uses the mod ID wom internally.
-
-**L'Ender's Cataclysm** All weapons, armor, and tools registered with correct categories by explicit item ID including swords, heavy weapons, shields, bows, and full armor sets.
-
-**Cataclysm Weaponry** All weapons registered with correct categories based on item type.
-
-**Simply Swords** Greathammers and greataxes registered as heavy weapons. Longswords, claymores, rapiers, katanas, chakrams registered as swords. Spears and glaives registered as heavy weapons.
-
-**Iron's Spellbooks** Melee staves registered as swords.
-
-**Aquamirae** All weapons and armor registered with correct categories by item type.
-
-**Mowzie's Mobs** All weapons registered with correct categories by item type.
-
-**Spartan Shields** All shields registered as shields.
-
-**Dungeons and Combat** All weapons registered with correct categories by item type.
-
-**Universal Fallback** Covers any other mod not listed above. Any item that Apotheosis has not already categorized is assigned the correct category based on its Java class type. Covers swords, axes, bows, crossbows, tridents, pickaxes, shovels, and all armor slots.
-
-## Config File
-
-A config file is generated at `config/apothic_compat.toml` on first launch. You can add custom item and tag overrides here without needing to write any scripts.
+A config file shows up at `config/apothic_compat.toml` on first launch. Per-item and per-tag overrides go there:
 
 ```toml
 [item_overrides]
@@ -48,32 +38,28 @@ A config file is generated at `config/apothic_compat.toml` on first launch. You 
 "simplyswords:greathammers" = "heavy_weapon"
 ```
 
-Valid category names: `sword`, `heavy_weapon`, `bow`, `crossbow`, `shield`, `helmet`, `chestplate`, `leggings`, `boots`, `pickaxe`, `shovel`, `none`
+Valid category names: `sword`, `heavy_weapon`, `bow`, `crossbow`, `shield`, `helmet`, `chestplate`, `leggings`, `boots`, `pickaxe`, `shovel`, `none`.
 
-## Reload Command
+## Reload command
 
-After editing the config, run `/apothiccompat reload` or `/ac reload` (op level 2) to apply changes without restarting. The command will skip if the config has not been modified.
+`/apothiccompat reload` or `/ac reload` (op level 2) re-applies the config without a restart. It's a no-op if the file hasn't changed.
 
 ## Requirements
 
-Minecraft 1.20.1, Forge 47.x, Apotheosis 7.4.x. All other mods are optional soft dependencies.
+Minecraft 1.20.1, Forge 47.x, Apotheosis 7.4.x. Everything else is optional.
 
 ## Installation
 
-Place the jar in your mods folder. No configuration needed. Each compat module only activates if the corresponding mod is present.
-
-## Server Side Only
-
-This mod only needs to be installed on the server.
+Drop the jar in `mods/`. Server-side only — clients don't need it.
 
 ## License
 
 MIT, Copyright 2026 Nightwielder23. https://github.com/Nightwielder23/apothic-compat/blob/main/LICENSE
 
-## Source Code
+## Source
 
 https://github.com/Nightwielder23/apothic-compat
 
 ## Author
 
-Made by Nightwielder23: https://github.com/Nightwielder23
+Nightwielder23 — https://github.com/Nightwielder23
