@@ -1,64 +1,61 @@
 package com.nightwielder.apothiccompat.compat;
 
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.tags.ITag;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Registered by item tag so every material variant is covered. Tag paths are
- * best-guesses at SW's pluralisation — a missing tag skips harmlessly; verify
- * against data/spartanweaponry/tags/items/ if affixes fail to roll.
- * Throwing weapons have no matching Apotheosis category and are left out.
+ * Suffix-matched rather than tag-matched because item tags are not bound at
+ * InterModEnqueueEvent time, so the tag-lookup path would send zero overrides.
+ * SW 3.2.1 item IDs follow a {material}_{weapontype} convention. Throwing
+ * weapons have no Apotheosis category and are skipped.
  */
 public final class SpartanWeaponryCompat {
     private static final String NAMESPACE = "spartanweaponry";
     private static final String IMC_METHOD = "loot_category_override";
 
-    private static final Map<String, LootCategory> TAG_CATEGORIES = new LinkedHashMap<>();
-    static {
-        TAG_CATEGORIES.put("daggers",         LootCategory.SWORD);          // light weapon
-        TAG_CATEGORIES.put("longswords",      LootCategory.SWORD);
-        TAG_CATEGORIES.put("katanas",         LootCategory.SWORD);
-        TAG_CATEGORIES.put("sabers",          LootCategory.SWORD);
-        TAG_CATEGORIES.put("rapiers",         LootCategory.SWORD);
-        TAG_CATEGORIES.put("greatswords",     LootCategory.HEAVY_WEAPON);
-        TAG_CATEGORIES.put("battleaxes",      LootCategory.HEAVY_WEAPON);
-        TAG_CATEGORIES.put("warhammers",      LootCategory.HEAVY_WEAPON);
-        TAG_CATEGORIES.put("hammers",         LootCategory.HEAVY_WEAPON);
-        TAG_CATEGORIES.put("maces",           LootCategory.HEAVY_WEAPON);
-        TAG_CATEGORIES.put("clubs",           LootCategory.HEAVY_WEAPON);
-        TAG_CATEGORIES.put("cestuses",        LootCategory.SWORD);          // fist weapon
-        TAG_CATEGORIES.put("quarterstaffs",   LootCategory.HEAVY_WEAPON);
-        TAG_CATEGORIES.put("glaives",         LootCategory.HEAVY_WEAPON);
-        TAG_CATEGORIES.put("halberds",        LootCategory.HEAVY_WEAPON);
-        TAG_CATEGORIES.put("lances",          LootCategory.HEAVY_WEAPON);
-        TAG_CATEGORIES.put("pikes",           LootCategory.HEAVY_WEAPON);
-        TAG_CATEGORIES.put("spears",          LootCategory.HEAVY_WEAPON);
-        TAG_CATEGORIES.put("longbows",        LootCategory.BOW);
-        TAG_CATEGORIES.put("heavy_crossbows", LootCategory.CROSSBOW);
-    }
+    private static final String[] SWORD_SUFFIXES = {
+            "_parrying_dagger", "_dagger", "_longsword", "_katana", "_saber", "_rapier"
+    };
+
+    private static final String[] HEAVY_SUFFIXES = {
+            "_greatsword", "_battleaxe", "_battle_hammer", "_warhammer", "_flanged_mace",
+            "_club", "_quarterstaff", "_glaive", "_halberd", "_lance", "_pike", "_spear",
+            "_scythe"
+    };
+
+    private static final String[] BOW_SUFFIXES = {
+            "_longbow"
+    };
+
+    private static final String[] CROSSBOW_SUFFIXES = {
+            "_heavy_crossbow"
+    };
 
     private SpartanWeaponryCompat() {}
 
     public static void send() {
-        for (Map.Entry<String, LootCategory> entry : TAG_CATEGORIES.entrySet()) {
-            ResourceLocation tagId = new ResourceLocation(NAMESPACE, entry.getKey());
-            TagKey<Item> tagKey = TagKey.create(Registries.ITEM, tagId);
-            ITag<Item> tag = ForgeRegistries.ITEMS.tags().getTag(tagKey);
-            if (tag.isEmpty()) continue;
-
-            String name = entry.getValue().getName();
-            for (Item item : tag) {
-                InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
-            }
+        for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
+            if (!NAMESPACE.equals(id.getNamespace())) continue;
+            LootCategory cat = categorize(id.getPath());
+            if (cat == null) continue;
+            Item item = ForgeRegistries.ITEMS.getValue(id);
+            if (item == null) continue;
+            String name = cat.getName();
+            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
         }
+    }
+
+    private static LootCategory categorize(String path) {
+        if (path.equals("cestus") || path.endsWith("_cestus")) return LootCategory.HEAVY_WEAPON;
+        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
+        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
+        for (String s : BOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.BOW;
+        for (String s : CROSSBOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.CROSSBOW;
+        return null;
     }
 }
