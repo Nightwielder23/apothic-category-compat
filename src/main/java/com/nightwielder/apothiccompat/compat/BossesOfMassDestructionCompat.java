@@ -17,9 +17,9 @@ public final class BossesOfMassDestructionCompat {
     private static final String NAMESPACE = "bosses_of_mass_destruction";
     private static final String IMC_METHOD = "loot_category_override";
 
-    private static final Set<String> HEAVY_PATHS = Set.of("obsidian_spear");
+    private static final Set<String> HEAVY_PATHS = Set.of();
 
-    private static final Set<String> SWORD_PATHS = Set.of("nether_staff");
+    private static final Set<String> SWORD_PATHS = Set.of("nether_staff", "obsidian_spear");
 
     private BossesOfMassDestructionCompat() {}
 

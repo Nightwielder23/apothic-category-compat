@@ -20,11 +20,11 @@ public final class SimplySwordsCompat {
 
     private static final String[] SWORD_SUFFIXES = {
             "_longsword", "_claymore", "_rapier", "_katana", "_chakram",
-            "_cutlass", "_twinblade", "_scythe", "_sai", "_warglaive"
+            "_cutlass", "_twinblade", "_scythe", "_sai", "_warglaive", "_spear"
     };
 
     private static final String[] HEAVY_SUFFIXES = {
-            "_greathammer", "_greataxe", "_spear", "_glaive", "_halberd"
+            "_greathammer", "_greataxe", "_glaive", "_halberd"
     };
 
     private SimplySwordsCompat() {}

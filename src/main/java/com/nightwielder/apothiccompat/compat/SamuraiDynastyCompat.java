@@ -16,8 +16,8 @@ public final class SamuraiDynastyCompat {
             "katana", LootCategory.SWORD,
             "steel_katana", LootCategory.SWORD,
             "jade_katana", LootCategory.SWORD,
-            "spear", LootCategory.HEAVY_WEAPON,
-            "steel_spear", LootCategory.HEAVY_WEAPON,
+            "spear", LootCategory.SWORD,
+            "steel_spear", LootCategory.SWORD,
             "kama", LootCategory.SWORD,
             "sai", LootCategory.SWORD
     );

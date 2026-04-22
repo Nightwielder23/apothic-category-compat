@@ -13,7 +13,7 @@ public final class MowziesMobsCompat {
     private static final String IMC_METHOD = "loot_category_override";
 
     private static final Map<String, LootCategory> OVERRIDES = Map.ofEntries(
-            Map.entry("spear", LootCategory.HEAVY_WEAPON),
+            Map.entry("spear", LootCategory.SWORD),
             Map.entry("wrought_axe", LootCategory.HEAVY_WEAPON),
             Map.entry("naga_fang_dagger", LootCategory.SWORD),
             Map.entry("earthrend_gauntlet", LootCategory.SWORD),

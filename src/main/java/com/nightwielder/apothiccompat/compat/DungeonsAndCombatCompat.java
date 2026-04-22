@@ -32,7 +32,7 @@ public final class DungeonsAndCombatCompat {
     private static final double HEAVY_WEAPON_THRESHOLD = 8.0;
 
     private static final String[] HEAVY_SUFFIXES = {
-            "_spear", "_halberd", "_glaive", "_whirlwind", "_hammer", "_maul",
+            "_halberd", "_glaive", "_whirlwind", "_hammer", "_maul",
             "_greataxe", "_greathammer"
     };
 

@@ -73,8 +73,8 @@ public class ApothicCompat {
         if (ModList.get().isLoaded("spartanshields")) SpartanShieldsCompat.send();
         if (ModList.get().isLoaded("dungeons_and_combat")) DungeonsAndCombatCompat.send();
         if (ModList.get().isLoaded("spartanweaponry")) SpartanWeaponryCompat.send();
-        if (ModList.get().isLoaded("armageddon")) ArmageddonCompat.send();
-        if (ModList.get().isLoaded("epicknights")) EpicKnightsCompat.send();
+        if (ModList.get().isLoaded("armageddon_mod")) ArmageddonCompat.send();
+        if (ModList.get().isLoaded("magistuarmory")) EpicKnightsCompat.send();
         if (ModList.get().isLoaded("soulsweapons")) MariumsSoulslikeCompat.send();
         if (ModList.get().isLoaded("born_in_chaos_v1")) BornInChaosCompat.send();
         if (ModList.get().isLoaded("celestisynth")) CelestisynthCompat.send();
@@ -83,7 +83,7 @@ public class ApothicCompat {
         if (ModList.get().isLoaded("bosses_of_mass_destruction")) BossesOfMassDestructionCompat.send();
         if (ModList.get().isLoaded("meetyourfight")) MeetYourFightCompat.send();
         if (ModList.get().isLoaded("deeperdarker")) DeeperAndDarkerCompat.send();
-        if (ModList.get().isLoaded("knightquest")) KnightQuestCompat.send();
+        if (ModList.get().isLoaded("knightquest") || ModList.get().isLoaded("knight_quest")) KnightQuestCompat.send();
         if (ModList.get().isLoaded("enigmaticlegacy")) EnigmaticLegacyCompat.send();
         UniversalCompat.send();
         ApothicCompatConfig.load();

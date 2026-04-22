@@ -18,11 +18,11 @@ import java.util.Map;
  * because Epic Knights' tag tree isn't publicly documented.
  */
 public final class EpicKnightsCompat {
-    private static final String NAMESPACE = "epicknights";
+    private static final String NAMESPACE = "magistuarmory";
     private static final String IMC_METHOD = "loot_category_override";
 
     private static final String[] HEAVY_TOKENS = {
-            "spear", "lance", "glaive", "halberd", "pike",
+            "lance", "glaive", "halberd", "pike",
             "mace", "warhammer", "hammer", "maul"
     };
 

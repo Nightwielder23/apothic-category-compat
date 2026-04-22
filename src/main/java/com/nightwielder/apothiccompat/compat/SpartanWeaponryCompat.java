@@ -19,13 +19,13 @@ public final class SpartanWeaponryCompat {
     private static final String IMC_METHOD = "loot_category_override";
 
     private static final String[] SWORD_SUFFIXES = {
-            "_parrying_dagger", "_dagger", "_longsword", "_katana", "_saber", "_rapier"
+            "_parrying_dagger", "_dagger", "_longsword", "_katana", "_saber", "_rapier",
+            "_spear", "_javelin"
     };
 
     private static final String[] HEAVY_SUFFIXES = {
             "_greatsword", "_battleaxe", "_battle_hammer", "_warhammer", "_flanged_mace",
-            "_club", "_quarterstaff", "_glaive", "_halberd", "_lance", "_pike", "_spear",
-            "_scythe"
+            "_club", "_quarterstaff", "_glaive", "_halberd", "_lance", "_pike", "_scythe"
     };
 
     private static final String[] BOW_SUFFIXES = {

@@ -36,11 +36,11 @@ public final class MariumsSoulslikeCompat {
     private static final Set<String> BOW_PATHS = Set.of("galeforce", "kraken_slayer");
 
     private static final String[] HEAVY_SUFFIXES = {
-            "_greatsword", "_swordspear", "_scythe", "_spear", "_glaive"
+            "_greatsword", "_scythe", "_glaive"
     };
 
     private static final String[] SWORD_SUFFIXES = {
-            "_shortsword", "_sword"
+            "_shortsword", "_swordspear", "_spear", "_sword"
     };
 
     private static final String[] BOW_SUFFIXES = {

@@ -117,14 +117,14 @@ description='''${mod_description}'''
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="armageddon"
+    modId="armageddon_mod"
     mandatory=false
     versionRange="[0,)"
     ordering="AFTER"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="epicknights"
+    modId="magistuarmory"
     mandatory=false
     versionRange="[0,)"
     ordering="AFTER"
@@ -188,6 +188,13 @@ description='''${mod_description}'''
 
 [[dependencies.${mod_id}]]
     modId="knightquest"
+    mandatory=false
+    versionRange="[0,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="knight_quest"
     mandatory=false
     versionRange="[0,)"
     ordering="AFTER"

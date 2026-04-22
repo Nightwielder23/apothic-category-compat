@@ -14,7 +14,7 @@ import java.util.Map;
  * staves, custom gauntlets, custom armor). Verify item IDs via JEI first.
  */
 public final class ArmageddonCompat {
-    private static final String NAMESPACE = "armageddon";
+    private static final String NAMESPACE = "armageddon_mod";
     private static final String IMC_METHOD = "loot_category_override";
 
     private static final Map<String, LootCategory> OVERRIDES = Map.ofEntries(

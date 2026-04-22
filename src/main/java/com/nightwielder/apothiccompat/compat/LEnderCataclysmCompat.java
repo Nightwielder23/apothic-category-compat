@@ -20,12 +20,13 @@ public final class LEnderCataclysmCompat {
                 "soul_render", "the_immolator", "astrape", "ceraunus",
                 "lionfish", "void_forge", "blazing_grips", "sticky_gloves",
                 "chitin_claw", "tidal_claws", "wrath_of_the_desert",
-                "astrape_throwing", "ceraunus_throwing");
+                "astrape_throwing", "ceraunus_throwing",
+                "coral_spear", "coral_spear_throwing");
         put(LootCategory.HEAVY_WEAPON,
-                "black_steel_axe", "coral_bardiche", "coral_spear",
+                "black_steel_axe", "coral_bardiche",
                 "gauntlet_of_bulwark", "gauntlet_of_guard", "gauntlet_of_maelstrom",
                 "meat_shredder", "the_annihilator", "the_incinerator", "zweiender",
-                "coral_bardiche_throwing", "coral_spear_throwing",
+                "coral_bardiche_throwing",
                 "void_assault_shoulder_weapon", "wither_assault_shoulder_weapon",
                 "laser_gatling", "emp", "final_fractal");
         put(LootCategory.BOW, "cursed_bow");
