@@ -10,7 +10,7 @@ Apotheosis uses loot categories to decide which affixes and gem sockets an item 
 
 Every module is a soft dep. A module only runs when both Apotheosis and the target mod are loaded.
 
-- **Samurai Dynasty**: katanas and kama as swords, spears as heavy weapons
+- **Samurai Dynasty**: katanas, kama, and spears as swords
 - **Dread Steel**: scythe as heavy weapon, shield as shield
 - **Tetra**: fixes miscategorized bows, crossbows, and stabilizer-upgraded weapons
 - **Weapons of Miracles**: overrides for named weapons and armor
@@ -20,19 +20,19 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Aquamirae**: weapons and armor
 - **Mowzie's Mobs**: weapons and armor
 - **Spartan Shields**: all shields
-- **Dungeons and Combat**: polearms and hammers as heavy weapons
+- **Dungeons and Combat**: hammers as heavy weapons, spears as swords
 - **Spartan Weaponry**: suffix-matched for all material variants
 - **Armageddon**: placeholder, vanilla-class fallback handles most items
 - **Epic Knights**: polearms and mauls as heavy weapons, shield overrides
-- **Marium's Soulslike Weaponry**: greatswords/scythes/spears as heavy, named legendaries pinned
+- **Marium's Soulslike Weaponry**: greatswords/scythes/glaives as heavy, spears/swordspears as swords, named legendaries pinned
 - **Born in Chaos**: scythes/axes/hammers as heavy, swords and daggers as swords
 - **Celestisynth**: nine named weapons, mostly swords with Poltergeist as heavy and Rainfall Serenity as bow
 - **Alex's Mobs**: Blood Sprayer as bow
 - **Forbidden and Arcanus**: Draco Arcanus axe as heavy, rest as swords
-- **Bosses of Mass Destruction**: Obsidian Spear as heavy, Nether Staff as sword
+- **Bosses of Mass Destruction**: Obsidian Spear and Nether Staff as swords
 - **Meet Your Fight**: Dusk Greatsword as heavy, rest as swords, Bell Crossbow as crossbow
 - **Deeper and Darker**: suffix-matched swords and knives
-- **Knight Quest Reforged**: Paladin Sword as heavy, Cleaver/Uchigatana/Nail/Kukri as swords
+- **Knight Quest**: supports both GPL (knightquest) and Count Grimhart (knight_quest) variants. Paladin Sword as heavy, other weapons as swords
 - **Enigmatic Legacy**: Voracious Pan as sword, Axe of Executioner and Astral Breaker as heavy weapons
 - **Spartan and Fire**: picks up Spartan Weaponry tag registrations
 - **Immersive Armors**: handled by universal fallback
