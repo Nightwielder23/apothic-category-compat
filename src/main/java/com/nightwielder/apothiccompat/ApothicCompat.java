@@ -10,6 +10,7 @@ import com.nightwielder.apothiccompat.compat.CelestisynthCompat;
 import com.nightwielder.apothiccompat.compat.DeeperAndDarkerCompat;
 import com.nightwielder.apothiccompat.compat.DreadSteelCompat;
 import com.nightwielder.apothiccompat.compat.DungeonsAndCombatCompat;
+import com.nightwielder.apothiccompat.compat.EnigmaticLegacyCompat;
 import com.nightwielder.apothiccompat.compat.EpicKnightsCompat;
 import com.nightwielder.apothiccompat.compat.ForbiddenArcanusCompat;
 import com.nightwielder.apothiccompat.compat.IronsSpellbooksCompat;
@@ -83,6 +84,7 @@ public class ApothicCompat {
         if (ModList.get().isLoaded("meetyourfight")) MeetYourFightCompat.send();
         if (ModList.get().isLoaded("deeperdarker")) DeeperAndDarkerCompat.send();
         if (ModList.get().isLoaded("knightquest")) KnightQuestCompat.send();
+        if (ModList.get().isLoaded("enigmaticlegacy")) EnigmaticLegacyCompat.send();
         UniversalCompat.send();
         ApothicCompatConfig.load();
     }

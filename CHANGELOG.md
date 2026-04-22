@@ -13,5 +13,6 @@ Added compat modules for:
 - Meet Your Fight
 - Deeper and Darker
 - Knight Quest Reforged
+- Enigmatic Legacy
 
 Removed the Cataclysm Weaponry module. Its items extend vanilla weapon classes, so the universal fallback already categorizes them correctly.

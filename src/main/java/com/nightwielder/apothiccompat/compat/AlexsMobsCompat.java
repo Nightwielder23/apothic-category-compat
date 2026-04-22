@@ -17,7 +17,7 @@ public final class AlexsMobsCompat {
     private static final String NAMESPACE = "alexsmobs";
     private static final String IMC_METHOD = "loot_category_override";
 
-    private static final Set<String> SWORD_PATHS = Set.of("blood_sprayer");
+    private static final Set<String> BOW_PATHS = Set.of("blood_sprayer");
 
     private AlexsMobsCompat() {}
 
@@ -34,7 +34,7 @@ public final class AlexsMobsCompat {
     }
 
     private static LootCategory categorize(String path) {
-        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD;
+        if (BOW_PATHS.contains(path)) return LootCategory.BOW;
         return null;
     }
 }

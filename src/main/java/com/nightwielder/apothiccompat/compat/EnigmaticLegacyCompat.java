@@ -10,27 +10,24 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Knight Quest ships matched armor/weapon sets. Armor and axes (which are
- * mining tools in this mod) are covered by UniversalCompat's vanilla-class
- * fallback. Weapons are listed exactly because the mod's naming mixes shape
- * suffixes with compound names (e.g. uchigatana_katana, nail_glaive). Exact
- * matches run first so specific items (paladin_sword is a large two-handed
- * sword) beat the suffix defaults.
+ * Enigmatic Legacy combat items. The Voracious Pan (eldritch_pan) extends
+ * ShieldItem but is used as a melee weapon, and Astral Breaker extends
+ * PickaxeItem but is used as a two-handed weapon; both would be miscategorized
+ * by the vanilla-class fallback. Curios, rings, scrolls, and armor fall
+ * through to Apotheosis/Apothic Curios.
  */
-public final class KnightQuestCompat {
-    private static final String NAMESPACE = "knightquest";
+public final class EnigmaticLegacyCompat {
+    private static final String NAMESPACE = "enigmaticlegacy";
     private static final String IMC_METHOD = "loot_category_override";
 
     private static final Set<String> SWORD_PATHS = Set.of(
-            "cleaver", "uchigatana_katana", "nail_glaive", "kukri_dagger");
+            "eldritch_pan", "etherium_sword");
 
-    private static final Set<String> HEAVY_PATHS = Set.of("paladin_sword");
+    private static final Set<String> HEAVY_PATHS = Set.of(
+            "forbidden_axe", "astral_breaker", "etherium_scythe",
+            "etherium_waraxe");
 
-    private static final String[] HEAVY_SUFFIXES = {"_spear"};
-
-    private static final String[] SWORD_SUFFIXES = {"_sword"};
-
-    private KnightQuestCompat() {}
+    private EnigmaticLegacyCompat() {}
 
     public static void send() {
         for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
@@ -47,8 +44,6 @@ public final class KnightQuestCompat {
     private static LootCategory categorize(String path) {
         if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON;
         if (SWORD_PATHS.contains(path)) return LootCategory.SWORD;
-        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
         return null;
     }
 }

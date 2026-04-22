@@ -33,6 +33,7 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Meet Your Fight**: Mossy Sword, Shoulder Revolver, and Dusk Blade as swords, Dusk Greatsword as a heavy weapon, Bell Crossbow as a crossbow. Suffix fallback (`_greatsword`, `_sword`, `_crossbow`) catches anything added in later versions.
 - **Deeper and Darker**: suffix-matched, so anything ending in `_sword` or `_knife` gets sword. Armor, elytra, and sculk blocks fall through to the universal fallback.
 - **Knight Quest Reforged**: suffix plus explicit overrides. Swords end in `_sword`, battle axes in `_axe` as heavy weapons, spears in `_spear` as heavy weapons. Hoplite Spear and the four named sword sets (Paladin, Nightlord, Fireforged, Dawnbringer) are pinned explicitly.
+- **Enigmatic Legacy**: Voracious Pan (`eldritch_pan`, extends `ShieldItem`) and Etherium Broadsword as swords; Axe of the Executioner, Astral Breaker (extends `PickaxeItem`), Etherium Scythe, and Etherium Waraxe as heavy weapons. Curios, rings, scrolls, and armor fall through to the universal fallback / Apothic Curios.
 - **Spartan and Fire**: picks up the Spartan Weaponry tag registrations, so installing SW alongside is enough.
 - **Immersive Armors**: handled by the universal fallback, since every piece extends `ArmorItem`.
 - **Universal fallback**: anything Apotheosis didn't already categorize gets assigned by Java class (swords, axes, bows, crossbows, tridents, pickaxes, shovels, armor slots).
