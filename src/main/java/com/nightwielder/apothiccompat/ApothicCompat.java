@@ -1,14 +1,22 @@
 package com.nightwielder.apothiccompat;
 
 import com.mojang.logging.LogUtils;
+import com.nightwielder.apothiccompat.compat.AlexsMobsCompat;
 import com.nightwielder.apothiccompat.compat.AquamiraeCompat;
 import com.nightwielder.apothiccompat.compat.ArmageddonCompat;
-import com.nightwielder.apothiccompat.compat.CataclysmWeaponryCompat;
+import com.nightwielder.apothiccompat.compat.BornInChaosCompat;
+import com.nightwielder.apothiccompat.compat.BossesOfMassDestructionCompat;
+import com.nightwielder.apothiccompat.compat.CelestisynthCompat;
+import com.nightwielder.apothiccompat.compat.DeeperAndDarkerCompat;
 import com.nightwielder.apothiccompat.compat.DreadSteelCompat;
 import com.nightwielder.apothiccompat.compat.DungeonsAndCombatCompat;
 import com.nightwielder.apothiccompat.compat.EpicKnightsCompat;
+import com.nightwielder.apothiccompat.compat.ForbiddenArcanusCompat;
 import com.nightwielder.apothiccompat.compat.IronsSpellbooksCompat;
+import com.nightwielder.apothiccompat.compat.KnightQuestCompat;
 import com.nightwielder.apothiccompat.compat.LEnderCataclysmCompat;
+import com.nightwielder.apothiccompat.compat.MariumsSoulslikeCompat;
+import com.nightwielder.apothiccompat.compat.MeetYourFightCompat;
 import com.nightwielder.apothiccompat.compat.MowziesMobsCompat;
 import com.nightwielder.apothiccompat.compat.SamuraiDynastyCompat;
 import com.nightwielder.apothiccompat.compat.SimplySwordsCompat;
@@ -55,8 +63,7 @@ public class ApothicCompat {
         if (ModList.get().isLoaded("samurai_dynasty")) SamuraiDynastyCompat.send();
         if (ModList.get().isLoaded("dreadsteel")) DreadSteelCompat.send();
         if (ModList.get().isLoaded("tetra")) TetraCompat.send();
-        if (ModList.get().isLoaded("weaponsofmiracles")) WeaponsOfMiraclesCompat.send();
-        if (ModList.get().isLoaded("cataclysmweaponry")) CataclysmWeaponryCompat.send();
+        if (ModList.get().isLoaded("wom")) WeaponsOfMiraclesCompat.send();
         if (ModList.get().isLoaded("cataclysm")) LEnderCataclysmCompat.send();
         if (ModList.get().isLoaded("simplyswords")) SimplySwordsCompat.send();
         if (ModList.get().isLoaded("irons_spellbooks")) IronsSpellbooksCompat.send();
@@ -67,6 +74,15 @@ public class ApothicCompat {
         if (ModList.get().isLoaded("spartanweaponry")) SpartanWeaponryCompat.send();
         if (ModList.get().isLoaded("armageddon")) ArmageddonCompat.send();
         if (ModList.get().isLoaded("epicknights")) EpicKnightsCompat.send();
+        if (ModList.get().isLoaded("soulsweapons")) MariumsSoulslikeCompat.send();
+        if (ModList.get().isLoaded("born_in_chaos_v1")) BornInChaosCompat.send();
+        if (ModList.get().isLoaded("celestisynth")) CelestisynthCompat.send();
+        if (ModList.get().isLoaded("alexsmobs")) AlexsMobsCompat.send();
+        if (ModList.get().isLoaded("forbidden_arcanus")) ForbiddenArcanusCompat.send();
+        if (ModList.get().isLoaded("bosses_of_mass_destruction")) BossesOfMassDestructionCompat.send();
+        if (ModList.get().isLoaded("meetyourfight")) MeetYourFightCompat.send();
+        if (ModList.get().isLoaded("deeperdarker")) DeeperAndDarkerCompat.send();
+        if (ModList.get().isLoaded("knightquest")) KnightQuestCompat.send();
         UniversalCompat.send();
         ApothicCompatConfig.load();
     }

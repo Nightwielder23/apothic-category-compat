@@ -15,7 +15,6 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Tetra**: fixes Tetra bows/crossbows being miscategorized, and weapons upgraded with Planar Stabilizers being seen as pickaxes. Picks sword vs. heavy-weapon by attack damage.
 - **Weapons of Miracles**: explicit overrides for named weapons/armor, plus a class-based fallback for anything else in the `wom` namespace.
 - **L'Ender's Cataclysm**: full set of weapons, shields, and armor categorized by explicit ID.
-- **Cataclysm Weaponry**: categorized by item class (sword / axe / bow / crossbow).
 - **Simply Swords**: suffix-matched. Greathammers/greataxes/spears/glaives as heavy weapons, the sword-like variants as swords.
 - **Iron's Spellbooks**: only the straight melee weapons (staves, scythes, blades); magic items are left alone.
 - **Aquamirae**: weapons and armor by explicit ID.
@@ -25,6 +24,15 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Spartan Weaponry**: suffix-matched, so every material variant is covered. Daggers/parrying daggers/longswords/katanas/sabers/rapiers → sword, the big stuff (battleaxes, battle hammers, warhammers, flanged maces, greatswords, glaives, halberds, lances, pikes, spears, quarterstaves, scythes, clubs, cestuses) → heavy weapon, longbows → bow, heavy crossbows → crossbow. Throwing weapons are skipped (Apotheosis has no category for them).
 - **Armageddon**: placeholder. Most of the mod's weapons extend vanilla classes and are covered by the universal fallback.
 - **Epic Knights**: explicit overrides for shields and for polearms/mauls that extend `SwordItem` but should roll heavy weapon affixes. Everything else goes through the universal fallback.
+- **Marium's Soulslike Weaponry**: suffix plus explicit overrides. Greatswords/scythes/spears/glaives/swordspears as heavy weapons, shortswords and regular swords as swords, longbows/bowblades as bows. Legendary one-offs (Leviathan Axe, Mjolnir, Kirkhammer, Darkin Blade, Soul Reaper, Glaive of Hodir, Whirligig Sawblade, Master Sword) are pinned as heavy weapons, and named swords without a shape suffix (Bloodthirster, Nightfall, Skofnung, Excalibur, Frostmourne, etc.) are pinned as swords.
+- **Born in Chaos**: suffix plus explicit overrides. Scythes/axes/hammers/maces as heavy weapons, swords/daggers/cutlasses/blades as swords. Darkwarblade, Trident Hayfork, and Soulbane are pinned explicitly.
+- **Celestisynth**: explicit overrides for the nine named weapons. Aquaflora, Breezebreaker, Crescentia, Frostbound, Keres, and Solaris as swords, Poltergeist as a heavy weapon, Rainfall Serenity as a bow.
+- **Alex's Mobs**: Blood Sprayer as a sword. Armor and vanilla-class items fall through to the universal fallback.
+- **Forbidden and Arcanus**: Mystical Dagger, Draco Arcanus Scepter, and Draco Arcanus Sword as swords, Draco Arcanus Axe as a heavy weapon. Material-tier blacksmith gavels are caught via suffix as swords.
+- **Bosses of Mass Destruction**: Obsidian Spear as a heavy weapon, Nether Staff as a sword.
+- **Meet Your Fight**: Mossy Sword, Shoulder Revolver, and Dusk Blade as swords, Dusk Greatsword as a heavy weapon, Bell Crossbow as a crossbow. Suffix fallback (`_greatsword`, `_sword`, `_crossbow`) catches anything added in later versions.
+- **Deeper and Darker**: suffix-matched, so anything ending in `_sword` or `_knife` gets sword. Armor, elytra, and sculk blocks fall through to the universal fallback.
+- **Knight Quest Reforged**: suffix plus explicit overrides. Swords end in `_sword`, battle axes in `_axe` as heavy weapons, spears in `_spear` as heavy weapons. Hoplite Spear and the four named sword sets (Paladin, Nightlord, Fireforged, Dawnbringer) are pinned explicitly.
 - **Spartan and Fire**: picks up the Spartan Weaponry tag registrations, so installing SW alongside is enough.
 - **Immersive Armors**: handled by the universal fallback, since every piece extends `ArmorItem`.
 - **Universal fallback**: anything Apotheosis didn't already categorize gets assigned by Java class (swords, axes, bows, crossbows, tridents, pickaxes, shovels, armor slots).
