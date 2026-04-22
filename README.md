@@ -10,33 +10,33 @@ Apotheosis uses loot categories to decide which affixes and gem sockets an item 
 
 Every module is a soft dep. A module only runs when both Apotheosis and the target mod are loaded.
 
-- **Samurai Dynasty**: katanas, kama, and sai as swords; spears as heavy weapons.
-- **Dread Steel**: Dreadsteel Scythe → heavy weapon, Dreadsteel Shield → shield.
-- **Tetra**: fixes Tetra bows/crossbows being miscategorized, and weapons upgraded with Planar Stabilizers being seen as pickaxes. Picks sword vs. heavy-weapon by attack damage.
-- **Weapons of Miracles**: explicit overrides for named weapons/armor, plus a class-based fallback for anything else in the `wom` namespace.
-- **L'Ender's Cataclysm**: full set of weapons, shields, and armor categorized by explicit ID.
-- **Simply Swords**: suffix-matched. Greathammers/greataxes/spears/glaives as heavy weapons, the sword-like variants as swords.
-- **Iron's Spellbooks**: only the straight melee weapons (staves, scythes, blades); magic items are left alone.
-- **Aquamirae**: weapons and armor by explicit ID.
-- **Mowzie's Mobs**: weapons and masks/armor by explicit ID.
-- **Spartan Shields**: everything that's a `ShieldItem`.
-- **Dungeons and Combat**: class-based plus suffix matching for polearms/hammers that extend `SwordItem`.
-- **Spartan Weaponry**: suffix-matched, so every material variant is covered. Daggers/parrying daggers/longswords/katanas/sabers/rapiers → sword, the big stuff (battleaxes, battle hammers, warhammers, flanged maces, greatswords, glaives, halberds, lances, pikes, spears, quarterstaves, scythes, clubs, cestuses) → heavy weapon, longbows → bow, heavy crossbows → crossbow. Throwing weapons are skipped (Apotheosis has no category for them).
-- **Armageddon**: placeholder. Most of the mod's weapons extend vanilla classes and are covered by the universal fallback.
-- **Epic Knights**: explicit overrides for shields and for polearms/mauls that extend `SwordItem` but should roll heavy weapon affixes. Everything else goes through the universal fallback.
-- **Marium's Soulslike Weaponry**: suffix plus explicit overrides. Greatswords/scythes/spears/glaives/swordspears as heavy weapons, shortswords and regular swords as swords, longbows/bowblades as bows. Legendary one-offs (Leviathan Axe, Mjolnir, Kirkhammer, Darkin Blade, Soul Reaper, Glaive of Hodir, Whirligig Sawblade, Master Sword) are pinned as heavy weapons, and named swords without a shape suffix (Bloodthirster, Nightfall, Skofnung, Excalibur, Frostmourne, etc.) are pinned as swords.
-- **Born in Chaos**: suffix plus explicit overrides. Scythes/axes/hammers/maces as heavy weapons, swords/daggers/cutlasses/blades as swords. Darkwarblade, Trident Hayfork, and Soulbane are pinned explicitly.
-- **Celestisynth**: explicit overrides for the nine named weapons. Aquaflora, Breezebreaker, Crescentia, Frostbound, Keres, and Solaris as swords, Poltergeist as a heavy weapon, Rainfall Serenity as a bow.
-- **Alex's Mobs**: Blood Sprayer as a sword. Armor and vanilla-class items fall through to the universal fallback.
-- **Forbidden and Arcanus**: Mystical Dagger, Draco Arcanus Scepter, and Draco Arcanus Sword as swords, Draco Arcanus Axe as a heavy weapon. Material-tier blacksmith gavels are caught via suffix as swords.
-- **Bosses of Mass Destruction**: Obsidian Spear as a heavy weapon, Nether Staff as a sword.
-- **Meet Your Fight**: Mossy Sword, Shoulder Revolver, and Dusk Blade as swords, Dusk Greatsword as a heavy weapon, Bell Crossbow as a crossbow. Suffix fallback (`_greatsword`, `_sword`, `_crossbow`) catches anything added in later versions.
-- **Deeper and Darker**: suffix-matched, so anything ending in `_sword` or `_knife` gets sword. Armor, elytra, and sculk blocks fall through to the universal fallback.
-- **Knight Quest Reforged**: suffix plus explicit overrides. Swords end in `_sword`, battle axes in `_axe` as heavy weapons, spears in `_spear` as heavy weapons. Hoplite Spear and the four named sword sets (Paladin, Nightlord, Fireforged, Dawnbringer) are pinned explicitly.
-- **Enigmatic Legacy**: Voracious Pan (`eldritch_pan`, extends `ShieldItem`) and Etherium Broadsword as swords; Axe of the Executioner, Astral Breaker (extends `PickaxeItem`), Etherium Scythe, and Etherium Waraxe as heavy weapons. Curios, rings, scrolls, and armor fall through to the universal fallback / Apothic Curios.
-- **Spartan and Fire**: picks up the Spartan Weaponry tag registrations, so installing SW alongside is enough.
-- **Immersive Armors**: handled by the universal fallback, since every piece extends `ArmorItem`.
-- **Universal fallback**: anything Apotheosis didn't already categorize gets assigned by Java class (swords, axes, bows, crossbows, tridents, pickaxes, shovels, armor slots).
+- **Samurai Dynasty**: katanas and kama as swords, spears as heavy weapons
+- **Dread Steel**: scythe as heavy weapon, shield as shield
+- **Tetra**: fixes miscategorized bows, crossbows, and stabilizer-upgraded weapons
+- **Weapons of Miracles**: overrides for named weapons and armor
+- **L'Ender's Cataclysm**: full weapon, shield, and armor coverage
+- **Simply Swords**: suffix-matched, heavy variants as heavy weapons
+- **Iron's Spellbooks**: melee weapons only (staves, scythes, blades)
+- **Aquamirae**: weapons and armor
+- **Mowzie's Mobs**: weapons and armor
+- **Spartan Shields**: all shields
+- **Dungeons and Combat**: polearms and hammers as heavy weapons
+- **Spartan Weaponry**: suffix-matched for all material variants
+- **Armageddon**: placeholder, vanilla-class fallback handles most items
+- **Epic Knights**: polearms and mauls as heavy weapons, shield overrides
+- **Marium's Soulslike Weaponry**: greatswords/scythes/spears as heavy, named legendaries pinned
+- **Born in Chaos**: scythes/axes/hammers as heavy, swords and daggers as swords
+- **Celestisynth**: nine named weapons, mostly swords with Poltergeist as heavy and Rainfall Serenity as bow
+- **Alex's Mobs**: Blood Sprayer as bow
+- **Forbidden and Arcanus**: Draco Arcanus axe as heavy, rest as swords
+- **Bosses of Mass Destruction**: Obsidian Spear as heavy, Nether Staff as sword
+- **Meet Your Fight**: Dusk Greatsword as heavy, rest as swords, Bell Crossbow as crossbow
+- **Deeper and Darker**: suffix-matched swords and knives
+- **Knight Quest Reforged**: Paladin Sword as heavy, Cleaver/Uchigatana/Nail/Kukri as swords
+- **Enigmatic Legacy**: Voracious Pan as sword, Axe of Executioner and Astral Breaker as heavy weapons
+- **Spartan and Fire**: picks up Spartan Weaponry tag registrations
+- **Immersive Armors**: handled by universal fallback
+- **Universal fallback**: anything else categorized by Java class
 
 ## Config
 
