@@ -10,33 +10,45 @@ Apotheosis uses loot categories to decide which affixes and gem sockets an item 
 
 Every module is a soft dep. A module only runs when both Apotheosis and the target mod are loaded.
 
+- **L'Ender's Cataclysm**: full weapon, shield, and armor coverage
+- **Iron's Spellbooks**: melee weapons only (staves, scythes, blades)
+- **Tetra**: fixes miscategorized bows, crossbows, and stabilizer-upgraded weapons
+- **Alex's Mobs**: Blood Sprayer as bow
+- **Alex's Caves**: spears, dagger, staves, ortholance, and gauntlet as swords. Primitive Club as heavy. Dreadbow and Raygun as bows.
+- **Spartan Weaponry**: suffix-matched for all material variants
+- **Simply Swords**: suffix-matched, heavy variants as heavy weapons
+- **Enigmatic Legacy**: Voracious Pan as sword, Axe of Executioner and Astral Breaker as heavy weapons
+- **Mowzie's Mobs**: weapons and armor
+- **Bosses of Mass Destruction**: Obsidian Spear and Nether Staff as swords
+- **Forbidden and Arcanus**: Draco Arcanus axe as heavy, rest as swords
+- **Born in Chaos**: scythes/axes/hammers as heavy, swords and daggers as swords
+- **Deeper and Darker**: suffix-matched swords and knives
+- **Spartan Shields**: all shields
+- **Knight Quest**: supports both GPL (knightquest) and Count Grimhart (knight_quest) variants. Paladin Sword as heavy, other weapons as swords
+- **Aquamirae**: weapons and armor
+- **Epic Knights**: polearms and mauls as heavy weapons, shield overrides
+- **Spartan and Fire**: Spartan-style additions handled via Spartan Weaponry compat
+- **Meet Your Fight**: Dusk Greatsword as heavy, rest as swords, Bell Crossbow as crossbow
 - **Samurai Dynasty**: katanas, kama, and spears as swords
 - **Dread Steel**: scythe as heavy weapon, shield as shield
-- **Tetra**: fixes miscategorized bows, crossbows, and stabilizer-upgraded weapons
-- **Weapons of Miracles**: overrides for named weapons and armor
-- **L'Ender's Cataclysm**: full weapon, shield, and armor coverage
-- **Simply Swords**: suffix-matched, heavy variants as heavy weapons
-- **Iron's Spellbooks**: melee weapons only (staves, scythes, blades)
-- **Aquamirae**: weapons and armor
-- **Mowzie's Mobs**: weapons and armor
-- **Spartan Shields**: all shields
-- **Dungeons and Combat**: hammers as heavy weapons, spears as swords
-- **Spartan Weaponry**: suffix-matched for all material variants
-- **Armageddon**: placeholder, vanilla-class fallback handles most items
-- **Epic Knights**: polearms and mauls as heavy weapons, shield overrides
 - **Marium's Soulslike Weaponry**: greatswords/scythes/glaives as heavy, spears/swordspears as swords, named legendaries pinned
-- **Born in Chaos**: scythes/axes/hammers as heavy, swords and daggers as swords
+- **Dungeons and Combat**: hammers as heavy weapons, spears as swords
+- **Weapons of Miracles**: overrides for named weapons and armor
+- **EpicFight-Resurrection**: greatswords, longswords, and great tachi as heavy weapons
+- **EpicFight-Nightfall**: Ruins Greatsword and Ghiza's Wheel as heavy weapons
 - **Celestisynth**: nine named weapons, mostly swords with Poltergeist as heavy and Rainfall Serenity as bow
-- **Alex's Mobs**: Blood Sprayer as bow
-- **Forbidden and Arcanus**: Draco Arcanus axe as heavy, rest as swords
-- **Bosses of Mass Destruction**: Obsidian Spear and Nether Staff as swords
-- **Meet Your Fight**: Dusk Greatsword as heavy, rest as swords, Bell Crossbow as crossbow
-- **Deeper and Darker**: suffix-matched swords and knives
-- **Knight Quest**: supports both GPL (knightquest) and Count Grimhart (knight_quest) variants. Paladin Sword as heavy, other weapons as swords
-- **Enigmatic Legacy**: Voracious Pan as sword, Axe of Executioner and Astral Breaker as heavy weapons
-- **Spartan and Fire**: picks up Spartan Weaponry tag registrations
-- **Immersive Armors**: handled by universal fallback
-- **Universal fallback**: anything else categorized by Java class
+
+## Handled by universal fallback
+
+These mods extend the right vanilla classes (SwordItem, AxeItem, BowItem, etc.) so the universal fallback categorizes them correctly without needing an explicit module:
+
+- **Farmer's Delight**: knives as swords
+- **Dungeons Delight**: knives and cleavers as swords
+- **dacxirons**: staves as swords
+- **Cataclysm Weaponry**: ignitium tools and sword
+- **Immersive Armors**: armor pieces
+- **Armageddon**: most items
+- Anything else with vanilla-class weapons/armor
 
 ## Config
 

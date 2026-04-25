@@ -1,6 +1,7 @@
 package com.nightwielder.apothiccompat;
 
 import com.mojang.logging.LogUtils;
+import com.nightwielder.apothiccompat.compat.AlexsCavesCompat;
 import com.nightwielder.apothiccompat.compat.AlexsMobsCompat;
 import com.nightwielder.apothiccompat.compat.AquamiraeCompat;
 import com.nightwielder.apothiccompat.compat.ArmageddonCompat;
@@ -11,6 +12,8 @@ import com.nightwielder.apothiccompat.compat.DeeperAndDarkerCompat;
 import com.nightwielder.apothiccompat.compat.DreadSteelCompat;
 import com.nightwielder.apothiccompat.compat.DungeonsAndCombatCompat;
 import com.nightwielder.apothiccompat.compat.EnigmaticLegacyCompat;
+import com.nightwielder.apothiccompat.compat.EpicFightNightfallCompat;
+import com.nightwielder.apothiccompat.compat.EpicFightResurrectionCompat;
 import com.nightwielder.apothiccompat.compat.EpicKnightsCompat;
 import com.nightwielder.apothiccompat.compat.ForbiddenArcanusCompat;
 import com.nightwielder.apothiccompat.compat.IronsSpellbooksCompat;
@@ -79,12 +82,15 @@ public class ApothicCompat {
         if (ModList.get().isLoaded("born_in_chaos_v1")) BornInChaosCompat.send();
         if (ModList.get().isLoaded("celestisynth")) CelestisynthCompat.send();
         if (ModList.get().isLoaded("alexsmobs")) AlexsMobsCompat.send();
+        if (ModList.get().isLoaded("alexscaves")) AlexsCavesCompat.send();
         if (ModList.get().isLoaded("forbidden_arcanus")) ForbiddenArcanusCompat.send();
         if (ModList.get().isLoaded("bosses_of_mass_destruction")) BossesOfMassDestructionCompat.send();
         if (ModList.get().isLoaded("meetyourfight")) MeetYourFightCompat.send();
         if (ModList.get().isLoaded("deeperdarker")) DeeperAndDarkerCompat.send();
         if (ModList.get().isLoaded("knightquest") || ModList.get().isLoaded("knight_quest")) KnightQuestCompat.send();
         if (ModList.get().isLoaded("enigmaticlegacy")) EnigmaticLegacyCompat.send();
+        if (ModList.get().isLoaded("cdmoveset")) EpicFightResurrectionCompat.send();
+        if (ModList.get().isLoaded("efn")) EpicFightNightfallCompat.send();
         UniversalCompat.send();
         ApothicCompatConfig.load();
     }

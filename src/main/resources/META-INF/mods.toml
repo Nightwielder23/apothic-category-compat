@@ -159,6 +159,13 @@ description='''${mod_description}'''
     side="BOTH"
 
 [[dependencies.${mod_id}]]
+    modId="alexscaves"
+    mandatory=false
+    versionRange="[0,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
     modId="forbidden_arcanus"
     mandatory=false
     versionRange="[0,)"
@@ -202,6 +209,20 @@ description='''${mod_description}'''
 
 [[dependencies.${mod_id}]]
     modId="enigmaticlegacy"
+    mandatory=false
+    versionRange="[0,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="cdmoveset"
+    mandatory=false
+    versionRange="[0,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="efn"
     mandatory=false
     versionRange="[0,)"
     ordering="AFTER"
