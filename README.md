@@ -11,7 +11,7 @@ Apotheosis uses loot categories to decide which affixes and gem sockets an item 
 Every module is a soft dep. A module only runs when both Apotheosis and the target mod are loaded.
 
 - **L'Ender's Cataclysm**: full weapon, shield, and armor coverage
-- **Iron's Spellbooks**: melee weapons only (staves, scythes, blades)
+- **Iron's Spellbooks**: melee weapons only (staves, scythes, blades). Defers to Fallen Gems & Affixes when loaded.
 - **Tetra**: fixes miscategorized bows, crossbows, and stabilizer-upgraded weapons
 - **Alex's Mobs**: Blood Sprayer as bow
 - **Alex's Caves**: spears, dagger, staves, ortholance, and gauntlet as swords. Primitive Club as heavy. Dreadbow and Raygun as bows.
@@ -36,7 +36,9 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Weapons of Miracles**: overrides for named weapons and armor
 - **EpicFight-Resurrection**: greatswords, longswords, and great tachi as heavy weapons
 - **EpicFight-Nightfall**: Ruins Greatsword and Ghiza's Wheel as heavy weapons
-- **Celestisynth**: nine named weapons, mostly swords with Poltergeist as heavy and Rainfall Serenity as bow
+- **Celestisynth**: nine named weapons, mostly swords with Poltergeist as heavy and Rainfall Serenity as bow. Defers to Fallen Gems & Affixes when loaded.
+- **T.O Magic 'n Extras**: boss weapons across all four upgrade tiers. Most as swords, Galenic Polarizer as heavy weapon, Trident of the Eternal Maelstrom as trident. Staffs as swords unless Fallen Gems & Affixes is loaded.
+- **Fallen Gems & Affixes**: when present, Iron's Spellbooks, T.O Magic 'n Extras staffs, and Celestisynth skip our overrides so FG&A's Staffs and Celestial Melee/Ranged categories apply.
 
 ## Handled by universal fallback
 
