@@ -64,7 +64,16 @@ A config file shows up at `config/apothic_compat.toml` on first launch. Per-item
 "simplyswords:greathammers" = "heavy_weapon"
 ```
 
-Valid category names: `sword`, `heavy_weapon`, `bow`, `crossbow`, `shield`, `helmet`, `chestplate`, `leggings`, `boots`, `pickaxe`, `shovel`, `none`.
+Valid category names: `sword`, `heavy_weapon`, `bow`, `crossbow`, `shield`, `helmet`, `chestplate`, `leggings`, `boots`, `pickaxe`, `shovel`, `none`. Set an item to none to fully blacklist it from rolling any affixes. Categories registered by other mods (such as staffs from Fallen Gems & Affixes) are also accepted.
+
+## Items already handled by Apotheosis
+
+Apotheosis ships with hardcoded defaults in its own `config/apotheosis/adventure.cfg` under the `Equipment Type Overrides` list. These take precedence over both this mod's config and built-in compat modules. As of Apotheosis 7.4.8 the hardcoded defaults are:
+
+- `minecraft:iron_sword` set to `sword`
+- `minecraft:shulker_shell` set to `none`
+
+Setting these items in `apothic_compat.toml` will not work. To override them, edit `adventure.cfg` directly.
 
 ## Reload command
 
