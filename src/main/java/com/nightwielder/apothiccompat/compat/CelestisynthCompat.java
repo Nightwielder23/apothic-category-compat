@@ -11,11 +11,11 @@ import java.util.Set;
 
 /**
  * Celestisynth weapons use one-off legendary names (crescentia, frostbound,
- * keres, …) with no shared suffix, so exact-name matching is the only option.
- * Most extend SkilledSwordItem (→ SwordItem) and would already be picked up
- * by Apotheosis's builtin SwordItem match, but we send explicit overrides so
- * poltergeist (SkilledAxeItem, under UniversalCompat's 8.0 HEAVY threshold)
- * and rainfall_serenity (BowItem) are guaranteed to land in the right bucket.
+ * keres, etc.) with no shared suffix, so exact-name matching is the only option.
+ * Most extend SkilledSwordItem (which extends SwordItem) and would already be
+ * picked up by Apotheosis's builtin SwordItem match, but we send explicit
+ * overrides so poltergeist (SkilledAxeItem, under UniversalCompat's 8.0 HEAVY
+ * threshold) and rainfall_serenity (BowItem) land in the right bucket.
  */
 public final class CelestisynthCompat {
     private static final String NAMESPACE = "celestisynth";
@@ -34,6 +34,9 @@ public final class CelestisynthCompat {
     private CelestisynthCompat() {}
 
     public static void send() {
+        // FG&A registers Celestisynth weapons under its own Celestial Melee/Ranged
+        // categories. Skip the whole module when it's present to avoid clashing IMC.
+        if (FallenGemsCompat.isLoaded()) return;
         for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
             if (!NAMESPACE.equals(id.getNamespace())) continue;
             LootCategory cat = categorize(id.getPath());

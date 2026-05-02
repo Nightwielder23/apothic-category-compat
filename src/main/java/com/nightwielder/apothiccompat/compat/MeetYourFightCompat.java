@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Meet Your Fight boss drops — pickaxe/axe/shovel/hoe variants are vanilla-class
+ * Meet Your Fight boss drops. Pickaxe/axe/shovel/hoe variants are vanilla-class
  * tools that UniversalCompat handles, so only the combat weapons need overrides.
  * Suffix fallback covers any additional weapon-shaped items added in later
  * versions without needing an exact-name update.

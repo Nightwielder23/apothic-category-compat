@@ -13,8 +13,8 @@ import java.util.Set;
  * Born in Chaos is MCreator-generated so weapons don't extend vanilla weapon
  * classes and would otherwise go uncategorized. Most follow a consistent
  * {name}_{shape} convention (_sword, _axe, _hammer, _scythe, _dagger, _mace,
- * _cutlass, _blade) so suffix matching covers them; the handful that don't —
- * darkwarblade (no underscore), trident_hayfork, soulbane — are listed exactly.
+ * _cutlass, _blade) so suffix matching covers them. The handful that don't
+ * (darkwarblade, trident_hayfork, soulbane) are listed exactly.
  */
 public final class BornInChaosCompat {
     private static final String NAMESPACE = "born_in_chaos_v1";

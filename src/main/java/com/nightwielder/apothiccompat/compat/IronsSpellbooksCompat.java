@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * Iron's Spellbooks contains mostly magic items (scrolls, spellbooks, staves that
- * trigger spells) that should NOT be categorized — gem/affix rolls don't make sense
+ * trigger spells) that shouldn't be categorized; gem/affix rolls don't make sense
  * for them. We only categorize the handful of straight-melee weapons.
  */
 public final class IronsSpellbooksCompat {
@@ -40,6 +40,9 @@ public final class IronsSpellbooksCompat {
     private IronsSpellbooksCompat() {}
 
     public static void send() {
+        // FG&A registers Iron's staffs under its own Staffs category. Skip the whole
+        // module when it's present so our IMC overrides don't fight that registration.
+        if (FallenGemsCompat.isLoaded()) return;
         for (var e : OVERRIDES.entrySet()) {
             ResourceLocation id = new ResourceLocation(NAMESPACE, e.getKey());
             Item item = ForgeRegistries.ITEMS.getValue(id);

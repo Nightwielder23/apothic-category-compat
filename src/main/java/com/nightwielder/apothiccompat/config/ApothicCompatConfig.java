@@ -33,7 +33,7 @@ public final class ApothicCompatConfig {
             "shovel", "none");
 
     private static final String DEFAULT_CONTENTS = """
-            # Apothic Compat — user-defined loot category overrides.
+            # Apothic Compat: user-defined loot category overrides.
             #
             # Maps Minecraft items (or item tags) to Apotheosis loot categories so the
             # affinity system can roll the right gem/affix pools on modded gear that
@@ -79,7 +79,7 @@ public final class ApothicCompatConfig {
 
     private ApothicCompatConfig() {}
 
-    /** Initial application during InterModEnqueueEvent — uses IMC, the only path that works pre-game. */
+    /** Initial application during InterModEnqueueEvent. Uses IMC, the only path that works pre-game. */
     public static void load() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
@@ -92,12 +92,12 @@ public final class ApothicCompatConfig {
      * Runtime reapplication for /apothiccompat reload. IMC is dead after mod loading, so we write
      * directly to Apotheosis's live override map. We also mirror into AdventureModule.IMC_TYPE_OVERRIDES
      * (via reflection) because AdventureConfig.load clears TYPE_OVERRIDES and re-copies from there on
-     * any subsequent Apotheosis config reload — without the mirror, our entries would vanish.
+     * any subsequent Apotheosis config reload; without the mirror, our entries would vanish.
      *
      * Skips the whole apply cycle if the file's mtime hasn't advanced since the previous apply.
      *
      * Note: this is purely additive. Removing an entry from the .toml and reloading does NOT remove the
-     * existing override (matches IMC re-send semantics) — restart the server to drop entries.
+     * existing override (matches IMC re-send semantics). Restart the server to drop entries.
      */
     public static ReloadResult reload() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);

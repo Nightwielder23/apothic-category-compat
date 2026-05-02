@@ -9,7 +9,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Map;
 
 /**
- * Deeper and Darker is armor-focused — UniversalCompat handles the warden armor,
+ * Deeper and Darker is armor-focused. UniversalCompat handles the warden armor,
  * soul elytra, and sculk blocks via their vanilla-class fallbacks. Only a couple
  * of bladed weapons need an override, and suffix matching alone is enough since
  * their paths follow the _sword / _knife convention.

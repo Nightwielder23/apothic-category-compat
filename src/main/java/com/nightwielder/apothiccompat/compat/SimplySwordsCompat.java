@@ -9,8 +9,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Map;
 
 /**
- * Simply Swords has no per-weapon-type item tags in 1.20.1 — only material-based
- * tags (iron_gear, gold_gear, …) plus a catch-all "swords" tag. The mod's item IDs
+ * Simply Swords has no per-weapon-type item tags in 1.20.1, only material-based
+ * tags (iron_gear, gold_gear, etc.) plus a catch-all "swords" tag. The mod's item IDs
  * follow a consistent {material}_{weapontype} convention, so we match on suffix.
  * Uniques that don't follow the convention fall through to UniversalCompat.
  */

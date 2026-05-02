@@ -9,7 +9,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Map;
 
 /**
- * Placeholder — UniversalCompat handles vanilla-extending weapons by class.
+ * Placeholder. UniversalCompat handles vanilla-extending weapons by class.
  * Add explicit entries here for items the fallback can't derive (scythes,
  * staves, custom gauntlets, custom armor). Verify item IDs via JEI first.
  */
