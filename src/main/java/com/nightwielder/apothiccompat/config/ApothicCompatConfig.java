@@ -2,6 +2,7 @@ package com.nightwielder.apothiccompat.config;
 
 import com.electronwill.nightconfig.core.UnmodifiableConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.core.io.ParsingException;
 import com.nightwielder.apothiccompat.ApothicCompat;
 import dev.shadowsoffire.apotheosis.adventure.AdventureConfig;
 import dev.shadowsoffire.apotheosis.adventure.AdventureModule;
@@ -21,16 +22,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiConsumer;
 
 public final class ApothicCompatConfig {
     private static final String FILE_NAME = "apothic_compat.toml";
     private static final String IMC_METHOD = "loot_category_override";
-    private static final Set<String> VALID_CATEGORIES = Set.of(
-            "sword", "heavy_weapon", "bow", "crossbow", "shield",
-            "helmet", "chestplate", "leggings", "boots", "pickaxe",
-            "shovel", "none");
 
     private static final String DEFAULT_CONTENTS = """
             # Apothic Compat: user-defined loot category overrides.
@@ -42,9 +38,21 @@ public final class ApothicCompatConfig {
             # modules. Edit this file then run /apothiccompat reload (op 2) to apply
             # changes without restarting the server.
             #
-            # Valid loot category names (Apotheosis 7.4.8):
+            # Built-in loot category names (Apotheosis 7.4.8):
             #   sword, heavy_weapon, bow, crossbow, shield,
             #   helmet, chestplate, leggings, boots, pickaxe, shovel, none
+            #
+            # Other mods can register additional categories at startup. Any name
+            # that resolves at apply time is accepted; unknown names are skipped
+            # with a warning. Known third-party categories from Fallen Gems &
+            # Affixes:
+            #   staffs           (requires Iron's Spellbooks)
+            #   celestial_melee  (requires Celestisynth)
+            #   celestial_ranged (requires Celestisynth)
+            #
+            # Note: items already listed in Apotheosis's own adventure.cfg under
+            # Equipment Type Overrides take precedence over this config. To override
+            # those, edit adventure.cfg directly.
             #
             # Keys MUST be quoted because item and tag IDs contain a ':' separator
             # (namespace:path), which TOML does not allow in bare keys.
@@ -138,7 +146,18 @@ public final class ApothicCompatConfig {
         ensureDefaultFile(path);
         int[] count = {0};
         try (CommentedFileConfig config = CommentedFileConfig.builder(path).sync().build()) {
-            config.load();
+            try {
+                config.load();
+            } catch (ParsingException e) {
+                // NightConfig throws this when the file ends without a trailing newline after a
+                // table header like [tag_overrides]. By the time it throws, every entry above the
+                // EOF has already been parsed into the config object, so we can safely keep going.
+                if (e.getMessage() != null && e.getMessage().contains("Not enough data available")) {
+                    ApothicCompat.LOGGER.debug("Tolerating trailing-EOF parse hiccup in {}: {}", FILE_NAME, e.getMessage());
+                } else {
+                    throw e;
+                }
+            }
             count[0] += processItemOverrides(config, action);
             count[0] += processTagOverrides(config, action);
         } catch (Exception e) {
@@ -168,8 +187,8 @@ public final class ApothicCompatConfig {
                 ApothicCompat.LOGGER.warn("[item_overrides] '{}' must map to a string category, got {}", key, value);
                 continue;
             }
-            if (!VALID_CATEGORIES.contains(categoryName)) {
-                ApothicCompat.LOGGER.warn("[item_overrides] '{}' uses unknown category '{}'", key, categoryName);
+            if (LootCategory.byId(categoryName) == null) {
+                ApothicCompat.LOGGER.warn("[item_overrides] unknown loot category '{}', skipping override for '{}'. Either misspelled or registered by a mod that isn't installed.", categoryName, key);
                 continue;
             }
             ResourceLocation id = ResourceLocation.tryParse(key);
@@ -199,8 +218,8 @@ public final class ApothicCompatConfig {
                 ApothicCompat.LOGGER.warn("[tag_overrides] '{}' must map to a string category, got {}", key, value);
                 continue;
             }
-            if (!VALID_CATEGORIES.contains(categoryName)) {
-                ApothicCompat.LOGGER.warn("[tag_overrides] '{}' uses unknown category '{}'", key, categoryName);
+            if (LootCategory.byId(categoryName) == null) {
+                ApothicCompat.LOGGER.warn("[tag_overrides] unknown loot category '{}', skipping override for '{}'. Either misspelled or registered by a mod that isn't installed.", categoryName, key);
                 continue;
             }
             ResourceLocation id = ResourceLocation.tryParse(key);
