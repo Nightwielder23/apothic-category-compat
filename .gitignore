@@ -12,8 +12,9 @@ run/
 *.ipr
 *.iws
 
-# Gradle wrapper jar
-gradle/wrapper/gradle-wrapper.jar
+# OS files
+.DS_Store
+Thumbs.db
 
 # Logs & crash reports
 logs/
