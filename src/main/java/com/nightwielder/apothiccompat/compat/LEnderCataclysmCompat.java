@@ -19,7 +19,7 @@ public final class LEnderCataclysmCompat {
                 "ancient_spear", "athame", "black_steel_sword", "khopesh",
                 "soul_render", "the_immolator", "astrape", "ceraunus",
                 "lionfish", "void_forge", "blazing_grips", "sticky_gloves",
-                "chitin_claw", "tidal_claws", "wrath_of_the_desert",
+                "chitin_claw", "tidal_claws",
                 "astrape_throwing", "ceraunus_throwing",
                 "coral_spear", "coral_spear_throwing");
         put(LootCategory.HEAVY_WEAPON,
@@ -29,7 +29,7 @@ public final class LEnderCataclysmCompat {
                 "coral_bardiche_throwing",
                 "void_assault_shoulder_weapon", "wither_assault_shoulder_weapon",
                 "laser_gatling", "emp", "final_fractal");
-        put(LootCategory.BOW, "cursed_bow");
+        put(LootCategory.BOW, "cursed_bow", "wrath_of_the_desert");
         put(LootCategory.SHIELD,
                 "azure_sea_shield", "black_steel_targe", "bulwark_of_the_flame");
         put(LootCategory.HELMET,

@@ -19,6 +19,7 @@ import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Dungeons and Combat adds a large, growing set of Dungeons-inspired weapons and
@@ -36,6 +37,21 @@ public final class DungeonsAndCombatCompat {
             "_greataxe", "_greathammer"
     };
 
+    // Magic-caster scepters. Class-based inference routes these wrong:
+    // PyromancerScepterItem extends SwordItem (would land in SWORD), and the
+    // other three extend plain Item (would land nowhere). Route to FG&A's
+    // runtime "staffs" category when present, otherwise SWORD. FG&A's own
+    // predicate matches only Iron's StaffItem, so the IMC has to be explicit
+    // here, unlike IronsSpellbooksCompat and TravelopticsCompat which can
+    // defer to FG&A's auto-detection by skipping their own overrides.
+    private static final Set<String> SCEPTERS = Set.of(
+            "pyromancer_scepter",
+            "sanguine_scepter",
+            "fairy_scepter",
+            "scepter_of_compensation"
+    );
+    private static final String STAFFS_CATEGORY = "staffs";
+
     private DungeonsAndCombatCompat() {}
 
     public static void send() {
@@ -43,11 +59,25 @@ public final class DungeonsAndCombatCompat {
             if (!NAMESPACE.equals(id.getNamespace())) continue;
             Item item = ForgeRegistries.ITEMS.getValue(id);
             if (item == null) continue;
-            LootCategory cat = categorize(id.getPath(), item);
-            if (cat == null) continue;
-            String name = cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
+            String name = explicitOverride(id.getPath());
+            if (name == null) {
+                LootCategory cat = categorize(id.getPath(), item);
+                if (cat == null) continue;
+                name = cat.getName();
+            }
+            sendOverride(item, name);
         }
+    }
+
+    private static void sendOverride(Item item, String categoryName) {
+        InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, categoryName));
+    }
+
+    private static String explicitOverride(String path) {
+        if (SCEPTERS.contains(path)) {
+            return FallenGemsCompat.isLoaded() ? STAFFS_CATEGORY : LootCategory.SWORD.getName();
+        }
+        return null;
     }
 
     private static LootCategory categorize(String path, Item item) {

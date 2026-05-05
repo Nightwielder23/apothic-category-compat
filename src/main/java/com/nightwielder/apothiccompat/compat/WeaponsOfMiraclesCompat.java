@@ -20,14 +20,14 @@ public final class WeaponsOfMiraclesCompat {
 
     static {
         put(LootCategory.SWORD,
-                "antitheus", "blackstar", "claw", "evil_tachi", "gesetz",
+                "antitheus", "claw", "evil_tachi", "gesetz",
                 "hollow_longsword", "jabberwocky", "moonless", "napoleon",
                 "netherite_tachi", "nova", "orbit", "ruine", "satsujin",
-                "solar", "solar_obscuridad", "tormented_mind",
+                "solar_obscuridad", "tormented_mind",
                 "wooden_staff", "stone_staff", "iron_staff", "golden_staff",
                 "diamond_staff", "netherite_staff");
         put(LootCategory.HEAVY_WEAPON,
-                "agony", "herrscher",
+                "agony", "blackstar", "herrscher", "solar",
                 "iron_greataxe", "golden_greataxe", "diamond_greataxe",
                 "netherite_greataxe");
         put(LootCategory.SHIELD, "overly_large_cylinder");
