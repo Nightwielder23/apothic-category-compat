@@ -32,7 +32,7 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Samurai Dynasty**: katanas, kama, and spears as swords
 - **Dread Steel**: scythe as heavy weapon, shield as shield
 - **Marium's Soulslike Weaponry**: greatswords/scythes/glaives as heavy, spears/swordspears as swords, named legendaries pinned
-- **Dungeons and Combat**: hammers as heavy weapons, spears as swords
+- **Dungeons and Combat**: hammers as heavy weapons, pyromancer/sanguine/fairy/scepter of compensation as staffs when FG&A is loaded
 - **Weapons of Miracles**: overrides for named weapons and armor
 - **EpicFight-Resurrection**: greatswords, longswords, and great tachi as heavy weapons
 - **EpicFight-Nightfall**: Ruins Greatsword and Ghiza's Wheel as heavy weapons
