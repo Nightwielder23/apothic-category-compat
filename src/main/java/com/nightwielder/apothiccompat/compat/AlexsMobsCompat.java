@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Alex's Mobs ships mostly armor and vanilla-class items that UniversalCompat
- * already handles; only the custom weapons need an explicit override.
+ * Most Alex's Mobs items are armor or vanilla-class weapons that UniversalCompat
+ * already handles. Only the custom weapons need an explicit override.
  */
 public final class AlexsMobsCompat {
     private static final String NAMESPACE = "alexsmobs";

@@ -27,9 +27,11 @@ public final class LEnderCataclysmCompat {
                 "gauntlet_of_bulwark", "gauntlet_of_guard", "gauntlet_of_maelstrom",
                 "meat_shredder", "the_annihilator", "the_incinerator", "zweiender",
                 "coral_bardiche_throwing",
-                "void_assault_shoulder_weapon", "wither_assault_shoulder_weapon",
-                "laser_gatling", "emp", "final_fractal");
+                "emp", "final_fractal");
         put(LootCategory.BOW, "cursed_bow", "wrath_of_the_desert");
+        put(LootCategory.CROSSBOW,
+                "void_assault_shoulder_weapon", "wither_assault_shoulder_weapon",
+                "laser_gatling");
         put(LootCategory.SHIELD,
                 "azure_sea_shield", "black_steel_targe", "bulwark_of_the_flame");
         put(LootCategory.HELMET,

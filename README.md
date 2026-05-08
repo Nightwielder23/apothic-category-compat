@@ -1,6 +1,6 @@
 # Apothic Compat
 
-A small server-side 1.20.1 Forge mod that fills in Apotheosis loot-category assignments for weapon/armor mods that don't ship them. Uses Apotheosis's own IMC override API, so nothing is patched or mixin'd.
+A small server-side 1.20.1 Forge mod that fills in Apotheosis loot-category assignments for weapon/armor mods that don't set them. Uses the Apotheosis IMC override API, so nothing is patched or mixin'd.
 
 ## What it does
 
@@ -68,7 +68,7 @@ Valid category names: `sword`, `heavy_weapon`, `bow`, `crossbow`, `shield`, `hel
 
 ## Items already handled by Apotheosis
 
-Apotheosis ships with hardcoded defaults in its own `config/apotheosis/adventure.cfg` under the `Equipment Type Overrides` list. These take precedence over both this mod's config and built-in compat modules. As of Apotheosis 7.4.8 the hardcoded defaults are:
+Apotheosis hardcodes defaults in `config/apotheosis/adventure.cfg` under the `Equipment Type Overrides` list. These take precedence over both this mod's config and built-in compat modules. As of Apotheosis 7.4.8 the hardcoded defaults are:
 
 - `minecraft:iron_sword` set to `sword`
 - `minecraft:shulker_shell` set to `none`

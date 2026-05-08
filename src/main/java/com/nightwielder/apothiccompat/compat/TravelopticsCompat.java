@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * T.O Magic 'n Extras boss weapons each ship with four upgrade tiers
- * (base + level_one/two/three). The tiers share class hierarchies that
- * don't extend vanilla weapon classes cleanly, so each line is listed
- * here and every level gets the same category.
+ * T.O Magic 'n Extras boss weapons each have four upgrade tiers
+ * (base + level_one/two/three). Their class hierarchies don't extend
+ * vanilla weapon classes cleanly, so each line is listed here and every
+ * level gets the same category.
  *
  * Staff lines are gated on FG&A: when Fallen Gems and Affixes is present
  * it registers its own Staffs category and we leave staffs alone, otherwise

@@ -27,8 +27,6 @@ public final class KnightQuestCompat {
 
     private static final Set<String> GPL_HEAVY_PATHS = Set.of("paladin_sword");
 
-    private static final String[] GPL_HEAVY_SUFFIXES = {};
-
     private static final String[] GPL_SWORD_SUFFIXES = {"_sword", "_spear"};
 
     private static final Set<String> GRIMHART_SWORD_PATHS = Set.of(
@@ -55,7 +53,6 @@ public final class KnightQuestCompat {
         if (NAMESPACE_GPL.equals(namespace)) {
             if (GPL_HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON;
             if (GPL_SWORD_PATHS.contains(path)) return LootCategory.SWORD;
-            for (String s : GPL_HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
             for (String s : GPL_SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
             return null;
         }

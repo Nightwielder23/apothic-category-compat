@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Epic Fight Nightfall (efn) ships only a few weapons whose IDs do not follow a
- * predictable suffix convention, so they are listed explicitly. Anything else is
- * left for the SWORD fallback in UniversalCompat.
+ * Epic Fight Nightfall (efn) only adds a handful of weapons whose IDs do not
+ * follow a predictable suffix convention, so they are listed explicitly. Anything
+ * else falls through to UniversalCompat's SWORD class match.
  */
 public final class EpicFightNightfallCompat {
     private static final String NAMESPACE = "efn";

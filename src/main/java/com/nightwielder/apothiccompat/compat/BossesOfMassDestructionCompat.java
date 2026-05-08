@@ -17,8 +17,6 @@ public final class BossesOfMassDestructionCompat {
     private static final String NAMESPACE = "bosses_of_mass_destruction";
     private static final String IMC_METHOD = "loot_category_override";
 
-    private static final Set<String> HEAVY_PATHS = Set.of();
-
     private static final Set<String> SWORD_PATHS = Set.of("nether_staff", "obsidian_spear");
 
     private BossesOfMassDestructionCompat() {}
@@ -36,7 +34,6 @@ public final class BossesOfMassDestructionCompat {
     }
 
     private static LootCategory categorize(String path) {
-        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON;
         if (SWORD_PATHS.contains(path)) return LootCategory.SWORD;
         return null;
     }
