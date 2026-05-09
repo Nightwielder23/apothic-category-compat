@@ -16,7 +16,7 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Alex's Mobs**: Blood Sprayer as bow
 - **Alex's Caves**: spears, dagger, staves, ortholance, and gauntlet as swords. Primitive Club as heavy. Dreadbow and Raygun as bows.
 - **Spartan Weaponry**: suffix-matched for all material variants
-- **Simply Swords**: suffix-matched, heavy variants as heavy weapons
+- **Simply Swords**: longswords, rapiers, katanas, cutlasses, twinblades, scythes, sai, warglaives, spears, and chakrams as swords. Claymores, glaives, halberds, greataxes, and greathammers as heavy weapons.
 - **Integrated Simply Swords**: matches the Simply Swords mapping across cross-mod material variants. Alex's Caves Polarizer integration as heavy weapon.
 - **Enigmatic Legacy**: Voracious Pan as sword, Axe of Executioner and Astral Breaker as heavy weapons
 - **Mowzie's Mobs**: weapons and armor
