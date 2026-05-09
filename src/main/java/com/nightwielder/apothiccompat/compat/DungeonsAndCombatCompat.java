@@ -33,9 +33,18 @@ public final class DungeonsAndCombatCompat {
     private static final double HEAVY_WEAPON_THRESHOLD = 8.0;
 
     private static final String[] HEAVY_SUFFIXES = {
-            "_halberd", "_glaive", "_whirlwind", "_hammer", "_maul",
-            "_greataxe", "_greathammer"
+            "_claymore", "_glaive", "_greataxe", "_greathammer", "_greatsword",
+            "_halberd", "_hammer", "_maul", "_whirlwind"
     };
+
+    // Dragon greatswords have an elemental suffix after _greatsword, so the
+    // suffix matcher above doesn't catch them. List explicitly.
+    private static final Set<String> HEAVY_PATHS = Set.of(
+            "dragon_greatsword_bone",
+            "dragon_greatsword_fire",
+            "dragon_greatsword_ice",
+            "dragon_greatsword_lightning"
+    );
 
     // Magic-caster scepters. Class-based inference routes these wrong:
     // PyromancerScepterItem extends SwordItem (would land in SWORD), and the
@@ -81,6 +90,7 @@ public final class DungeonsAndCombatCompat {
     }
 
     private static LootCategory categorize(String path, Item item) {
+        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON;
         for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
         if (item instanceof SwordItem) return LootCategory.SWORD;
         if (item instanceof AxeItem) {

@@ -44,7 +44,7 @@ public final class IronsSpellbooksCompat {
         // module when it's present so our IMC overrides don't fight that registration.
         if (FallenGemsCompat.isLoaded()) return;
         for (var e : OVERRIDES.entrySet()) {
-            ResourceLocation id = new ResourceLocation(NAMESPACE, e.getKey());
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NAMESPACE, e.getKey());
             Item item = ForgeRegistries.ITEMS.getValue(id);
             if (item == null) continue;
             String name = e.getValue().getName();

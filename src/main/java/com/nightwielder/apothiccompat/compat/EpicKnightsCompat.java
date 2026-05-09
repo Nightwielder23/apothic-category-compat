@@ -22,8 +22,8 @@ public final class EpicKnightsCompat {
     private static final String IMC_METHOD = "loot_category_override";
 
     private static final String[] HEAVY_TOKENS = {
-            "lance", "glaive", "halberd", "pike",
-            "mace", "warhammer", "hammer", "maul"
+            "claymore", "glaive", "halberd", "hammer", "lance",
+            "mace", "maul", "pike", "warhammer", "zweihander"
     };
 
     private EpicKnightsCompat() {}

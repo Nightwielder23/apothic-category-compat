@@ -35,7 +35,7 @@ public final class MowziesMobsCompat {
 
     public static void send() {
         for (var e : OVERRIDES.entrySet()) {
-            ResourceLocation id = new ResourceLocation(NAMESPACE, e.getKey());
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NAMESPACE, e.getKey());
             Item item = ForgeRegistries.ITEMS.getValue(id);
             if (item == null) continue;
             String name = e.getValue().getName();

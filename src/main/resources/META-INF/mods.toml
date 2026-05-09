@@ -241,10 +241,3 @@ description='''${mod_description}'''
     versionRange="[0,)"
     ordering="AFTER"
     side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="wo_traveloptics"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"

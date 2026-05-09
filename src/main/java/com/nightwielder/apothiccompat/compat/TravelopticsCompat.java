@@ -76,7 +76,7 @@ public final class TravelopticsCompat {
         String name = category.getName();
         for (String base : bases) {
             for (String suffix : LEVEL_SUFFIXES) {
-                ResourceLocation id = new ResourceLocation(NAMESPACE, base + suffix);
+                ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NAMESPACE, base + suffix);
                 Item item = ForgeRegistries.ITEMS.getValue(id);
                 if (item == null) continue;
                 InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
