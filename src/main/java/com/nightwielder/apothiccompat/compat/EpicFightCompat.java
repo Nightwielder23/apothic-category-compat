@@ -10,19 +10,27 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Bosses of Mass Destruction only has a couple of custom-class weapons that
- * Apotheosis and UniversalCompat don't categorize on their own.
+ * Base Epic Fight has five material-suffixed weapon families (greatsword,
+ * longsword, dagger, spear, tachi) plus three named uniques (bokken,
+ * uchigatana, glove). Greatswords are HEAVY; everything else is SWORD per
+ * project convention (spears, tachis, gloves all light melee).
  */
-public final class BossesOfMassDestructionCompat {
-    private static final String NAMESPACE = "bosses_of_mass_destruction";
+public final class EpicFightCompat {
+    private static final String NAMESPACE = "epicfight";
     private static final String IMC_METHOD = "loot_category_override";
 
-    // nether_staff and obsidian_spear were renamed/removed in BoMD 1.1.x but
-    // are kept here as no-ops for users still on older releases.
-    private static final Set<String> SWORD_PATHS = Set.of(
-            "earthdive_spear", "nether_staff", "obsidian_spear");
+    private static final Set<String> HEAVY_PATHS = Set.of();
 
-    private BossesOfMassDestructionCompat() {}
+    private static final Set<String> SWORD_PATHS = Set.of(
+            "bokken", "glove", "uchigatana");
+
+    private static final String[] HEAVY_SUFFIXES = {"_greatsword"};
+
+    private static final String[] SWORD_SUFFIXES = {
+            "_dagger", "_longsword", "_spear", "_tachi"
+    };
+
+    private EpicFightCompat() {}
 
     public static void send() {
         for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
@@ -37,7 +45,10 @@ public final class BossesOfMassDestructionCompat {
     }
 
     private static LootCategory categorize(String path) {
+        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON;
         if (SWORD_PATHS.contains(path)) return LootCategory.SWORD;
+        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
+        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
         return null;
     }
 }

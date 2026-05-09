@@ -7,22 +7,25 @@ import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Bosses of Mass Destruction only has a couple of custom-class weapons that
- * Apotheosis and UniversalCompat don't categorize on their own.
+ * RPG Style More Weapons R adds a small set of class-themed weapons and armor.
+ * Armor extends ArmorItem and is handled by UniversalCompat. Only the three
+ * weapon families need explicit overrides.
  */
-public final class BossesOfMassDestructionCompat {
-    private static final String NAMESPACE = "bosses_of_mass_destruction";
+public final class RpgStyleMoreWeaponsCompat {
+    private static final String NAMESPACE = "rpg_style_more_weapons_r";
     private static final String IMC_METHOD = "loot_category_override";
 
-    // nether_staff and obsidian_spear were renamed/removed in BoMD 1.1.x but
-    // are kept here as no-ops for users still on older releases.
-    private static final Set<String> SWORD_PATHS = Set.of(
-            "earthdive_spear", "nether_staff", "obsidian_spear");
+    private static final String[] HEAVY_SUFFIXES = {
+            "_battle_axe", "_greatsword"
+    };
 
-    private BossesOfMassDestructionCompat() {}
+    private static final String[] SWORD_SUFFIXES = {
+            "_knife"
+    };
+
+    private RpgStyleMoreWeaponsCompat() {}
 
     public static void send() {
         for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
@@ -37,7 +40,8 @@ public final class BossesOfMassDestructionCompat {
     }
 
     private static LootCategory categorize(String path) {
-        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD;
+        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
+        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
         return null;
     }
 }
