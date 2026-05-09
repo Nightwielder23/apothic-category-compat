@@ -17,9 +17,10 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Alex's Caves**: spears, dagger, staves, ortholance, and gauntlet as swords. Primitive Club as heavy. Dreadbow and Raygun as bows.
 - **Spartan Weaponry**: suffix-matched for all material variants
 - **Simply Swords**: suffix-matched, heavy variants as heavy weapons
+- **Integrated Simply Swords**: matches the Simply Swords mapping across cross-mod material variants. Alex's Caves Polarizer integration as heavy weapon.
 - **Enigmatic Legacy**: Voracious Pan as sword, Axe of Executioner and Astral Breaker as heavy weapons
 - **Mowzie's Mobs**: weapons and armor
-- **Bosses of Mass Destruction**: Obsidian Spear and Nether Staff as swords
+- **Bosses of Mass Destruction**: Earthdive Spear as sword (older Obsidian Spear and Nether Staff entries retained for back-compat)
 - **Forbidden and Arcanus**: Draco Arcanus axe as heavy, rest as swords
 - **Born in Chaos**: scythes/axes/hammers as heavy, swords and daggers as swords
 - **Deeper and Darker**: suffix-matched swords and knives
@@ -34,10 +35,12 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Marium's Soulslike Weaponry**: greatswords/scythes/glaives as heavy, spears/swordspears as swords, named legendaries pinned
 - **Dungeons and Combat**: hammers as heavy weapons, pyromancer/sanguine/fairy/scepter of compensation as staffs when FG&A is loaded
 - **Weapons of Miracles**: overrides for named weapons and armor
+- **Epic Fight**: greatswords as heavy weapons; longswords, daggers, spears, tachis, bokken, uchigatana, and glove as swords
 - **EpicFight-Resurrection**: greatswords, longswords, and great tachi as heavy weapons
 - **EpicFight-Nightfall**: Ruins Greatsword and Ghiza's Wheel as heavy weapons
 - **Celestisynth**: nine named weapons, mostly swords with Poltergeist as heavy and Rainfall Serenity as bow. Defers to Fallen Gems & Affixes when loaded.
 - **T.O Magic 'n Extras**: boss weapons across all four upgrade tiers. Most as swords, Galenic Polarizer as heavy weapon, Trident of the Eternal Maelstrom as trident. Staffs as swords unless Fallen Gems & Affixes is loaded.
+- **RPG Style More Weapons**: battle axes and greatswords as heavy weapons, knives as swords
 - **Fallen Gems & Affixes**: when present, Iron's Spellbooks, T.O Magic 'n Extras staffs, and Celestisynth skip our overrides so FG&A's Staffs and Celestial Melee/Ranged categories apply.
 
 ## Handled by universal fallback
