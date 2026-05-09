@@ -28,12 +28,12 @@ public final class IntegratedSimplySwordsCompat {
     private static final Set<String> SWORD_PATHS = Set.of();
 
     private static final String[] HEAVY_SUFFIXES = {
-            "/glaive", "/greataxe", "/greathammer", "/halberd"
+            "/claymore", "/glaive", "/greataxe", "/greathammer", "/halberd"
     };
 
     private static final String[] SWORD_SUFFIXES = {
-            "/chakram", "/claymore", "/cutlass", "/katana", "/longsword",
-            "/rapier", "/sai", "/scythe", "/spear", "/twinblade", "/warglaive"
+            "/chakram", "/cutlass", "/katana", "/longsword", "/rapier",
+            "/sai", "/scythe", "/spear", "/twinblade", "/warglaive"
     };
 
     private IntegratedSimplySwordsCompat() {}

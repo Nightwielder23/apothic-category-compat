@@ -19,12 +19,11 @@ public final class EpicFightResurrectionCompat {
     private static final String NAMESPACE = "cdmoveset";
     private static final String IMC_METHOD = "loot_category_override";
 
+    private static final Set<String> HEAVY_PATHS = Set.of("great_tachi");
+
     private static final String[] HEAVY_SUFFIXES = {
             "greatsword", "longsword"
     };
-
-    private static final Set<String> EXPLICIT_HEAVIES = Set.of(
-            "great_tachi");
 
     private EpicFightResurrectionCompat() {}
 
@@ -41,7 +40,7 @@ public final class EpicFightResurrectionCompat {
     }
 
     private static LootCategory categorize(String path) {
-        if (EXPLICIT_HEAVIES.contains(path)) return LootCategory.HEAVY_WEAPON;
+        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON;
         for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
         return null;
     }

@@ -52,8 +52,8 @@ public final class SpartanWeaponryCompat {
 
     private static LootCategory categorize(String path) {
         if (path.equals("cestus") || path.endsWith("_cestus")) return LootCategory.HEAVY_WEAPON;
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
         for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
+        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
         for (String s : BOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.BOW;
         for (String s : CROSSBOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.CROSSBOW;
         return null;
