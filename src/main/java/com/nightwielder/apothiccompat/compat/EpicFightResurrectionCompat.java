@@ -12,8 +12,8 @@ import java.util.Set;
 /**
  * Epic Fight Resurrection (cdmoveset) item IDs do not always insert an underscore
  * before the weapon-type token (e.g. s_irongreatsword vs s_iron_greatsword), so
- * suffixes are matched without a leading underscore. Items not matching any heavy
- * suffix are left for the SWORD fallback in UniversalCompat.
+ * suffixes are matched without a leading underscore. Items not matching any
+ * configured suffix fall through to UniversalCompat.
  */
 public final class EpicFightResurrectionCompat {
     private static final String NAMESPACE = "cdmoveset";
@@ -22,7 +22,11 @@ public final class EpicFightResurrectionCompat {
     private static final Set<String> HEAVY_PATHS = Set.of("great_tachi");
 
     private static final String[] HEAVY_SUFFIXES = {
-            "greatsword", "longsword"
+            "greatsword"
+    };
+
+    private static final String[] SWORD_SUFFIXES = {
+            "longsword"
     };
 
     private EpicFightResurrectionCompat() {}
@@ -42,6 +46,7 @@ public final class EpicFightResurrectionCompat {
     private static LootCategory categorize(String path) {
         if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON;
         for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
+        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
         return null;
     }
 }

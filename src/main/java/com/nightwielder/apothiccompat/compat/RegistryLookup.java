@@ -10,10 +10,11 @@ public final class RegistryLookup {
 
     // ForgeRegistries.ITEMS.getValue returns Items.AIR (the registry's default) for
     // unregistered keys, not null. Use containsKey to filter cleanly and log misses
-    // at debug so version-skew entries don't dispatch overrides against minecraft:air.
+    // at warn so version-skew entries surface in user logs instead of silently
+    // dispatching overrides against minecraft:air.
     public static Item item(ResourceLocation id) {
         if (!ForgeRegistries.ITEMS.containsKey(id)) {
-            ApothicCompat.LOGGER.debug("Skipping override for unknown item id {}", id);
+            ApothicCompat.LOGGER.warn("Skipping override for unknown item id {}", id);
             return null;
         }
         return ForgeRegistries.ITEMS.getValue(id);

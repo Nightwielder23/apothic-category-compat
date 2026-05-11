@@ -19,12 +19,12 @@ public final class SimplySwordsCompat {
     private static final String IMC_METHOD = "loot_category_override";
 
     private static final String[] SWORD_SUFFIXES = {
-            "_chakram", "_cutlass", "_katana", "_longsword", "_rapier",
+            "_chakram", "_claymore", "_cutlass", "_katana", "_longsword", "_rapier",
             "_sai", "_scythe", "_spear", "_twinblade", "_warglaive"
     };
 
     private static final String[] HEAVY_SUFFIXES = {
-            "_claymore", "_glaive", "_greataxe", "_greathammer", "_halberd"
+            "_glaive", "_greataxe", "_greathammer", "_halberd"
     };
 
     private SimplySwordsCompat() {}
@@ -42,10 +42,11 @@ public final class SimplySwordsCompat {
     }
 
     private static LootCategory categorize(String path) {
-        // _warglaive ends with _glaive, so the HEAVY pass would steal it otherwise.
+        // _warglaive ends with _glaive; keep this short-circuit so future HEAVY
+        // suffix additions can't accidentally steal it.
         if (path.endsWith("_warglaive")) return LootCategory.SWORD;
-        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
         for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
+        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
         return null;
     }
 }

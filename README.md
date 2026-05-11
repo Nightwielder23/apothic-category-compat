@@ -16,7 +16,7 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Alex's Mobs**: Blood Sprayer as bow
 - **Alex's Caves**: spears, dagger, staves, ortholance, and gauntlet as swords. Primitive Club as heavy. Dreadbow and Raygun as bows.
 - **Spartan Weaponry**: suffix-matched for all material variants
-- **Simply Swords**: longswords, rapiers, katanas, cutlasses, twinblades, scythes, sai, warglaives, spears, and chakrams as swords. Claymores, glaives, halberds, greataxes, and greathammers as heavy weapons.
+- **Simply Swords**: claymores, longswords, rapiers, katanas, cutlasses, twinblades, scythes, sai, warglaives, spears, and chakrams as swords. Glaives, halberds, greataxes, and greathammers as heavy weapons.
 - **Integrated Simply Swords**: matches the Simply Swords mapping across cross-mod material variants. Alex's Caves Polarizer integration as heavy weapon.
 - **Enigmatic Legacy**: Voracious Pan as sword, Axe of Executioner and Astral Breaker as heavy weapons
 - **Mowzie's Mobs**: weapons and armor
@@ -36,7 +36,7 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Dungeons and Combat**: hammers as heavy weapons, pyromancer/sanguine/fairy/scepter of compensation as staffs when FG&A and Iron's Spellbooks are both loaded (otherwise sword)
 - **Weapons of Miracles**: overrides for named weapons and armor
 - **Epic Fight**: greatswords as heavy weapons; longswords, daggers, spears, tachis, bokken, uchigatana, and glove as swords
-- **EpicFight-Resurrection**: greatswords, longswords, and great tachi as heavy weapons
+- **EpicFight-Resurrection**: greatswords and great tachi as heavy weapons, longswords as swords
 - **EpicFight-Nightfall**: Ruins Greatsword and Ghiza's Wheel as heavy weapons
 - **Celestisynth**: nine named weapons, mostly swords with Poltergeist as heavy and Rainfall Serenity as bow. Defers to Fallen Gems & Affixes when loaded.
 - **T.O Magic 'n Extras**: boss weapons across all four upgrade tiers. Most as swords, Galenic Polarizer as heavy weapon, Trident of the Eternal Maelstrom as trident. Staffs as swords unless Fallen Gems & Affixes is loaded.
