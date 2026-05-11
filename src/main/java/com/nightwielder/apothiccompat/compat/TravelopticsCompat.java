@@ -4,7 +4,6 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 import java.util.Map;
@@ -77,7 +76,7 @@ public final class TravelopticsCompat {
         for (String base : bases) {
             for (String suffix : LEVEL_SUFFIXES) {
                 ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NAMESPACE, base + suffix);
-                Item item = ForgeRegistries.ITEMS.getValue(id);
+                Item item = RegistryLookup.item(id);
                 if (item == null) continue;
                 InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
             }

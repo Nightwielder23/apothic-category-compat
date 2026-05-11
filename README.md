@@ -33,7 +33,7 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Samurai Dynasty**: katanas, kama, and spears as swords
 - **Dread Steel**: scythe as heavy weapon, shield as shield
 - **Marium's Soulslike Weaponry**: greatswords/scythes/glaives as heavy, spears/swordspears as swords, named legendaries pinned
-- **Dungeons and Combat**: hammers as heavy weapons, pyromancer/sanguine/fairy/scepter of compensation as staffs when FG&A is loaded
+- **Dungeons and Combat**: hammers as heavy weapons, pyromancer/sanguine/fairy/scepter of compensation as staffs when FG&A and Iron's Spellbooks are both loaded (otherwise sword)
 - **Weapons of Miracles**: overrides for named weapons and armor
 - **Epic Fight**: greatswords as heavy weapons; longswords, daggers, spears, tachis, bokken, uchigatana, and glove as swords
 - **EpicFight-Resurrection**: greatswords, longswords, and great tachi as heavy weapons
@@ -67,7 +67,7 @@ A config file shows up at `config/apothic_compat.toml` on first launch. Per-item
 "simplyswords:greathammers" = "heavy_weapon"
 ```
 
-Valid category names: `sword`, `heavy_weapon`, `bow`, `crossbow`, `shield`, `helmet`, `chestplate`, `leggings`, `boots`, `pickaxe`, `shovel`, `none`. Set an item to none to fully blacklist it from rolling any affixes. Categories registered by other mods (such as staffs from Fallen Gems & Affixes) are also accepted.
+Valid category names: `sword`, `heavy_weapon`, `trident`, `bow`, `crossbow`, `shield`, `helmet`, `chestplate`, `leggings`, `boots`, `pickaxe`, `shovel`, `none`. Set an item to none to fully blacklist it from rolling any affixes. Categories registered by other mods (such as staffs from Fallen Gems & Affixes) are also accepted.
 
 ## Items already handled by Apotheosis
 

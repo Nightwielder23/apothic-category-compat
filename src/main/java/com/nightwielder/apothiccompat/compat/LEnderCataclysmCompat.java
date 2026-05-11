@@ -4,7 +4,6 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,14 +18,11 @@ public final class LEnderCataclysmCompat {
                 "ancient_spear", "athame", "black_steel_sword", "khopesh",
                 "soul_render", "the_immolator", "astrape", "ceraunus",
                 "lionfish", "void_forge", "blazing_grips", "sticky_gloves",
-                "chitin_claw", "tidal_claws",
-                "astrape_throwing", "ceraunus_throwing",
-                "coral_spear", "coral_spear_throwing");
+                "chitin_claw", "tidal_claws", "coral_spear");
         put(LootCategory.HEAVY_WEAPON,
                 "black_steel_axe", "coral_bardiche",
                 "gauntlet_of_bulwark", "gauntlet_of_guard", "gauntlet_of_maelstrom",
                 "meat_shredder", "the_annihilator", "the_incinerator", "zweiender",
-                "coral_bardiche_throwing",
                 "emp", "final_fractal");
         put(LootCategory.BOW, "cursed_bow", "wrath_of_the_desert");
         put(LootCategory.CROSSBOW,
@@ -56,7 +52,7 @@ public final class LEnderCataclysmCompat {
     public static void send() {
         for (Map.Entry<String, LootCategory> e : OVERRIDES.entrySet()) {
             ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NAMESPACE, e.getKey());
-            Item item = ForgeRegistries.ITEMS.getValue(id);
+            Item item = RegistryLookup.item(id);
             if (item == null) continue;
             String name = e.getValue().getName();
             InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));

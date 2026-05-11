@@ -84,7 +84,7 @@ public final class DungeonsAndCombatCompat {
 
     private static String explicitOverride(String path) {
         if (SCEPTERS.contains(path)) {
-            return FallenGemsCompat.isLoaded() ? STAFFS_CATEGORY : LootCategory.SWORD.getName();
+            return FallenGemsCompat.hasStaffsCategory() ? STAFFS_CATEGORY : LootCategory.SWORD.getName();
         }
         return null;
     }

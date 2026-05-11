@@ -42,6 +42,8 @@ public final class SimplySwordsCompat {
     }
 
     private static LootCategory categorize(String path) {
+        // _warglaive ends with _glaive, so the HEAVY pass would steal it otherwise.
+        if (path.endsWith("_warglaive")) return LootCategory.SWORD;
         for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
         for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
         return null;

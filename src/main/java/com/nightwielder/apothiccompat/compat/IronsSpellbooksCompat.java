@@ -4,7 +4,6 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 
@@ -40,12 +39,14 @@ public final class IronsSpellbooksCompat {
     private IronsSpellbooksCompat() {}
 
     public static void send() {
-        // FG&A registers Iron's staffs under its own Staffs category. Skip the whole
-        // module when it's present so our IMC overrides don't fight that registration.
+        // FG&A's "staffs" category only matches Iron's StaffItem subclasses; the items
+        // listed here are all SwordItem and CrossbowItem subclasses, which Apotheosis's
+        // builtin forItem already handles. Skip the redundant IMC sends when FG&A is
+        // present.
         if (FallenGemsCompat.isLoaded()) return;
         for (var e : OVERRIDES.entrySet()) {
             ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NAMESPACE, e.getKey());
-            Item item = ForgeRegistries.ITEMS.getValue(id);
+            Item item = RegistryLookup.item(id);
             if (item == null) continue;
             String name = e.getValue().getName();
             InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));

@@ -4,6 +4,7 @@ import com.electronwill.nightconfig.core.UnmodifiableConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.ParsingException;
 import com.nightwielder.apothiccompat.ApothicCompat;
+import com.nightwielder.apothiccompat.compat.RegistryLookup;
 import dev.shadowsoffire.apotheosis.adventure.AdventureConfig;
 import dev.shadowsoffire.apotheosis.adventure.AdventureModule;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
@@ -39,7 +40,7 @@ public final class ApothicCompatConfig {
             # changes without restarting the server.
             #
             # Built-in loot category names (Apotheosis 7.4.8):
-            #   sword, heavy_weapon, bow, crossbow, shield,
+            #   sword, heavy_weapon, trident, bow, crossbow, shield,
             #   helmet, chestplate, leggings, boots, pickaxe, shovel, none
             #
             # Other mods can register additional categories at startup. Any name
@@ -196,7 +197,7 @@ public final class ApothicCompatConfig {
                 ApothicCompat.LOGGER.warn("[item_overrides] invalid item id '{}'", key);
                 continue;
             }
-            Item item = ForgeRegistries.ITEMS.getValue(id);
+            Item item = RegistryLookup.item(id);
             if (item == null) {
                 ApothicCompat.LOGGER.info("[item_overrides] item '{}' not present; skipping", key);
                 continue;

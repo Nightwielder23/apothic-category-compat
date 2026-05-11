@@ -22,7 +22,7 @@ public final class WeaponsOfMiraclesCompat {
         put(LootCategory.SWORD,
                 "antitheus", "claw", "evil_tachi", "gesetz",
                 "hollow_longsword", "jabberwocky", "moonless", "napoleon",
-                "netherite_tachi", "nova", "orbit", "ruine", "satsujin",
+                "nova", "orbit", "ruine", "satsujin",
                 "solar_obscuridad", "tormented_mind",
                 "wooden_staff", "stone_staff", "iron_staff", "golden_staff",
                 "diamond_staff", "netherite_staff");
@@ -48,7 +48,7 @@ public final class WeaponsOfMiraclesCompat {
     public static void send() {
         for (Map.Entry<String, LootCategory> e : OVERRIDES.entrySet()) {
             ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NAMESPACE, e.getKey());
-            Item item = ForgeRegistries.ITEMS.getValue(id);
+            Item item = RegistryLookup.item(id);
             if (item == null) continue;
             String name = e.getValue().getName();
             InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));

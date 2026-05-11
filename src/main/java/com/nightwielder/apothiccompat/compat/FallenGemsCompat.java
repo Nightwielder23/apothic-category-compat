@@ -20,4 +20,11 @@ public final class FallenGemsCompat {
         }
         return cached;
     }
+
+    // FG&A's "staffs" category is registered only when Iron's Spellbooks is also
+    // loaded (StaffLootCategory.<clinit> is gated on irons_spellbooks). Dispatching
+    // "staffs" via IMC without that registration NPEs Apotheosis's IMC handler.
+    public static boolean hasStaffsCategory() {
+        return isLoaded() && ModList.get().isLoaded("irons_spellbooks");
+    }
 }
