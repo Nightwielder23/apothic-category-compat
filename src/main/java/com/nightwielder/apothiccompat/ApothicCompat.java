@@ -21,6 +21,7 @@ import com.nightwielder.apothiccompat.compat.IntegratedSimplySwordsCompat;
 import com.nightwielder.apothiccompat.compat.IronsSpellbooksCompat;
 import com.nightwielder.apothiccompat.compat.KnightQuestCompat;
 import com.nightwielder.apothiccompat.compat.LEnderCataclysmCompat;
+import com.nightwielder.apothiccompat.compat.MalumCompat;
 import com.nightwielder.apothiccompat.compat.MariumsSoulslikeCompat;
 import com.nightwielder.apothiccompat.compat.MeetYourFightCompat;
 import com.nightwielder.apothiccompat.compat.MowziesMobsCompat;
@@ -31,6 +32,8 @@ import com.nightwielder.apothiccompat.compat.SpartanShieldsCompat;
 import com.nightwielder.apothiccompat.compat.SpartanWeaponryCompat;
 import com.nightwielder.apothiccompat.compat.TetraCompat;
 import com.nightwielder.apothiccompat.compat.TravelopticsCompat;
+import com.nightwielder.apothiccompat.compat.TwilightForestCompat;
+import com.nightwielder.apothiccompat.compat.UndergardenCompat;
 import com.nightwielder.apothiccompat.compat.UniversalCompat;
 import com.nightwielder.apothiccompat.compat.WeaponsOfMiraclesCompat;
 import com.nightwielder.apothiccompat.command.ReloadCommand;
@@ -62,7 +65,7 @@ public class ApothicCompat {
     // Apotheosis's loot_category_override IMC accepts only Map.Entry<Item, String> (item + category);
     // there is no slot parameter. Equipment-slot tooltip lines (e.g. literal "{mainhand}") come from
     // vanilla's item.modifiers.<slot> lang keys or a third-party tooltip mod (Curios, etc.), not from
-    // anything Apotheosis or this mod renders. Don't try to "fix" it by changing the IMC payload.
+    // anything Apotheosis or Apothic Compat renders. Don't try to "fix" it by changing the IMC payload.
     private void sendCategoryOverrides(InterModEnqueueEvent event) {
         if (!ModList.get().isLoaded("apotheosis")) {
             LOGGER.info("Apotheosis not present; skipping all compat modules.");
@@ -99,6 +102,9 @@ public class ApothicCompat {
         if (ModList.get().isLoaded("efn")) EpicFightNightfallCompat.send();
         if (ModList.get().isLoaded("rpg_style_more_weapons_r")) RpgStyleMoreWeaponsCompat.send();
         if (ModList.get().isLoaded("traveloptics")) TravelopticsCompat.send();
+        if (ModList.get().isLoaded("malum")) MalumCompat.send();
+        if (ModList.get().isLoaded("twilightforest")) TwilightForestCompat.send();
+        if (ModList.get().isLoaded("undergarden")) UndergardenCompat.send();
         UniversalCompat.send();
         ApothicCompatConfig.load();
     }

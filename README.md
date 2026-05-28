@@ -4,7 +4,7 @@ A small server-side 1.20.1 Forge mod that fills in Apotheosis loot-category assi
 
 ## What it does
 
-Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. A lot of modded weapons either don't have a category at all or get the wrong one, so affixes never appear on them. This mod sends the right categories at load time.
+Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. A lot of modded weapons either don't have a category at all or get the wrong one, so affixes never appear on them. Apothic Compat sends the right categories at load time.
 
 ## Supported mods
 
@@ -41,6 +41,9 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Celestisynth**: nine named weapons, mostly swords with Poltergeist as heavy and Rainfall Serenity as bow. Defers to Fallen Gems & Affixes when loaded.
 - **T.O Magic 'n Extras**: boss weapons across all four upgrade tiers. Most as swords, Galenic Polarizer as heavy weapon, Trident of the Eternal Maelstrom as trident. Staffs as swords unless Fallen Gems & Affixes is loaded.
 - **RPG Style More Weapons**: battle axes and greatswords as heavy weapons, knives as swords
+- **Malum**: scythes (crude, soul stained steel, edge of deliverance, weight of worlds) as heavy weapons, tyrving and sundering anchor as swords. Scythes defer to Fallen Gems & Affixes' staffs category when it and Iron's Spellbooks are both loaded.
+- **Twilight Forest**: Block and Chain as heavy weapon, the lifedrain/fortification/twilight/zombie scepters as swords, Mazebreaker Pickaxe as pickaxe, Ice Bomb as none. Standard swords, bows, axes, and pickaxes go through the universal fallback.
+- **The Undergarden**: cloggrum, forgotten, froststeel, and utherium battleaxes as heavy weapons (they extend SwordItem, so the fallback alone would call them swords), spear as sword, slingshot as bow. Standard swords, axes, and pickaxes go through the universal fallback.
 - **Fallen Gems & Affixes**: when present, Iron's Spellbooks, T.O Magic 'n Extras staffs, and Celestisynth skip our overrides so FG&A's Staffs and Celestial Melee/Ranged categories apply.
 
 ## Handled by universal fallback
@@ -71,7 +74,7 @@ Valid category names: `sword`, `heavy_weapon`, `trident`, `bow`, `crossbow`, `sh
 
 ## Items already handled by Apotheosis
 
-Apotheosis hardcodes defaults in `config/apotheosis/adventure.cfg` under the `Equipment Type Overrides` list. These take precedence over both this mod's config and built-in compat modules. As of Apotheosis 7.4.8 the hardcoded defaults are:
+Apotheosis hardcodes defaults in `config/apotheosis/adventure.cfg` under the `Equipment Type Overrides` list. These take precedence over both Apothic Compat's config and built-in compat modules. As of Apotheosis 7.4.8 the hardcoded defaults are:
 
 - `minecraft:iron_sword` set to `sword`
 - `minecraft:shulker_shell` set to `none`
