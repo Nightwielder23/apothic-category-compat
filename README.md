@@ -72,6 +72,22 @@ A config file shows up at `config/apothic_compat.toml` on first launch. Per-item
 
 Valid category names: `sword`, `heavy_weapon`, `trident`, `bow`, `crossbow`, `shield`, `helmet`, `chestplate`, `leggings`, `boots`, `pickaxe`, `shovel`, `none`. Set an item to none to fully blacklist it from rolling any affixes. Categories registered by other mods (such as staffs from Fallen Gems & Affixes) are also accepted.
 
+## Affix Blacklist
+
+Stops specific affixes from rolling on newly generated gear (loot drops, reforging, trades, and gem application) without editing datapacks. List the affix ids in the `affix_blacklist` array in `apothic_compat.toml`:
+
+```toml
+affix_blacklist = ["apotheosis:berserking", "apotheosis:telepathic"]
+```
+
+To find an affix id, hover an affixed item with JEI or REI open, or read the affix files under `data/<namespace>/affixes/` inside a mod's jar (Apotheosis's own affixes live in `data/apotheosis/affixes/`).
+
+Notes:
+
+- This blocks future rolls only. Items that already carry a blacklisted affix keep it.
+- Apotheosis's own datapack affix overrides still take precedence.
+- The blacklist re-applies automatically on server start and after `/reload`. Edit the list and run `/ac reload` (or `/apothiccompat reload`) to apply it without a restart.
+
 ## Items already handled by Apotheosis
 
 Apotheosis hardcodes defaults in `config/apotheosis/adventure.cfg` under the `Equipment Type Overrides` list. These take precedence over both Apothic Compat's config and built-in compat modules. As of Apotheosis 7.4.8 the hardcoded defaults are:

@@ -4,6 +4,7 @@ import com.electronwill.nightconfig.core.UnmodifiableConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.ParsingException;
 import com.nightwielder.apothiccompat.ApothicCompat;
+import com.nightwielder.apothiccompat.compat.AffixBlacklist;
 import com.nightwielder.apothiccompat.compat.RegistryLookup;
 import dev.shadowsoffire.apotheosis.adventure.AdventureConfig;
 import dev.shadowsoffire.apotheosis.adventure.AdventureModule;
@@ -22,7 +23,10 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 public final class ApothicCompatConfig {
@@ -57,6 +61,24 @@ public final class ApothicCompatConfig {
             #
             # Keys MUST be quoted because item and tag IDs contain a ':' separator
             # (namespace:path), which TOML does not allow in bare keys.
+
+            # ----------------------------------------------------------------------
+            # Affix blacklist. Stops the listed affixes from rolling on newly
+            # generated gear (loot drops, reforging, trades, gem application).
+            # Existing items keep any affixes they already have; this only blocks
+            # future rolls. Apotheosis's own datapack affix overrides still win.
+            #
+            #   value = array of affix ids, each "namespace:path"
+            #           e.g. "apotheosis:berserking", "apotheosis:telepathic"
+            #
+            # Find affix ids from JEI tooltips on affixed gear, or from the files
+            # under data/<namespace>/affixes/ inside a mod's jar. Edit this list then
+            # run /apothiccompat reload (op 2) to re-apply without a restart.
+            #
+            # Example:
+            #   affix_blacklist = ["apotheosis:berserking", "apotheosis:telepathic"]
+            # ----------------------------------------------------------------------
+            affix_blacklist = []
 
             # ----------------------------------------------------------------------
             # Per-item overrides.
@@ -123,8 +145,28 @@ public final class ApothicCompatConfig {
             AdventureConfig.TYPE_OVERRIDES.put(id, cat);
             if (imcMirror != null) imcMirror.put(id, cat);
         });
+        loadAffixBlacklist();
         if (current != null) lastAppliedMTime = current;
         return ReloadResult.ofApplied(count);
+    }
+
+    /**
+     * Reads affix_blacklist from the toml and re-applies it to Apotheosis's affix pool. Must run only
+     * after affixes have loaded (server start, datapack reload, or /apothiccompat reload), never during
+     * the early IMC pass when the affix registry is still empty.
+     */
+    public static void loadAffixBlacklist() {
+        Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
+        ensureDefaultFile(path);
+        Set<ResourceLocation> ids = Set.of();
+        try (CommentedFileConfig config = CommentedFileConfig.builder(path).sync().build()) {
+            loadTolerant(config);
+            ids = readAffixBlacklist(config);
+        } catch (Exception e) {
+            ApothicCompat.LOGGER.error("Failed to read affix blacklist from {}", FILE_NAME, e);
+        }
+        AffixBlacklist.setBlacklist(ids);
+        AffixBlacklist.apply();
     }
 
     private static FileTime readMTime(Path path) {
@@ -147,24 +189,28 @@ public final class ApothicCompatConfig {
         ensureDefaultFile(path);
         int[] count = {0};
         try (CommentedFileConfig config = CommentedFileConfig.builder(path).sync().build()) {
-            try {
-                config.load();
-            } catch (ParsingException e) {
-                // NightConfig throws this when the file ends without a trailing newline after a
-                // table header like [tag_overrides]. By the time it throws, every entry above the
-                // EOF has already been parsed into the config object, so we can safely keep going.
-                if (e.getMessage() != null && e.getMessage().contains("Not enough data available")) {
-                    ApothicCompat.LOGGER.debug("Tolerating trailing-EOF parse hiccup in {}: {}", FILE_NAME, e.getMessage());
-                } else {
-                    throw e;
-                }
-            }
+            loadTolerant(config);
             count[0] += processItemOverrides(config, action);
             count[0] += processTagOverrides(config, action);
         } catch (Exception e) {
             ApothicCompat.LOGGER.error("Failed to read {}", FILE_NAME, e);
         }
         return count[0];
+    }
+
+    private static void loadTolerant(CommentedFileConfig config) {
+        try {
+            config.load();
+        } catch (ParsingException e) {
+            // NightConfig throws this when the file ends without a trailing newline after a
+            // table header like [tag_overrides]. By the time it throws, every entry above the
+            // EOF has already been parsed into the config object, so we can safely keep going.
+            if (e.getMessage() != null && e.getMessage().contains("Not enough data available")) {
+                ApothicCompat.LOGGER.debug("Tolerating trailing-EOF parse hiccup in {}: {}", FILE_NAME, e.getMessage());
+            } else {
+                throw e;
+            }
+        }
     }
 
     private static void ensureDefaultFile(Path path) {
@@ -240,6 +286,29 @@ public final class ApothicCompatConfig {
             }
         }
         return count;
+    }
+
+    private static Set<ResourceLocation> readAffixBlacklist(CommentedFileConfig config) {
+        Object raw = config.get("affix_blacklist");
+        if (raw == null) return Set.of();
+        if (!(raw instanceof List<?> list)) {
+            ApothicCompat.LOGGER.warn("[affix_blacklist] must be an array of affix ids, got {}", raw);
+            return Set.of();
+        }
+        Set<ResourceLocation> ids = new LinkedHashSet<>();
+        for (Object entry : list) {
+            if (!(entry instanceof String s)) {
+                ApothicCompat.LOGGER.warn("[affix_blacklist] entries must be strings, got {}", entry);
+                continue;
+            }
+            ResourceLocation id = ResourceLocation.tryParse(s);
+            if (id == null) {
+                ApothicCompat.LOGGER.warn("[affix_blacklist] invalid affix id '{}'", s);
+                continue;
+            }
+            ids.add(id);
+        }
+        return ids;
     }
 
     @SuppressWarnings("unchecked")

@@ -39,7 +39,9 @@ import com.nightwielder.apothiccompat.compat.WeaponsOfMiraclesCompat;
 import com.nightwielder.apothiccompat.command.ReloadCommand;
 import com.nightwielder.apothiccompat.config.ApothicCompatConfig;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -56,10 +58,27 @@ public class ApothicCompat {
         IEventBus modBus = context.getModEventBus();
         modBus.addListener(this::sendCategoryOverrides);
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
+        MinecraftForge.EVENT_BUS.addListener(this::onServerStarted);
+        MinecraftForge.EVENT_BUS.addListener(this::onDatapackSync);
     }
 
     private void onRegisterCommands(RegisterCommandsEvent event) {
         ReloadCommand.register(event.getDispatcher());
+    }
+
+    // Affixes load with datapacks, after the IMC pass, so the blacklist is applied here rather than
+    // through the IMC flow. ServerStartedEvent covers initial startup; OnDatapackSyncEvent covers
+    // /reload, which rebuilds Apotheosis's affix pool and would otherwise drop the filter. Per-player
+    // sync (non-null player on login) is skipped, since the pool only changes on a full reload.
+    private void onServerStarted(ServerStartedEvent event) {
+        if (!ModList.get().isLoaded("apotheosis")) return;
+        ApothicCompatConfig.loadAffixBlacklist();
+    }
+
+    private void onDatapackSync(OnDatapackSyncEvent event) {
+        if (event.getPlayer() != null) return;
+        if (!ModList.get().isLoaded("apotheosis")) return;
+        ApothicCompatConfig.loadAffixBlacklist();
     }
 
     // Apotheosis's loot_category_override IMC accepts only Map.Entry<Item, String> (item + category);

@@ -127,6 +127,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     compileOnly fg.deobf("dev.shadowsoffire:Apotheosis:${minecraft_version}-${apotheosis_version}")
+    compileOnly fg.deobf("dev.shadowsoffire:Placebo:${minecraft_version}-${placebo_version}")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
