@@ -1,10 +1,9 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatImc;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +19,6 @@ import java.util.Map;
  */
 public final class TravelopticsCompat {
     private static final String NAMESPACE = "traveloptics";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private static final List<String> SWORD_BASES = List.of(
             "flames_of_eldritch",
@@ -61,24 +59,22 @@ public final class TravelopticsCompat {
     private TravelopticsCompat() {}
 
     public static void send() {
-        registerAll(SWORD_BASES, LootCategory.SWORD);
-        registerAll(HEAVY_BASES, LootCategory.HEAVY_WEAPON);
-        registerAll(TRIDENT_BASES, LootCategory.TRIDENT);
+        Map<String, String> overrides = new LinkedHashMap<>();
+        addBases(overrides, SWORD_BASES, LootCategory.SWORD.getName());
+        addBases(overrides, HEAVY_BASES, LootCategory.HEAVY_WEAPON.getName());
+        addBases(overrides, TRIDENT_BASES, LootCategory.TRIDENT.getName());
 
         // FG&A owns the Staffs category; only categorize staffs ourselves when it's absent.
         if (!FallenGemsCompat.isLoaded()) {
-            registerAll(STAFF_BASES, LootCategory.SWORD);
+            addBases(overrides, STAFF_BASES, LootCategory.SWORD.getName());
         }
+        CompatImc.sendOverrides(NAMESPACE, overrides, CompatImc.SkipMode.WARN);
     }
 
-    private static void registerAll(List<String> bases, LootCategory category) {
-        String name = category.getName();
+    private static void addBases(Map<String, String> overrides, List<String> bases, String name) {
         for (String base : bases) {
             for (String suffix : LEVEL_SUFFIXES) {
-                ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NAMESPACE, base + suffix);
-                Item item = RegistryLookup.item(id);
-                if (item == null) continue;
-                InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
+                overrides.put(base + suffix, name);
             }
         }
     }

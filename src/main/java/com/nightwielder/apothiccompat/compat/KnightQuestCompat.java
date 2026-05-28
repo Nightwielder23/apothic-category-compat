@@ -1,12 +1,8 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatScan;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -20,7 +16,6 @@ import java.util.Set;
 public final class KnightQuestCompat {
     private static final String NAMESPACE_GPL = "knightquest";
     private static final String NAMESPACE_GRIMHART = "knight_quest";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private static final Set<String> GPL_SWORD_PATHS = Set.of(
             "cleaver", "uchigatana_katana", "nail_glaive", "kukri_dagger");
@@ -39,26 +34,19 @@ public final class KnightQuestCompat {
     private KnightQuestCompat() {}
 
     public static void send() {
-        for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
-            LootCategory cat = categorize(id.getNamespace(), id.getPath());
-            if (cat == null) continue;
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            if (item == null) continue;
-            String name = cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
-        }
+        CompatScan.scanAll(KnightQuestCompat::categorize);
     }
 
-    private static LootCategory categorize(String namespace, String path) {
+    private static String categorize(String namespace, String path) {
         if (NAMESPACE_GPL.equals(namespace)) {
-            if (GPL_HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON;
-            if (GPL_SWORD_PATHS.contains(path)) return LootCategory.SWORD;
-            for (String s : GPL_SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
+            if (GPL_HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON.getName();
+            if (GPL_SWORD_PATHS.contains(path)) return LootCategory.SWORD.getName();
+            for (String s : GPL_SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
             return null;
         }
         if (NAMESPACE_GRIMHART.equals(namespace)) {
-            if (GRIMHART_HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON;
-            if (GRIMHART_SWORD_PATHS.contains(path)) return LootCategory.SWORD;
+            if (GRIMHART_HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON.getName();
+            if (GRIMHART_SWORD_PATHS.contains(path)) return LootCategory.SWORD.getName();
             return null;
         }
         return null;

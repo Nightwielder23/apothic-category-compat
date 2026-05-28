@@ -1,10 +1,7 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatImc;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,30 +17,21 @@ import java.util.Map;
  */
 public final class TwilightForestCompat {
     private static final String NAMESPACE = "twilightforest";
-    private static final String IMC_METHOD = "loot_category_override";
-    private static final Map<String, LootCategory> OVERRIDES = new LinkedHashMap<>();
+    private static final Map<String, String> OVERRIDES = new LinkedHashMap<>();
 
     static {
-        OVERRIDES.put("block_and_chain", LootCategory.HEAVY_WEAPON);
-        OVERRIDES.put("ice_bomb", LootCategory.NONE);
-        OVERRIDES.put("lifedrain_scepter", LootCategory.SWORD);
-        OVERRIDES.put("fortification_scepter", LootCategory.SWORD);
-        OVERRIDES.put("twilight_scepter", LootCategory.SWORD);
-        OVERRIDES.put("zombie_scepter", LootCategory.SWORD);
-        OVERRIDES.put("mazebreaker_pickaxe", LootCategory.PICKAXE);
+        OVERRIDES.put("block_and_chain", LootCategory.HEAVY_WEAPON.getName());
+        OVERRIDES.put("ice_bomb", LootCategory.NONE.getName());
+        OVERRIDES.put("lifedrain_scepter", LootCategory.SWORD.getName());
+        OVERRIDES.put("fortification_scepter", LootCategory.SWORD.getName());
+        OVERRIDES.put("twilight_scepter", LootCategory.SWORD.getName());
+        OVERRIDES.put("zombie_scepter", LootCategory.SWORD.getName());
+        OVERRIDES.put("mazebreaker_pickaxe", LootCategory.PICKAXE.getName());
     }
 
     private TwilightForestCompat() {}
 
     public static void send() {
-        for (Map.Entry<String, LootCategory> e : OVERRIDES.entrySet()) {
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NAMESPACE, e.getKey());
-            // Skip items missing from the installed TF version quietly. containsKey
-            // avoids the warn that RegistryLookup would log on a version-skew miss.
-            if (!ForgeRegistries.ITEMS.containsKey(id)) continue;
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            String name = e.getValue().getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
-        }
+        CompatImc.sendOverrides(NAMESPACE, OVERRIDES, CompatImc.SkipMode.SILENT);
     }
 }

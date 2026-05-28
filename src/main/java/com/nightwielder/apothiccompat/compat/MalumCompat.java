@@ -1,10 +1,7 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatImc;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -17,8 +14,6 @@ import java.util.Map;
  */
 public final class MalumCompat {
     private static final String NAMESPACE = "malum";
-    private static final String IMC_METHOD = "loot_category_override";
-    private static final String STAFFS_CATEGORY = "staffs";
     private static final Map<String, LootCategory> OVERRIDES = new LinkedHashMap<>();
 
     static {
@@ -37,15 +32,14 @@ public final class MalumCompat {
         // staffs category when both FG&A and Iron's Spellbooks are present, otherwise
         // leave them as heavy_weapon. Sword entries are never deferred.
         boolean deferScythes = FallenGemsCompat.hasStaffsCategory();
+        Map<String, String> resolved = new LinkedHashMap<>();
         for (Map.Entry<String, LootCategory> e : OVERRIDES.entrySet()) {
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(NAMESPACE, e.getKey());
-            // Items absent from the installed Malum version (e.g. sundering_anchor on
-            // 1.6.7) skip quietly; containsKey avoids the RegistryLookup warn log.
-            if (!ForgeRegistries.ITEMS.containsKey(id)) continue;
-            Item item = ForgeRegistries.ITEMS.getValue(id);
             LootCategory cat = e.getValue();
-            String name = (deferScythes && cat == LootCategory.HEAVY_WEAPON) ? STAFFS_CATEGORY : cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
+            boolean defer = deferScythes && cat == LootCategory.HEAVY_WEAPON;
+            resolved.put(e.getKey(), defer ? FallenGemsCompat.STAFFS_CATEGORY : cat.getName());
         }
+        // Items absent from the installed Malum version (e.g. sundering_anchor on
+        // 1.6.7) skip quietly via SILENT, avoiding the RegistryLookup warn log.
+        CompatImc.sendOverrides(NAMESPACE, resolved, CompatImc.SkipMode.SILENT);
     }
 }

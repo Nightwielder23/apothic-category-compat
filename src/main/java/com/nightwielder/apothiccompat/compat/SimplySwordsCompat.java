@@ -1,12 +1,7 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatScan;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.Map;
 
 /**
  * Simply Swords has no per-weapon-type item tags in 1.20.1, only material-based
@@ -16,7 +11,6 @@ import java.util.Map;
  */
 public final class SimplySwordsCompat {
     private static final String NAMESPACE = "simplyswords";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private static final String[] SWORD_SUFFIXES = {
             "_chakram", "_claymore", "_cutlass", "_katana", "_longsword", "_rapier",
@@ -30,23 +24,15 @@ public final class SimplySwordsCompat {
     private SimplySwordsCompat() {}
 
     public static void send() {
-        for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
-            if (!NAMESPACE.equals(id.getNamespace())) continue;
-            LootCategory cat = categorize(id.getPath());
-            if (cat == null) continue;
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            if (item == null) continue;
-            String name = cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
-        }
+        CompatScan.byPath(NAMESPACE, SimplySwordsCompat::categorize);
     }
 
-    private static LootCategory categorize(String path) {
+    private static String categorize(String path) {
         // _warglaive ends with _glaive; keep this short-circuit so future HEAVY
         // suffix additions can't accidentally steal it.
-        if (path.endsWith("_warglaive")) return LootCategory.SWORD;
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
-        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
+        if (path.endsWith("_warglaive")) return LootCategory.SWORD.getName();
+        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
+        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON.getName();
         return null;
     }
 }

@@ -1,12 +1,7 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatScan;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.Map;
 
 /**
  * Suffix-matched rather than tag-matched because item tags are not bound at
@@ -16,7 +11,6 @@ import java.util.Map;
  */
 public final class SpartanWeaponryCompat {
     private static final String NAMESPACE = "spartanweaponry";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private static final String[] SWORD_SUFFIXES = {
             "_parrying_dagger", "_dagger", "_longsword", "_katana", "_saber", "_rapier",
@@ -39,23 +33,15 @@ public final class SpartanWeaponryCompat {
     private SpartanWeaponryCompat() {}
 
     public static void send() {
-        for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
-            if (!NAMESPACE.equals(id.getNamespace())) continue;
-            LootCategory cat = categorize(id.getPath());
-            if (cat == null) continue;
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            if (item == null) continue;
-            String name = cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
-        }
+        CompatScan.byPath(NAMESPACE, SpartanWeaponryCompat::categorize);
     }
 
-    private static LootCategory categorize(String path) {
-        if (path.equals("cestus") || path.endsWith("_cestus")) return LootCategory.HEAVY_WEAPON;
-        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
-        for (String s : BOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.BOW;
-        for (String s : CROSSBOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.CROSSBOW;
+    private static String categorize(String path) {
+        if (path.equals("cestus") || path.endsWith("_cestus")) return LootCategory.HEAVY_WEAPON.getName();
+        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON.getName();
+        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
+        for (String s : BOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.BOW.getName();
+        for (String s : CROSSBOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.CROSSBOW.getName();
         return null;
     }
 }

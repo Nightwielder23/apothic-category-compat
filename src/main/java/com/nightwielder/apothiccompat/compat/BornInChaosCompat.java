@@ -1,12 +1,8 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatScan;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,7 +14,6 @@ import java.util.Set;
  */
 public final class BornInChaosCompat {
     private static final String NAMESPACE = "born_in_chaos_v1";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private static final Set<String> HEAVY_PATHS = Set.of(
             "darkwarblade", "trident_hayfork");
@@ -37,22 +32,14 @@ public final class BornInChaosCompat {
     private BornInChaosCompat() {}
 
     public static void send() {
-        for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
-            if (!NAMESPACE.equals(id.getNamespace())) continue;
-            LootCategory cat = categorize(id.getPath());
-            if (cat == null) continue;
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            if (item == null) continue;
-            String name = cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
-        }
+        CompatScan.byPath(NAMESPACE, BornInChaosCompat::categorize);
     }
 
-    private static LootCategory categorize(String path) {
-        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON;
-        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD;
-        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
+    private static String categorize(String path) {
+        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON.getName();
+        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD.getName();
+        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON.getName();
+        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
         return null;
     }
 }

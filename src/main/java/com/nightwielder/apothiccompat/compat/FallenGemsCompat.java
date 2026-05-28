@@ -8,6 +8,8 @@ import net.minecraftforge.fml.ModList;
  * use this check to skip overrides that would conflict with those registrations.
  */
 public final class FallenGemsCompat {
+    public static final String STAFFS_CATEGORY = "staffs";
+
     private static final String MOD_ID = "fallen_gems_affixes";
 
     private static Boolean cached;

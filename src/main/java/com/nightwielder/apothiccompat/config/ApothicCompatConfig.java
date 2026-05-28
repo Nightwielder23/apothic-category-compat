@@ -6,6 +6,7 @@ import com.electronwill.nightconfig.core.io.ParsingException;
 import com.nightwielder.apothiccompat.ApothicCompat;
 import com.nightwielder.apothiccompat.compat.AffixBlacklist;
 import com.nightwielder.apothiccompat.compat.RegistryLookup;
+import com.nightwielder.apothiccompat.util.CompatImc;
 import dev.shadowsoffire.apotheosis.adventure.AdventureConfig;
 import dev.shadowsoffire.apotheosis.adventure.AdventureModule;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
@@ -13,7 +14,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
@@ -31,7 +31,6 @@ import java.util.function.BiConsumer;
 
 public final class ApothicCompatConfig {
     private static final String FILE_NAME = "apothic_compat.toml";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private static final String DEFAULT_CONTENTS = """
             # Apothic Compat: user-defined loot category overrides.
@@ -115,8 +114,7 @@ public final class ApothicCompatConfig {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
         lastAppliedMTime = readMTime(path);
-        process((item, categoryName) ->
-                InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, categoryName)));
+        process((item, categoryName) -> CompatImc.send(item, categoryName));
     }
 
     /**

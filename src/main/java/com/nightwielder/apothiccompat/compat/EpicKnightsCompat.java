@@ -1,11 +1,11 @@
 package com.nightwielder.apothiccompat.compat;
 
 import com.nightwielder.apothiccompat.ApothicCompat;
+import com.nightwielder.apothiccompat.util.CompatImc;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
@@ -15,11 +15,12 @@ import java.util.Map;
  * gaps need explicit overrides: shields (miscategorized by default, flagged
  * in Soulrend's v7.2 patch notes) and polearms/mauls that extend SwordItem
  * but should roll heavy-weapon affixes. Substring-matched on registry path
- * because Epic Knights' tag tree isn't publicly documented.
+ * because Epic Knights' tag tree isn't publicly documented. Kept on its own
+ * getEntries scan with a guard catch rather than CompatScan.byPath, since the
+ * substring matcher and the iteration safety net are specific to Epic Knights.
  */
 public final class EpicKnightsCompat {
     private static final String NAMESPACE = "magistuarmory";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private static final String[] HEAVY_TOKENS = {
             "claymore", "glaive", "halberd", "hammer", "lance",
@@ -37,9 +38,7 @@ public final class EpicKnightsCompat {
                 LootCategory cat = categorize(id.getPath());
                 if (cat == null) continue;
 
-                Item item = entry.getValue();
-                String name = cat.getName();
-                InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
+                CompatImc.send(entry.getValue(), cat.getName());
             }
         } catch (Exception e) {
             ApothicCompat.LOGGER.warn("[EpicKnights] iteration failed; some items may not be categorized", e);

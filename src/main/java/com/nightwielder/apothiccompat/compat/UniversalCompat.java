@@ -1,12 +1,8 @@
 package com.nightwielder.apothiccompat.compat;
 
-import com.google.common.collect.Multimap;
+import com.nightwielder.apothiccompat.util.CompatImc;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BowItem;
@@ -18,15 +14,14 @@ import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TridentItem;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Map;
-
+/**
+ * Final fallback: scans the whole registry and categorizes by vanilla item class for
+ * anything Apotheosis and the per-mod modules left uncategorized. Class-based, so it
+ * keeps its own scan rather than CompatScan.byPath and ends at CompatImc.send.
+ */
 public final class UniversalCompat {
-    private static final String IMC_METHOD = "loot_category_override";
-    private static final double HEAVY_WEAPON_THRESHOLD = 8.0;
-
     private UniversalCompat() {}
 
     public static void send() {
@@ -38,15 +33,14 @@ public final class UniversalCompat {
             if (!LootCategory.forItem(stack).isNone()) continue;
             LootCategory cat = categorize(item);
             if (cat == null) continue;
-            String name = cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
+            CompatImc.send(item, cat.getName());
         }
     }
 
     private static LootCategory categorize(Item item) {
         if (item instanceof SwordItem) return LootCategory.SWORD;
         if (item instanceof AxeItem) {
-            return getAttackDamage(item) > HEAVY_WEAPON_THRESHOLD ? LootCategory.HEAVY_WEAPON : LootCategory.SWORD;
+            return CompatImc.getAttackDamage(item) > CompatImc.HEAVY_WEAPON_THRESHOLD ? LootCategory.HEAVY_WEAPON : LootCategory.SWORD;
         }
         if (item instanceof BowItem) return LootCategory.BOW;
         if (item instanceof CrossbowItem) return LootCategory.CROSSBOW;
@@ -64,13 +58,5 @@ public final class UniversalCompat {
             };
         }
         return null;
-    }
-
-    private static double getAttackDamage(Item item) {
-        Multimap<Attribute, AttributeModifier> mods = item.getDefaultAttributeModifiers(EquipmentSlot.MAINHAND);
-        for (AttributeModifier m : mods.get(Attributes.ATTACK_DAMAGE)) {
-            if (m.getOperation() == AttributeModifier.Operation.ADDITION) return m.getAmount();
-        }
-        return 0;
     }
 }

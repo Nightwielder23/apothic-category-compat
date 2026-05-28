@@ -1,12 +1,7 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatScan;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.Map;
 
 /**
  * Deeper and Darker is armor-focused. UniversalCompat handles the warden armor,
@@ -16,26 +11,17 @@ import java.util.Map;
  */
 public final class DeeperAndDarkerCompat {
     private static final String NAMESPACE = "deeperdarker";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private static final String[] SWORD_SUFFIXES = {"_sword", "_knife"};
 
     private DeeperAndDarkerCompat() {}
 
     public static void send() {
-        for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
-            if (!NAMESPACE.equals(id.getNamespace())) continue;
-            LootCategory cat = categorize(id.getPath());
-            if (cat == null) continue;
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            if (item == null) continue;
-            String name = cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
-        }
+        CompatScan.byPath(NAMESPACE, DeeperAndDarkerCompat::categorize);
     }
 
-    private static LootCategory categorize(String path) {
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
+    private static String categorize(String path) {
+        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
         return null;
     }
 }

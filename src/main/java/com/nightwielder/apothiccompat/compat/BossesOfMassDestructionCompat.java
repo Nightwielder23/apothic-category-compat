@@ -1,12 +1,8 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatScan;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -15,7 +11,6 @@ import java.util.Set;
  */
 public final class BossesOfMassDestructionCompat {
     private static final String NAMESPACE = "bosses_of_mass_destruction";
-    private static final String IMC_METHOD = "loot_category_override";
 
     // nether_staff and obsidian_spear were renamed/removed in BoMD 1.1.x but
     // are kept here as no-ops for users still on older releases.
@@ -25,19 +20,11 @@ public final class BossesOfMassDestructionCompat {
     private BossesOfMassDestructionCompat() {}
 
     public static void send() {
-        for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
-            if (!NAMESPACE.equals(id.getNamespace())) continue;
-            LootCategory cat = categorize(id.getPath());
-            if (cat == null) continue;
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            if (item == null) continue;
-            String name = cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
-        }
+        CompatScan.byPath(NAMESPACE, BossesOfMassDestructionCompat::categorize);
     }
 
-    private static LootCategory categorize(String path) {
-        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD;
+    private static String categorize(String path) {
+        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD.getName();
         return null;
     }
 }
