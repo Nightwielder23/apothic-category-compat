@@ -5,13 +5,8 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-/**
- * Enigmatic Legacy combat items. The Voracious Pan (eldritch_pan) extends
- * ShieldItem but is used as a melee weapon, and Astral Breaker extends
- * PickaxeItem but is used as a two-handed weapon; both would be miscategorized
- * by the vanilla-class fallback. Curios, rings, scrolls, and armor fall
- * through to Apotheosis/Apothic Curios.
- */
+// Enigmatic Legacy combat items: Voracious Pan (a ShieldItem) and Astral Breaker (a PickaxeItem) are
+// melee, but their classes would mislead the fallback. Rings, scrolls, and armor fall through to Apotheosis.
 public final class EnigmaticLegacyCompat {
     private static final String NAMESPACE = "enigmaticlegacy";
 

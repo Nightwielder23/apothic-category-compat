@@ -10,15 +10,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 
-/**
- * UniversalCompat handles Epic Knights' vanilla-class weapons and armor. Two
- * gaps need explicit overrides: shields (miscategorized by default, flagged
- * in Soulrend's v7.2 patch notes) and polearms/mauls that extend SwordItem
- * but should roll heavy-weapon affixes. Substring-matched on registry path
- * because Epic Knights' tag tree isn't publicly documented. Kept on its own
- * getEntries scan with a guard catch rather than CompatScan.byPath, since the
- * substring matcher and the iteration safety net are specific to Epic Knights.
- */
+// UniversalCompat handles Epic Knights' vanilla-class gear. The gaps are shields and the SwordItem-based
+// polearms/mauls that should roll heavy affixes, matched by substring on the registry path since the tag
+// tree isn't documented.
 public final class EpicKnightsCompat {
     private static final String NAMESPACE = "magistuarmory";
 
@@ -30,6 +24,7 @@ public final class EpicKnightsCompat {
     private EpicKnightsCompat() {}
 
     public static void send() {
+        // own scan instead of CompatScan.byPath, wrapped so one bad item id can't stop the rest
         try {
             for (Map.Entry<ResourceKey<Item>, Item> entry : ForgeRegistries.ITEMS.getEntries()) {
                 ResourceLocation id = entry.getKey().location();

@@ -18,15 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Stops blacklisted affixes from rolling on new gear by rebuilding Apotheosis's
- * cached affix-by-type map without them. Loot, reforging, trades, and gems all draw
- * candidates from that map via LootController.getAvailableAffixes, so removing an
- * affix here removes it from every roll path at once. The backing AffixRegistry is
- * never touched, so existing affixed items keep working and clearing an entry
- * restores it on the next apply. AffixRegistry rebuilds the map from scratch on each
- * datapack reload, so this has to run again after every reload.
- */
+// Stops blacklisted affixes from rolling on new gear by rebuilding Apoth's cached affix-by-type map
+// without them. The backing AffixRegistry is left alone so existing affixed items keep working, and
+// the map gets rebuilt on every datapack reload so this has to rerun each time.
 public final class AffixBlacklist {
     private static final String BY_TYPE_FIELD = "byType";
 
@@ -38,12 +32,14 @@ public final class AffixBlacklist {
         blacklist = (ids == null) ? Set.of() : Set.copyOf(ids);
     }
 
-    public static void apply() {
+    // Returns:
+    //  - the number of affixes actually disabled (those that matched a registered affix)
+    public static int apply() {
         Collection<Affix> all = AffixRegistry.INSTANCE.getValues();
         if (all.isEmpty()) {
-            // Affixes have not loaded yet; rebuilding now would wipe the whole pool.
+            // affixes haven't loaded yet so rebuilding now would wipe the whole pool
             ApothicCompat.LOGGER.debug("Affix registry empty; skipping blacklist apply.");
-            return;
+            return 0;
         }
 
         Set<ResourceLocation> bl = blacklist;
@@ -63,8 +59,8 @@ public final class AffixBlacklist {
             keptByType.merge(type, 1, Integer::sum);
         }
 
-        // Blacklist ids with no matching affix: misspelled, or from a mod that is not
-        // installed. Warn so the operator can correct the toml.
+        // blacklist ids with no matching affix, either misspelled or from a mod that isn't installed.
+        // warn so the operator can fix the toml.
         List<ResourceLocation> unknown = new ArrayList<>();
         for (ResourceLocation id : bl) {
             if (!matched.contains(id)) unknown.add(id);
@@ -73,9 +69,8 @@ public final class AffixBlacklist {
             ApothicCompat.LOGGER.warn("Affix blacklist: {} unknown affix id(s) skipped: {}", unknown.size(), unknown);
         }
 
-        // Types the blacklist emptied completely. Apotheosis just rolls fewer affixes
-        // when a type has no candidates, so this is allowed, but flag it so the
-        // operator knows that whole category can no longer appear.
+        // types the blacklist emptied out completely. Apoth just rolls fewer affixes when a type has no
+        // candidates so it's allowed, but flag it so the operator knows that category can't appear anymore.
         List<AffixType> emptied = new ArrayList<>();
         for (Map.Entry<AffixType, Integer> e : originalByType.entrySet()) {
             if (keptByType.getOrDefault(e.getKey(), 0) == 0) emptied.add(e.getKey());
@@ -84,8 +79,8 @@ public final class AffixBlacklist {
             ApothicCompat.LOGGER.warn("Affix blacklist emptied these affix types completely: {}", emptied);
         }
 
-        // AffixRegistry exposes getTypeMap() for reads but no setter, so the rebuilt
-        // map has to be written straight to the private byType field.
+        // AffixRegistry has getTypeMap() for reads but no setter, so the rebuilt map gets written
+        // straight to the private byType field.
         Multimap<AffixType, DynamicHolder<Affix>> rebuilt = builder.build();
         try {
             Field field = AffixRegistry.class.getDeclaredField(BY_TYPE_FIELD);
@@ -93,7 +88,7 @@ public final class AffixBlacklist {
             field.set(AffixRegistry.INSTANCE, rebuilt);
         } catch (ReflectiveOperationException | RuntimeException e) {
             ApothicCompat.LOGGER.warn("Could not rewrite AffixRegistry.{}; affix blacklist not applied: {}", BY_TYPE_FIELD, e.toString());
-            return;
+            return 0;
         }
 
         if (matched.isEmpty()) {
@@ -101,5 +96,6 @@ public final class AffixBlacklist {
         } else {
             ApothicCompat.LOGGER.info("Affix blacklist applied: {} affix(es) disabled.", matched.size());
         }
+        return matched.size();
     }
 }

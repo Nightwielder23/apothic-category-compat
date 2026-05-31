@@ -15,14 +15,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Set;
 
-/**
- * Dungeons and Combat adds a large, growing set of Dungeons-inspired weapons and
- * armor. Rather than hardcoding hundreds of IDs, categorize by item class plus a
- * name-based override for weapons whose class-based inference is wrong
- * (e.g. SwordItem-subclass polearms that should roll heavy-weapon affixes).
- * The class-based step needs the item, so this keeps its own scan rather than
- * CompatScan.byPath and ends at CompatImc.send.
- */
+// Dungeons and Combat adds a big, growing set of weapons and armor, so it categorizes by item class
+// instead of hardcoding hundreds of ids, with name-based overrides where the class misleads (SwordItem
+// polearms that should roll heavy affixes). The class step needs the item so it keeps its own scan
+// instead of CompatScan.byPath.
 public final class DungeonsAndCombatCompat {
     private static final String NAMESPACE = "dungeons_and_combat";
 
@@ -31,8 +27,8 @@ public final class DungeonsAndCombatCompat {
             "_halberd", "_hammer", "_maul", "_whirlwind"
     };
 
-    // Dragon greatswords have an elemental suffix after _greatsword, so the
-    // suffix matcher above doesn't catch them. List explicitly.
+    // dragon greatswords have an elemental suffix after _greatsword so the suffix matcher misses them.
+    // listed explicitly
     private static final Set<String> HEAVY_PATHS = Set.of(
             "dragon_greatsword_bone",
             "dragon_greatsword_fire",
@@ -40,13 +36,10 @@ public final class DungeonsAndCombatCompat {
             "dragon_greatsword_lightning"
     );
 
-    // Magic-caster scepters. Class-based inference routes these wrong:
-    // PyromancerScepterItem extends SwordItem (would land in SWORD), and the
-    // other three extend plain Item (would land nowhere). Route to FG&A's
-    // runtime "staffs" category when present, otherwise SWORD. FG&A's own
-    // predicate matches only Iron's StaffItem, so the IMC has to be explicit
-    // here, unlike IronsSpellbooksCompat and TravelopticsCompat which can
-    // defer to FG&A's auto-detection by skipping their own overrides.
+    // magic-caster scepters. PyromancerScepterItem extends SwordItem, and the other three extend plain
+    // Item, so class inference gets them wrong. send FG&A's staffs category when present, otherwise SWORD.
+    // FG&A only auto-detects Iron's StaffItem, so this one has to send the IMC explicitly unlike
+    // IronsSpellbooks and Traveloptics which just skip their overrides.
     private static final Set<String> SCEPTERS = Set.of(
             "pyromancer_scepter",
             "sanguine_scepter",

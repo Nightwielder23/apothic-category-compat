@@ -5,14 +5,9 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-/**
- * Marium's Soulslike Weaponry registers most weapons as TieredItem, so neither
- * Apotheosis's builtin categorization nor UniversalCompat's class-based fallback
- * picks them up. Suffix matching handles the consistent {material}_{shape} names
- * (greatswords, scythes, spears, glaives, shortswords); the rest are one-off
- * legendary names that we override explicitly. Exact overrides are checked first
- * so entries like master_sword (HEAVY per design) beat the generic _sword suffix.
- */
+// Marium's weapons are mostly TieredItem, so neither Apotheosis nor UniversalCompat's class fallback
+// catches them. Suffix matching handles the {material}_{shape} names, and the legendaries are listed by
+// name and checked first so master_sword (HEAVY) beats the generic _sword suffix.
 public final class MariumsSoulslikeCompat {
     private static final String NAMESPACE = "soulsweapons";
 

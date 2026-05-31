@@ -3,12 +3,9 @@ package com.nightwielder.apothiccompat.compat;
 import com.nightwielder.apothiccompat.util.CompatScan;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
-/**
- * Suffix-matched rather than tag-matched because item tags are not bound at
- * InterModEnqueueEvent time, so the tag-lookup path would send zero overrides.
- * SW 3.2.1 item IDs follow a {material}_{weapontype} convention. Throwing
- * weapons have no Apotheosis category and are skipped.
- */
+// Suffix-matched instead of tag-matched because item tags aren't bound at InterModEnqueueEvent yet, so a
+// tag lookup would send nothing. SW 3.2.1 ids follow {material}_{weapontype}, and throwing weapons have
+// no Apotheosis category so they're skipped.
 public final class SpartanWeaponryCompat {
     private static final String NAMESPACE = "spartanweaponry";
 

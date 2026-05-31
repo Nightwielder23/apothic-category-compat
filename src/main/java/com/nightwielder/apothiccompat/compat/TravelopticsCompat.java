@@ -7,16 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * T.O Magic 'n Extras boss weapons each have four upgrade tiers
- * (base + level_one/two/three). Their class hierarchies don't extend
- * vanilla weapon classes cleanly, so each line is listed here and every
- * level gets the same category.
- *
- * Staff lines are gated on FG&A: when Fallen Gems and Affixes is present
- * it registers its own Staffs category and we leave staffs alone, otherwise
- * staffs fall back to SWORD so they still pick up melee affixes.
- */
+// T.O Magic 'n Extras boss weapons each have four upgrade tiers and don't extend vanilla classes
+// cleanly, so every tier gets listed with the same category. Staffs defer to FG&A's Staffs category when
+// it's loaded and fall back to SWORD otherwise.
 public final class TravelopticsCompat {
     private static final String NAMESPACE = "traveloptics";
 
@@ -64,7 +57,7 @@ public final class TravelopticsCompat {
         addBases(overrides, HEAVY_BASES, LootCategory.HEAVY_WEAPON.getName());
         addBases(overrides, TRIDENT_BASES, LootCategory.TRIDENT.getName());
 
-        // FG&A owns the Staffs category; only categorize staffs ourselves when it's absent.
+        // FG&A owns the Staffs category, so only categorize staffs here when it's absent
         if (!FallenGemsCompat.isLoaded()) {
             addBases(overrides, STAFF_BASES, LootCategory.SWORD.getName());
         }

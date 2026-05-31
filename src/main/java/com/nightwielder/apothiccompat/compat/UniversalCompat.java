@@ -16,11 +16,9 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TridentItem;
 import net.minecraftforge.registries.ForgeRegistries;
 
-/**
- * Final fallback: scans the whole registry and categorizes by vanilla item class for
- * anything Apotheosis and the per-mod modules left uncategorized. Class-based, so it
- * keeps its own scan rather than CompatScan.byPath and ends at CompatImc.send.
- */
+// Final fallback: scans the whole registry and categorizes by vanilla item class for anything Apotheosis
+// and the per-mod modules left uncategorized. Class-based so it keeps its own scan instead of
+// CompatScan.byPath and ends at CompatImc.send.
 public final class UniversalCompat {
     private UniversalCompat() {}
 

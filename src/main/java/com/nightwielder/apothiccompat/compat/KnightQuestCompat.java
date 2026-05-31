@@ -5,14 +5,9 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-/**
- * Two unrelated mods ship under the "Knight Quest" name. Namespace
- * "knightquest" is the GPL mod whose items follow {shape}_{suffix}
- * (paladin_sword, uchigatana_katana). Namespace "knight_quest" is
- * Count Grimhart's mod whose items follow kq_{kind}_{name}
- * (kq_sword_paladin). Armor and mining axes fall through to
- * UniversalCompat's vanilla-class checks in both.
- */
+// Two unrelated mods both go by Knight Quest. The GPL one (knightquest) names items {shape}_{suffix},
+// and Count Grimhart's (knight_quest) uses kq_{kind}_{name}; armor and mining axes fall through to
+// UniversalCompat in both.
 public final class KnightQuestCompat {
     private static final String NAMESPACE_GPL = "knightquest";
     private static final String NAMESPACE_GRIMHART = "knight_quest";

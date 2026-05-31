@@ -3,12 +3,9 @@ package com.nightwielder.apothiccompat.compat;
 import com.nightwielder.apothiccompat.util.CompatScan;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
-/**
- * Simply Swords has no per-weapon-type item tags in 1.20.1, only material-based
- * tags (iron_gear, gold_gear, etc.) plus a catch-all "swords" tag. The mod's item IDs
- * follow a consistent {material}_{weapontype} convention, so we match on suffix.
- * Uniques that don't follow the convention fall through to UniversalCompat.
- */
+// Simply Swords has no per-weapon-type tags in 1.20.1, just material tags plus a catch-all swords tag,
+// so matching goes by id suffix on the {material}_{weapontype} names. Uniques that break the convention
+// fall through to UniversalCompat.
 public final class SimplySwordsCompat {
     private static final String NAMESPACE = "simplyswords";
 
@@ -28,8 +25,7 @@ public final class SimplySwordsCompat {
     }
 
     private static String categorize(String path) {
-        // _warglaive ends with _glaive; keep this short-circuit so future HEAVY
-        // suffix additions can't accidentally steal it.
+        // _warglaive also ends with _glaive, so keep this check first or a future HEAVY suffix grabs it
         if (path.endsWith("_warglaive")) return LootCategory.SWORD.getName();
         for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
         for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON.getName();

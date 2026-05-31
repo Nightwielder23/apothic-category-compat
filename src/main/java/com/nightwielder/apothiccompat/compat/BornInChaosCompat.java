@@ -5,13 +5,9 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-/**
- * Born in Chaos is MCreator-generated so weapons don't extend vanilla weapon
- * classes and would otherwise go uncategorized. Most follow a consistent
- * {name}_{shape} convention (_sword, _axe, _hammer, _scythe, _dagger, _mace,
- * _cutlass, _blade) so suffix matching covers them. The handful that don't
- * (darkwarblade, trident_hayfork, soulbane) are listed exactly.
- */
+// Born in Chaos is MCreator-generated so its weapons don't extend vanilla classes and go uncategorized.
+// Most follow a {name}_{shape} convention so suffix matching covers them, and the three that don't
+// (darkwarblade, trident_hayfork, soulbane) are listed exactly.
 public final class BornInChaosCompat {
     private static final String NAMESPACE = "born_in_chaos_v1";
 

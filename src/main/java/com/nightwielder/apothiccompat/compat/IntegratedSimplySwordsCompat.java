@@ -5,18 +5,14 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-/**
- * Integrated Simply Swords adds Simply Swords-style weapons under cross-mod
- * material variants. Item paths use slash separators in the form
- * {sourcemod}/{material}/{weapontype}, so suffixes match "/{type}". Same
- * weapon-to-category mapping as SimplySwordsCompat.
- */
+// Integrated Simply Swords adds Simply Swords-style weapons under cross-mod material variants. Paths
+// look like {sourcemod}/{material}/{weapontype} so suffixes match on /{type}, same mapping as
+// SimplySwordsCompat.
 public final class IntegratedSimplySwordsCompat {
     private static final String NAMESPACE = "integrated_simply_swords";
 
-    // Galenic Polarizer extends a SwordItem subclass but plays as a heavy
-    // ranged launcher; TravelopticsCompat treats galenic_polarizer as HEAVY,
-    // so the cross-integrated copy follows suit.
+    // Galenic Polarizer is a SwordItem subclass but acts like a heavy ranged launcher. TravelopticsCompat
+    // already maps galenic_polarizer to HEAVY so the integrated copy matches.
     private static final Set<String> HEAVY_PATHS = Set.of(
             "alexscaves/polarizer");
 

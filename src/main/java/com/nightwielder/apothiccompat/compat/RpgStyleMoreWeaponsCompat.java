@@ -3,11 +3,8 @@ package com.nightwielder.apothiccompat.compat;
 import com.nightwielder.apothiccompat.util.CompatScan;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
-/**
- * RPG Style More Weapons R adds a small set of class-themed weapons and armor.
- * Armor extends ArmorItem and is handled by UniversalCompat. Only the three
- * weapon families need explicit overrides.
- */
+// RPG Style More Weapons R adds a few weapons plus armor that UniversalCompat already handles. Only the
+// three weapon families need overrides.
 public final class RpgStyleMoreWeaponsCompat {
     private static final String NAMESPACE = "rpg_style_more_weapons_r";
 

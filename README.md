@@ -42,7 +42,7 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **T.O Magic 'n Extras**: boss weapons across all four upgrade tiers. Most as swords, Galenic Polarizer as heavy weapon, Trident of the Eternal Maelstrom as trident. Staffs as swords unless Fallen Gems & Affixes is loaded.
 - **RPG Style More Weapons**: battle axes and greatswords as heavy weapons, knives as swords
 - **Malum**: scythes (crude, soul stained steel, edge of deliverance, weight of worlds) as heavy weapons, tyrving and sundering anchor as swords. Scythes defer to Fallen Gems & Affixes' staffs category when it and Iron's Spellbooks are both loaded.
-- **Twilight Forest**: Block and Chain as heavy weapon, the lifedrain/fortification/twilight/zombie scepters as swords, Mazebreaker Pickaxe as pickaxe, Ice Bomb as none. Standard swords, bows, axes, and pickaxes go through the universal fallback.
+- **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters as swords, or as Fallen Gems & Affixes' staffs category when it and Iron's Spellbooks are both loaded; Mazebreaker Pickaxe as pickaxe, Ice Bomb as none. Standard swords, bows, axes, and pickaxes go through the universal fallback.
 - **The Undergarden**: cloggrum, forgotten, froststeel, and utherium battleaxes as heavy weapons (they extend SwordItem, so the fallback alone would call them swords), spear as sword, slingshot as bow. Standard swords, axes, and pickaxes go through the universal fallback.
 - **Fallen Gems & Affixes**: when present, Iron's Spellbooks, T.O Magic 'n Extras staffs, and Celestisynth skip our overrides so FG&A's Staffs and Celestial Melee/Ranged categories apply.
 
@@ -99,7 +99,7 @@ Setting these items in `apothic_compat.toml` will not work. To override them, ed
 
 ## Reload command
 
-`/apothiccompat reload` or `/ac reload` (op level 2) re-applies the config without a restart. It's a no-op if the file hasn't changed.
+`/apothiccompat reload` or `/ac reload` (op level 2) re-reads the config and re-applies it without a restart, every time it's run.
 
 ## Requirements
 

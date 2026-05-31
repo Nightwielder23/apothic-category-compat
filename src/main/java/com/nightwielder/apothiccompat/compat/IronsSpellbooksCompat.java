@@ -5,11 +5,8 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Map;
 
-/**
- * Iron's Spellbooks contains mostly magic items (scrolls, spellbooks, staves that
- * trigger spells) that shouldn't be categorized; gem/affix rolls don't make sense
- * for them. We only categorize the handful of straight-melee weapons.
- */
+// Iron's Spellbooks is mostly magic items (scrolls, spellbooks, spell staves) that shouldn't be
+// categorized since gem/affix rolls make no sense on them. Only the plain melee weapons get overrides.
 public final class IronsSpellbooksCompat {
     private static final String NAMESPACE = "irons_spellbooks";
 
@@ -36,10 +33,9 @@ public final class IronsSpellbooksCompat {
     private IronsSpellbooksCompat() {}
 
     public static void send() {
-        // FG&A's "staffs" category only matches Iron's StaffItem subclasses; the items
-        // listed here are all SwordItem and CrossbowItem subclasses, which Apotheosis's
-        // builtin forItem already handles. Skip the redundant IMC sends when FG&A is
-        // present.
+        // FG&A's "staffs" category only matches Iron's StaffItem subclasses. the items here are all
+        // SwordItem and CrossbowItem, which Apotheosis's builtin forItem already handles, so skip the
+        // redundant IMC sends when FG&A is present.
         if (FallenGemsCompat.isLoaded()) return;
         CompatImc.sendOverrides(NAMESPACE, OVERRIDES, CompatImc.SkipMode.WARN);
     }

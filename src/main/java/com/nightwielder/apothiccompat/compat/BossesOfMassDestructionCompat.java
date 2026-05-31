@@ -5,10 +5,8 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-/**
- * Bosses of Mass Destruction only has a couple of custom-class weapons that
- * Apotheosis and UniversalCompat don't categorize on their own.
- */
+// Bosses of Mass Destruction only has a couple of custom-class weapons that Apotheosis and
+// UniversalCompat don't categorize on their own.
 public final class BossesOfMassDestructionCompat {
     private static final String NAMESPACE = "bosses_of_mass_destruction";
 

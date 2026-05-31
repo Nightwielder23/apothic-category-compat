@@ -65,10 +65,10 @@ public class ApothicCompat {
         ReloadCommand.register(event.getDispatcher());
     }
 
-    // Affixes load with datapacks, after the IMC pass, so the blacklist is applied here rather than
-    // through the IMC flow. ServerStartedEvent covers initial startup; OnDatapackSyncEvent covers
-    // /reload, which rebuilds Apotheosis's affix pool and would otherwise drop the filter. Per-player
-    // sync (non-null player on login) is skipped, since the pool only changes on a full reload.
+    // affixes load with datapacks after the IMC pass, so apply the blacklist here instead of through
+    // IMC. ServerStartedEvent covers startup and OnDatapackSyncEvent covers /reload, which rebuilds
+    // Apoth's affix pool and would drop the filter otherwise. per-player sync is skipped since the
+    // pool only changes on a full reload.
     private void onServerStarted(ServerStartedEvent event) {
         if (!ModList.get().isLoaded("apotheosis")) return;
         ApothicCompatConfig.loadAffixBlacklist();
@@ -80,10 +80,10 @@ public class ApothicCompat {
         ApothicCompatConfig.loadAffixBlacklist();
     }
 
-    // Apotheosis's category-override IMC (see CompatImc.IMC_METHOD) accepts only Map.Entry<Item, String>
-    // (item + category); there is no slot parameter. Equipment-slot tooltip lines (e.g. literal "{mainhand}")
-    // come from vanilla's item.modifiers.<slot> lang keys or a third-party tooltip mod (Curios, etc.), not
-    // from anything Apotheosis or Apothic Compat renders. Don't try to "fix" it by changing the IMC payload.
+    // Apotheosis's category-override IMC (see CompatImc.IMC_METHOD) only takes Map.Entry<Item, String>
+    // and has no slot parameter. equipment-slot tooltip lines like "{mainhand}" come from vanilla's
+    // item.modifiers.<slot> lang keys or a tooltip mod like Curios, not from anything we render, so
+    // don't try to "fix" this by changing the IMC payload.
     private void sendCategoryOverrides(InterModEnqueueEvent event) {
         if (!ModList.get().isLoaded("apotheosis")) {
             LOGGER.info("Apotheosis not present; skipping all compat modules.");

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileTime;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -105,36 +104,26 @@ public final class ApothicCompatConfig {
             [tag_overrides]
             """;
 
-    private static FileTime lastAppliedMTime;
-
     private ApothicCompatConfig() {}
 
-    /** Initial application during InterModEnqueueEvent. Uses IMC, the only path that works pre-game. */
+    // Behavior:
+    //  - first apply during InterModEnqueueEvent, over IMC since that's the only path that works pre-game
     public static void load() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
-        lastAppliedMTime = readMTime(path);
         process((item, categoryName) -> CompatImc.send(item, categoryName));
     }
 
-    /**
-     * Runtime reapplication for /apothiccompat reload. IMC is dead after mod loading, so we write
-     * directly to Apotheosis's live override map. We also mirror into AdventureModule.IMC_TYPE_OVERRIDES
-     * (via reflection) because AdventureConfig.load clears TYPE_OVERRIDES and re-copies from there on
-     * any subsequent Apotheosis config reload; without the mirror, our entries would vanish.
-     *
-     * Skips the whole apply cycle if the file's mtime hasn't advanced since the previous apply.
-     *
-     * Note: this is purely additive. Removing an entry from the .toml and reloading does NOT remove the
-     * existing override (matches IMC re-send semantics). Restart the server to drop entries.
-     */
+    // Behavior:
+    //  - reapply for /apothiccompat reload. IMC is dead after load so write straight to Apoth's live
+    //    override map and mirror into AdventureModule.IMC_TYPE_OVERRIDES by reflection or the entries
+    //    vanish when AdventureConfig.load recopies on the next Apoth reload.
+    //  - always re-reads the toml. /apothiccompat reload is operator-invoked, so re-applying every time
+    //    is the intended behavior (no mtime gate; fast successive writes can leave mtime unchanged).
+    //  - additive only. dropping a toml entry then reloading keeps the live override, so restart to drop it.
+    // Returns:
+    //  - ReloadResult holding the applied override count and the disabled-affix count
     public static ReloadResult reload() {
-        Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
-        ensureDefaultFile(path);
-        FileTime current = readMTime(path);
-        if (current != null && current.equals(lastAppliedMTime)) {
-            return ReloadResult.ofUnchanged();
-        }
         Map<ResourceLocation, LootCategory> imcMirror = getImcOverrideMap();
         int count = process((item, categoryName) -> {
             ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
@@ -143,17 +132,18 @@ public final class ApothicCompatConfig {
             AdventureConfig.TYPE_OVERRIDES.put(id, cat);
             if (imcMirror != null) imcMirror.put(id, cat);
         });
-        loadAffixBlacklist();
-        if (current != null) lastAppliedMTime = current;
-        return ReloadResult.ofApplied(count);
+        int disabled = loadAffixBlacklist();
+        ApothicCompat.LOGGER.info("Apothic Compat config reloaded. Affix blacklist applied: {} affix(es) disabled.", disabled);
+        return ReloadResult.ofApplied(count, disabled);
     }
 
-    /**
-     * Reads affix_blacklist from the toml and re-applies it to Apotheosis's affix pool. Must run only
-     * after affixes have loaded (server start, datapack reload, or /apothiccompat reload), never during
-     * the early IMC pass when the affix registry is still empty.
-     */
-    public static void loadAffixBlacklist() {
+    // Behavior:
+    //  - reads affix_blacklist from the toml and reapplies it to Apoth's affix pool.
+    //  - only safe after affixes have loaded (server start, datapack reload, /apothiccompat reload),
+    //    never during the early IMC pass while the affix registry is still empty.
+    // Returns:
+    //  - the number of affixes actually disabled by the apply pass
+    public static int loadAffixBlacklist() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
         Set<ResourceLocation> ids = Set.of();
@@ -164,24 +154,14 @@ public final class ApothicCompatConfig {
             ApothicCompat.LOGGER.error("Failed to read affix blacklist from {}", FILE_NAME, e);
         }
         AffixBlacklist.setBlacklist(ids);
-        AffixBlacklist.apply();
+        return AffixBlacklist.apply();
     }
 
-    private static FileTime readMTime(Path path) {
-        try {
-            return Files.getLastModifiedTime(path);
-        } catch (IOException e) {
-            ApothicCompat.LOGGER.warn("Failed to stat {}", FILE_NAME, e);
-            return null;
-        }
+    public record ReloadResult(int count, int disabled) {
+        public static ReloadResult ofApplied(int count, int disabled) { return new ReloadResult(count, disabled); }
     }
 
-    public record ReloadResult(boolean unchanged, int count) {
-        public static ReloadResult ofUnchanged() { return new ReloadResult(true, 0); }
-        public static ReloadResult ofApplied(int count) { return new ReloadResult(false, count); }
-    }
-
-    /** Reads the file and dispatches each valid (item, category) pair to {@code action}. Returns the count applied. */
+    // reads the file and sends each valid (item, category) pair to action, returning the applied count
     private static int process(BiConsumer<Item, String> action) {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
@@ -200,9 +180,9 @@ public final class ApothicCompatConfig {
         try {
             config.load();
         } catch (ParsingException e) {
-            // NightConfig throws this when the file ends without a trailing newline after a
-            // table header like [tag_overrides]. By the time it throws, every entry above the
-            // EOF has already been parsed into the config object, so we can safely keep going.
+            // NightConfig throws this when the file ends without a trailing newline after a table
+            // header like [tag_overrides]. everything above the EOF is already parsed by then so it's
+            // fine to keep going.
             if (e.getMessage() != null && e.getMessage().contains("Not enough data available")) {
                 ApothicCompat.LOGGER.debug("Tolerating trailing-EOF parse hiccup in {}: {}", FILE_NAME, e.getMessage());
             } else {

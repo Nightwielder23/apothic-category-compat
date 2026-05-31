@@ -13,16 +13,14 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 
-/**
- * Single entry point for the Apotheosis loot-category IMC. Every module sends through
- * here so the target mod id, method name, and payload shape stay in one place.
- */
+// One spot for the Apotheosis loot-category IMC. Everything sends through here so the target mod id,
+// method name, and payload shape stay in one place.
 public final class CompatImc {
     public static final String APOTHEOSIS_MOD_ID = "apotheosis";
     public static final String IMC_METHOD = "loot_category_override";
     public static final double HEAVY_WEAPON_THRESHOLD = 8.0;
 
-    /** WARN logs a registry miss via RegistryLookup; SILENT skips a missing id quietly. */
+    // WARN logs a registry miss via RegistryLookup; SILENT skips a missing id quietly
     public enum SkipMode { WARN, SILENT }
 
     private CompatImc() {}
@@ -31,11 +29,12 @@ public final class CompatImc {
         InterModComms.sendTo(APOTHEOSIS_MOD_ID, IMC_METHOD, () -> Map.entry(item, categoryName));
     }
 
-    /**
-     * Sends every path-to-category entry under one namespace. WARN logs a miss when an
-     * item id is absent from the registry; SILENT drops it quietly, which suits mods
-     * whose item set changes between versions.
-     */
+    // Behavior:
+    //  - sends every path-to-category entry under one namespace
+    // Parameters:
+    //  - namespace: the mod id the paths live under
+    //  - overrides: item path to category name
+    //  - skipMode: WARN to log a registry miss, SILENT to drop a missing id quietly
     public static void sendOverrides(String namespace, Map<String, String> overrides, SkipMode skipMode) {
         for (Map.Entry<String, String> e : overrides.entrySet()) {
             ResourceLocation id = ResourceLocation.fromNamespaceAndPath(namespace, e.getKey());
@@ -51,7 +50,7 @@ public final class CompatImc {
         return ForgeRegistries.ITEMS.getValue(id);
     }
 
-    /** First flat ADDITION modifier on the item's main-hand attack damage, or 0 if none. */
+    // first flat ADDITION modifier on the item's main-hand attack damage, or 0 if none
     public static double getAttackDamage(Item item) {
         Multimap<Attribute, AttributeModifier> mods = item.getDefaultAttributeModifiers(EquipmentSlot.MAINHAND);
         for (AttributeModifier m : mods.get(Attributes.ATTACK_DAMAGE)) {

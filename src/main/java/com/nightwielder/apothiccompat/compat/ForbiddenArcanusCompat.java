@@ -5,12 +5,9 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-/**
- * Forbidden Arcanus weapons: the draco_arcanus set plus mystical_dagger are
- * explicit, and material-gavels follow a consistent _blacksmith_gavel suffix
- * so they're swept up via suffix fallback. Trinkets, seeds, orbs, amulets,
- * etc. fall through to UniversalCompat.
- */
+// Forbidden Arcanus weapons: the draco_arcanus set plus mystical_dagger are listed explicitly, and the
+// material gavels share a _blacksmith_gavel suffix so the suffix fallback catches them. Trinkets, seeds,
+// orbs, and amulets fall through to UniversalCompat.
 public final class ForbiddenArcanusCompat {
     private static final String NAMESPACE = "forbidden_arcanus";
 

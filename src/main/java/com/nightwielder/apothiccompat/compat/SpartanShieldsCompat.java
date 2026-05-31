@@ -7,12 +7,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraftforge.registries.ForgeRegistries;
 
-/**
- * Spartan Shields adds only shields; scan the namespace and accept anything that
- * extends {@link ShieldItem}. The instanceof check needs the item, so this keeps its
- * own scan rather than CompatScan.byPath. Non-shield items (if any are added in a
- * future update) fall through untouched.
- */
+// Spartan Shields only adds shields, so scan the namespace and take anything extending ShieldItem. The
+// instanceof needs the item itself so it keeps its own scan instead of CompatScan.byPath.
 public final class SpartanShieldsCompat {
     private static final String NAMESPACE = "spartanshields";
 

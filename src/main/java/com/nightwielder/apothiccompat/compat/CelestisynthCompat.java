@@ -5,14 +5,10 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-/**
- * Celestisynth weapons use one-off legendary names (crescentia, frostbound,
- * keres, etc.) with no shared suffix, so exact-name matching is the only option.
- * Most extend SkilledSwordItem (which extends SwordItem) and would already be
- * picked up by Apotheosis's builtin SwordItem match, but we send explicit
- * overrides so poltergeist (SkilledAxeItem, under UniversalCompat's 8.0 HEAVY
- * threshold) and rainfall_serenity (BowItem) land in the right bucket.
- */
+// Celestisynth weapons use one-off legendary names with no shared suffix, so they're matched by exact
+// name. Most extend SkilledSwordItem so the builtin SwordItem match would catch them anyway, but
+// poltergeist (an axe under the 8.0 HEAVY threshold) and rainfall_serenity (a bow) need explicit
+// overrides to land right.
 public final class CelestisynthCompat {
     private static final String NAMESPACE = "celestisynth";
 

@@ -7,10 +7,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-/**
- * Registry scan helpers for modules that categorize by item id rather than an explicit
- * override map. The categorizer returns an Apotheosis category name, or null to skip.
- */
+// Registry scan helpers for modules that categorize by item id instead of an explicit override map.
+// the categorizer returns an Apotheosis category name or null to skip.
 public final class CompatScan {
     private CompatScan() {}
 

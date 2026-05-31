@@ -5,11 +5,8 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-/**
- * Epic Fight Nightfall (efn) only adds a handful of weapons whose IDs do not
- * follow a predictable suffix convention, so they are listed explicitly. Anything
- * else falls through to UniversalCompat's SWORD class match.
- */
+// Epic Fight Nightfall (efn) adds a handful of weapons whose ids don't follow a predictable suffix, so
+// they're listed explicitly. Anything else falls through to UniversalCompat's SWORD class match.
 public final class EpicFightNightfallCompat {
     private static final String NAMESPACE = "efn";
 

@@ -2,11 +2,8 @@ package com.nightwielder.apothiccompat.compat;
 
 import net.minecraftforge.fml.ModList;
 
-/**
- * Helper for detecting Fallen Gems and Affixes. FG&A registers its own Staffs and
- * Celestial Melee/Ranged categories through the Apotheosis API, so other modules
- * use this check to skip overrides that would conflict with those registrations.
- */
+// Detects Fallen Gems and Affixes. FG&A registers its own Staffs and Celestial Melee/Ranged categories
+// through the Apotheosis API, so other modules check here before sending overrides that would clash.
 public final class FallenGemsCompat {
     public static final String STAFFS_CATEGORY = "staffs";
 
@@ -23,9 +20,9 @@ public final class FallenGemsCompat {
         return cached;
     }
 
-    // FG&A's "staffs" category is registered only when Iron's Spellbooks is also
-    // loaded (StaffLootCategory.<clinit> is gated on irons_spellbooks). Dispatching
-    // "staffs" via IMC without that registration NPEs Apotheosis's IMC handler.
+    // FG&A registers its "staffs" category only when Iron's Spellbooks is loaded too
+    // (StaffLootCategory.<clinit> is gated on irons_spellbooks). sending "staffs" via IMC without
+    // that registration NPEs Apotheosis's IMC handler.
     public static boolean hasStaffsCategory() {
         return isLoaded() && ModList.get().isLoaded("irons_spellbooks");
     }

@@ -13,12 +13,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Hybrid module: an explicit name-to-category map for the named boss weapons and
- * armor, then a class-based sweep of anything else in the namespace the map didn't
- * cover. The two-pass shape fits neither CompatScan.byPath nor CompatImc.sendOverrides,
- * so it keeps its own scan and ends each pass at CompatImc.send.
- */
+// Hybrid module: an explicit name-to-category map for the named boss weapons and armor, then a
+// class-based sweep over whatever the map missed. The two-pass shape fits neither CompatScan.byPath nor
+// CompatImc.sendOverrides, so it keeps its own scan and ends each pass at CompatImc.send.
 public final class WeaponsOfMiraclesCompat {
     private static final String NAMESPACE = "wom";
     private static final Map<String, LootCategory> OVERRIDES = new LinkedHashMap<>();

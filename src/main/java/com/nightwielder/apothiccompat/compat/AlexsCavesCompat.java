@@ -5,11 +5,8 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Map;
 
-/**
- * Alex's Caves weapons don't extend vanilla weapon classes, so they go uncategorized
- * by default. The set is small and the IDs follow no shared suffix convention worth
- * pattern-matching, so each weapon is listed explicitly.
- */
+// Alex's Caves weapons don't extend vanilla weapon classes so they go uncategorized by default. The set
+// is small with no shared suffix worth matching, so each weapon is listed explicitly.
 public final class AlexsCavesCompat {
     private static final String NAMESPACE = "alexscaves";
 

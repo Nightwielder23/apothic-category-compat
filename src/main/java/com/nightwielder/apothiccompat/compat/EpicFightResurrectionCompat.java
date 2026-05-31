@@ -5,12 +5,9 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-/**
- * Epic Fight Resurrection (cdmoveset) item IDs do not always insert an underscore
- * before the weapon-type token (e.g. s_irongreatsword vs s_iron_greatsword), so
- * suffixes are matched without a leading underscore. Items not matching any
- * configured suffix fall through to UniversalCompat.
- */
+// Epic Fight Resurrection (cdmoveset) ids don't always put an underscore before the weapon-type token
+// (e.g. s_irongreatsword vs s_iron_greatsword), so suffixes are matched without a leading underscore.
+// Anything that matches no suffix falls through to UniversalCompat.
 public final class EpicFightResurrectionCompat {
     private static final String NAMESPACE = "cdmoveset";
 

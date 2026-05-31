@@ -5,12 +5,8 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-/**
- * Meet Your Fight boss drops. Pickaxe/axe/shovel/hoe variants are vanilla-class
- * tools that UniversalCompat handles, so only the combat weapons need overrides.
- * Suffix fallback covers any additional weapon-shaped items added in later
- * versions without needing an exact-name update.
- */
+// Meet Your Fight boss drops. UniversalCompat handles the vanilla-class tools, so only the combat
+// weapons need overrides, and the suffix fallback catches any weapon-shaped items added later.
 public final class MeetYourFightCompat {
     private static final String NAMESPACE = "meetyourfight";
 

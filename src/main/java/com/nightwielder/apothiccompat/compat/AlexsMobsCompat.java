@@ -5,10 +5,8 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-/**
- * Most Alex's Mobs items are armor or vanilla-class weapons that UniversalCompat
- * already handles. Only the custom weapons need an explicit override.
- */
+// Most Alex's Mobs items are armor or vanilla-class weapons UniversalCompat already handles. Only the
+// custom weapons need an explicit override.
 public final class AlexsMobsCompat {
     private static final String NAMESPACE = "alexsmobs";
 

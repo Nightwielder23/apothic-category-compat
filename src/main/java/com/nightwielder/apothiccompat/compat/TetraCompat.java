@@ -9,10 +9,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SwordItem;
 import net.minecraftforge.registries.ForgeRegistries;
 
-/**
- * Tetra modular items are categorized by class plus attack damage, so this keeps its
- * own registry scan rather than CompatScan.byPath, which only exposes the item path.
- */
+// Tetra modular items get categorized by class plus attack damage, so this needs the Item itself and
+// keeps its own scan instead of CompatScan.byPath, which only hands over the path.
 public final class TetraCompat {
     private static final String NAMESPACE = "tetra";
 
