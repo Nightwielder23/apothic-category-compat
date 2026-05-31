@@ -77,10 +77,10 @@ Valid category names: `sword`, `heavy_weapon`, `trident`, `bow`, `crossbow`, `sh
 Stops specific affixes from rolling on newly generated gear (loot drops, reforging, trades, and gem application) without editing datapacks. List the affix ids in the `affix_blacklist` array in `apothic_compat.toml`:
 
 ```toml
-affix_blacklist = ["apotheosis:berserking", "apotheosis:telepathic"]
+affix_blacklist = ["apotheosis:sword/attribute/vampiric", "apotheosis:heavy_weapon/attribute/berserking"]
 ```
 
-To find an affix id, hover an affixed item with JEI or REI open, or read the affix files under `data/<namespace>/affixes/` inside a mod's jar (Apotheosis's own affixes live in `data/apotheosis/affixes/`).
+Affix ids are paths matching the JSON file location, e.g. `data/apotheosis/affixes/sword/attribute/vampiric.json` corresponds to the id `apotheosis:sword/attribute/vampiric`. To find ids: hover an affixed item with JEI or REI open, or browse the affix files under `data/<namespace>/affixes/` inside a mod's jar (Apotheosis's own affixes live in `data/apotheosis/affixes/`).
 
 Notes:
 
