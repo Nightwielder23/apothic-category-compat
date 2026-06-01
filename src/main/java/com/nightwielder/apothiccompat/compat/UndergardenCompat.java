@@ -16,8 +16,6 @@ public final class UndergardenCompat {
     static {
         OVERRIDES.put("cloggrum_battleaxe", LootCategory.HEAVY_WEAPON.getName());
         OVERRIDES.put("forgotten_battleaxe", LootCategory.HEAVY_WEAPON.getName());
-        OVERRIDES.put("froststeel_battleaxe", LootCategory.HEAVY_WEAPON.getName());
-        OVERRIDES.put("utherium_battleaxe", LootCategory.HEAVY_WEAPON.getName());
         OVERRIDES.put("spear", LootCategory.SWORD.getName());
         OVERRIDES.put("slingshot", LootCategory.BOW.getName());
     }

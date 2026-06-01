@@ -10,8 +10,8 @@ public final class EpicKnightsCompat {
     private static final String NAMESPACE = "magistuarmory";
 
     private static final String[] HEAVY_TOKENS = {
-            "lance", "glaive", "halberd", "pike",
-            "mace", "warhammer", "hammer", "maul"
+            "claymore", "glaive", "halberd", "hammer", "lance",
+            "mace", "maul", "pike", "warhammer", "zweihander"
     };
 
     private EpicKnightsCompat() {}

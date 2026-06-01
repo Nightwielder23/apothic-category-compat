@@ -6,12 +6,12 @@ import shadows.apotheosis.adventure.loot.LootCategory;
 import java.util.Set;
 
 // Epic Fight has material-suffixed weapon families (greatsword, longsword, dagger, spear, tachi) plus
-// three bare uniques (bokken, uchigatana, glove). Greatswords are heavy, the rest are swords.
+// the bare uniques uchigatana and glove. Greatswords are heavy, the rest are swords.
 public final class EpicFightCompat {
     private static final String NAMESPACE = "epicfight";
 
     private static final Set<String> SWORD_PATHS = Set.of(
-            "bokken", "glove", "uchigatana");
+            "glove", "uchigatana");
 
     private static final String[] HEAVY_SUFFIXES = {"_greatsword"};
 

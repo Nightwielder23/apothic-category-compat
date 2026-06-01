@@ -12,22 +12,20 @@ public final class LEnderCataclysmCompat {
 
     static {
         put(LootCategory.SWORD,
-                "ancient_spear", "athame", "black_steel_sword", "khopesh",
-                "soul_render", "the_immolator", "astrape", "ceraunus",
-                "lionfish", "void_forge", "blazing_grips", "sticky_gloves",
-                "chitin_claw", "tidal_claws", "wrath_of_the_desert",
-                "astrape_throwing", "ceraunus_throwing",
-                "coral_spear", "coral_spear_throwing");
+                "ancient_spear", "athame", "black_steel_sword",
+                "blazing_grips", "coral_spear",
+                "khopesh", "lionfish", "soul_render", "sticky_gloves",
+                "the_immolator", "tidal_claws", "void_forge", "zweiender");
         put(LootCategory.HEAVY_WEAPON,
-                "black_steel_axe", "coral_bardiche",
+                "black_steel_axe", "coral_bardiche", "emp", "final_fractal",
                 "gauntlet_of_bulwark", "gauntlet_of_guard", "gauntlet_of_maelstrom",
-                "meat_shredder", "the_annihilator", "the_incinerator", "zweiender",
-                "coral_bardiche_throwing",
+                "meat_shredder", "the_annihilator", "the_incinerator");
+        put(LootCategory.BOW, "cursed_bow", "wrath_of_the_desert");
+        put(LootCategory.CROSSBOW,
                 "void_assault_shoulder_weapon", "wither_assault_shoulder_weapon",
-                "laser_gatling", "emp", "final_fractal");
-        put(LootCategory.BOW, "cursed_bow");
+                "laser_gatling");
         put(LootCategory.SHIELD,
-                "azure_sea_shield", "black_steel_targe", "bulwark_of_the_flame");
+                "black_steel_targe", "bulwark_of_the_flame");
         put(LootCategory.HELMET,
                 "bone_reptile_helmet", "cursium_helmet", "ignitium_helmet",
                 "monstrous_helm");
@@ -44,7 +42,8 @@ public final class LEnderCataclysmCompat {
     private LEnderCataclysmCompat() {}
 
     private static void put(LootCategory cat, String... ids) {
-        for (String id : ids) OVERRIDES.put(id, cat.getName());
+        String name = cat.getName();
+        for (String id : ids) OVERRIDES.put(id, name);
     }
 
     public static void send() {

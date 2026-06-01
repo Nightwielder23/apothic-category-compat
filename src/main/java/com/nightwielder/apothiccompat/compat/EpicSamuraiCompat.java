@@ -10,12 +10,12 @@ public final class EpicSamuraiCompat {
 
     private static final Map<String, String> OVERRIDES = Map.of(
             "katana", LootCategory.SWORD.getName(),
-            "steel_katana", LootCategory.SWORD.getName(),
-            "jade_katana", LootCategory.SWORD.getName(),
-            "spear", LootCategory.SWORD.getName(),
-            "steel_spear", LootCategory.SWORD.getName(),
             "kama", LootCategory.SWORD.getName(),
-            "sai", LootCategory.SWORD.getName()
+            "sai", LootCategory.SWORD.getName(),
+            "nagamaki", LootCategory.SWORD.getName(),
+            "naginata", LootCategory.SWORD.getName(),
+            "kunai", LootCategory.NONE.getName(),
+            "shuriken", LootCategory.NONE.getName()
     );
 
     private EpicSamuraiCompat() {}

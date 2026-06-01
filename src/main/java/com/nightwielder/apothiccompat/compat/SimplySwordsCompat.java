@@ -3,19 +3,19 @@ package com.nightwielder.apothiccompat.compat;
 import com.nightwielder.apothiccompat.util.CompatScan;
 import shadows.apotheosis.adventure.loot.LootCategory;
 
-// Simply Swords has no per-weapon-type item tags, only material-based tags plus a catch-all swords tag.
-// Item ids follow a {material}_{weapontype} convention so matching is by suffix. Uniques that break the
-// convention fall through to UniversalCompat.
+// Simply Swords has no per-weapon-type tags, just material tags plus a catch-all swords tag, so matching
+// goes by id suffix on the {material}_{weapontype} names. Uniques that break the convention fall through
+// to UniversalCompat.
 public final class SimplySwordsCompat {
     private static final String NAMESPACE = "simplyswords";
 
     private static final String[] SWORD_SUFFIXES = {
-            "_longsword", "_claymore", "_rapier", "_katana", "_chakram",
-            "_cutlass", "_twinblade", "_scythe", "_sai", "_warglaive", "_spear"
+            "_chakram", "_claymore", "_cutlass", "_katana", "_longsword", "_rapier",
+            "_sai", "_scythe", "_spear", "_twinblade", "_warglaive"
     };
 
     private static final String[] HEAVY_SUFFIXES = {
-            "_greathammer", "_greataxe", "_glaive", "_halberd"
+            "_glaive", "_greataxe", "_greathammer", "_halberd"
     };
 
     private SimplySwordsCompat() {}
@@ -25,6 +25,8 @@ public final class SimplySwordsCompat {
     }
 
     private static String categorize(String path) {
+        // _warglaive also ends with _glaive, so keep this check first or the HEAVY _glaive suffix grabs it
+        if (path.endsWith("_warglaive")) return LootCategory.SWORD.getName();
         for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
         for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON.getName();
         return null;

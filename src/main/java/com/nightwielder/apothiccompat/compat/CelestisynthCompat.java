@@ -13,11 +13,10 @@ public final class CelestisynthCompat {
     private static final String NAMESPACE = "celestisynth";
 
     private static final Set<String> SWORD_PATHS = Set.of(
-            "aquaflora", "breezebreaker", "crescentia", "frostbound",
-            "keres", "solaris");
+            "aquaflora", "breezebreaker", "crescentia", "solaris", "long_blade");
 
     private static final Set<String> HEAVY_PATHS = Set.of(
-            "poltergeist");
+            "poltergeist", "large_axe");
 
     private static final Set<String> BOW_PATHS = Set.of(
             "rainfall_serenity");

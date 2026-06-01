@@ -19,20 +19,16 @@ public final class WeaponsOfMiraclesCompat {
 
     static {
         put(LootCategory.SWORD,
-                "antitheus", "blackstar", "claw", "evil_tachi", "gesetz",
-                "hollow_longsword", "jabberwocky", "moonless", "napoleon",
-                "netherite_tachi", "nova", "orbit", "ruine", "satsujin",
-                "solar", "solar_obscuridad", "tormented_mind",
+                "antitheus", "gesetz", "moonless", "ruine", "satsujin",
+                "tormented_mind",
                 "wooden_staff", "stone_staff", "iron_staff", "golden_staff",
                 "diamond_staff", "netherite_staff");
         put(LootCategory.HEAVY_WEAPON,
-                "agony", "herrscher",
+                "agony", "herrscher", "solar",
                 "iron_greataxe", "golden_greataxe", "diamond_greataxe",
                 "netherite_greataxe");
-        put(LootCategory.SHIELD, "overly_large_cylinder");
         put(LootCategory.HELMET,
-                "cursed_mask", "unholy_cursed_mask", "netherite_mask",
-                "diamond_crown", "golden_monocle");
+                "netherite_mask", "diamond_crown", "golden_monocle");
         put(LootCategory.CHESTPLATE, "golden_kit", "netherite_manicle");
         put(LootCategory.LEGGINGS, "diamond_legtopseal", "emerald_tasset");
         put(LootCategory.BOOTS, "diamond_legbottomseal", "golden_mokassin");

@@ -16,7 +16,7 @@ public final class KnightQuestCompat {
     private static final Set<String> GPL_SWORD_PATHS = Set.of(
             "cleaver", "uchigatana_katana", "nail_glaive", "kukri_dagger");
 
-    private static final Set<String> GPL_HEAVY_PATHS = Set.of("paladin_sword");
+    private static final Set<String> GPL_HEAVY_PATHS = Set.of("paladin_sword", "khopesh_claymore");
 
     private static final String[] GPL_HEAVY_SUFFIXES = {};
 
