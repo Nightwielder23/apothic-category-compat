@@ -1,40 +1,25 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatScan;
 import shadows.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Map;
 import java.util.Set;
 
-/**
- * Alex's Mobs ships mostly armor and vanilla-class items that UniversalCompat
- * already handles; only the custom weapons need an explicit override.
- */
+// Alex's Mobs is mostly armor and vanilla-class items that UniversalCompat handles. Only the custom
+// weapons need an override.
 public final class AlexsMobsCompat {
     private static final String NAMESPACE = "alexsmobs";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private static final Set<String> BOW_PATHS = Set.of("blood_sprayer");
 
     private AlexsMobsCompat() {}
 
     public static void send() {
-        for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
-            if (!NAMESPACE.equals(id.getNamespace())) continue;
-            LootCategory cat = categorize(id.getPath());
-            if (cat == null) continue;
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            if (item == null) continue;
-            String name = cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
-        }
+        CompatScan.byPath(NAMESPACE, AlexsMobsCompat::categorize);
     }
 
-    private static LootCategory categorize(String path) {
-        if (BOW_PATHS.contains(path)) return LootCategory.BOW;
+    private static String categorize(String path) {
+        if (BOW_PATHS.contains(path)) return LootCategory.BOW.getName();
         return null;
     }
 }

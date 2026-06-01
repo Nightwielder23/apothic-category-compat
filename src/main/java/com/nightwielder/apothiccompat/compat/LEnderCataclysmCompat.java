@@ -1,18 +1,14 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatImc;
 import shadows.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class LEnderCataclysmCompat {
     private static final String NAMESPACE = "cataclysm";
-    private static final String IMC_METHOD = "loot_category_override";
-    private static final Map<String, LootCategory> OVERRIDES = new LinkedHashMap<>();
+    private static final Map<String, String> OVERRIDES = new LinkedHashMap<>();
 
     static {
         put(LootCategory.SWORD,
@@ -48,16 +44,10 @@ public final class LEnderCataclysmCompat {
     private LEnderCataclysmCompat() {}
 
     private static void put(LootCategory cat, String... ids) {
-        for (String id : ids) OVERRIDES.put(id, cat);
+        for (String id : ids) OVERRIDES.put(id, cat.getName());
     }
 
     public static void send() {
-        for (Map.Entry<String, LootCategory> e : OVERRIDES.entrySet()) {
-            ResourceLocation id = new ResourceLocation(NAMESPACE, e.getKey());
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            if (item == null) continue;
-            String name = e.getValue().getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
-        }
+        CompatImc.sendOverrides(NAMESPACE, OVERRIDES, CompatImc.SkipMode.SILENT);
     }
 }
