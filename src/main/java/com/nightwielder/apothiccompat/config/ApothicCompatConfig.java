@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -42,7 +41,7 @@ public final class ApothicCompatConfig {
             # modules. Edit this file then run /apothiccompat reload (op 2) to apply
             # changes without restarting the server.
             #
-            # Valid loot category names (Apotheosis 7.4.8):
+            # Valid loot category names (Apotheosis 6.5.2):
             #   sword, heavy_weapon, bow, crossbow, shield,
             #   helmet, chestplate, leggings, boots, pickaxe, shovel, none
             #
@@ -75,37 +74,22 @@ public final class ApothicCompatConfig {
             [tag_overrides]
             """;
 
-    private static FileTime lastAppliedMTime;
-
     private ApothicCompatConfig() {}
 
-    /** Initial application during InterModEnqueueEvent. Uses IMC, the only path that works pre-game. */
+    // first apply during InterModEnqueueEvent, over IMC since that's the only path that works pre-game
     public static void load() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
-        lastAppliedMTime = readMTime(path);
         process((item, categoryName) ->
                 InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, categoryName)));
     }
 
-    /**
-     * Runtime reapplication for /apothiccompat reload. IMC is dead after mod loading, so we write
-     * directly to Apotheosis's live override map. We also mirror into AdventureModule.IMC_TYPE_OVERRIDES
-     * (via reflection) because AdventureConfig.load clears TYPE_OVERRIDES and re-copies from there on
-     * any subsequent Apotheosis config reload. Without the mirror, our entries would vanish.
-     *
-     * Skips the whole apply cycle if the file's mtime hasn't advanced since the previous apply.
-     *
-     * Note: this is purely additive. Removing an entry from the .toml and reloading does NOT remove the
-     * existing override (matches IMC re-send semantics). Restart the server to drop entries.
-     */
+    // reapply for /apothiccompat reload. IMC is dead after load so write straight to Apoth's live
+    // override map and mirror into AdventureModule.IMC_TYPE_OVERRIDES by reflection, otherwise the
+    // entries vanish when AdventureConfig.load recopies on the next Apoth reload. always re-reads the
+    // toml since the command is operator-invoked. additive only, so dropping a toml entry then reloading
+    // keeps the live override and a restart is needed to drop it.
     public static ReloadResult reload() {
-        Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
-        ensureDefaultFile(path);
-        FileTime current = readMTime(path);
-        if (current != null && current.equals(lastAppliedMTime)) {
-            return ReloadResult.ofUnchanged();
-        }
         Map<ResourceLocation, LootCategory> imcMirror = getImcOverrideMap();
         int count = process((item, categoryName) -> {
             ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
@@ -114,25 +98,15 @@ public final class ApothicCompatConfig {
             AdventureConfig.TYPE_OVERRIDES.put(id, cat);
             if (imcMirror != null) imcMirror.put(id, cat);
         });
-        if (current != null) lastAppliedMTime = current;
+        ApothicCompat.LOGGER.info("Apothic Compat config reloaded.");
         return ReloadResult.ofApplied(count);
     }
 
-    private static FileTime readMTime(Path path) {
-        try {
-            return Files.getLastModifiedTime(path);
-        } catch (IOException e) {
-            ApothicCompat.LOGGER.warn("Failed to stat {}", FILE_NAME, e);
-            return null;
-        }
+    public record ReloadResult(int count) {
+        public static ReloadResult ofApplied(int count) { return new ReloadResult(count); }
     }
 
-    public record ReloadResult(boolean unchanged, int count) {
-        public static ReloadResult ofUnchanged() { return new ReloadResult(true, 0); }
-        public static ReloadResult ofApplied(int count) { return new ReloadResult(false, count); }
-    }
-
-    /** Reads the file and dispatches each valid (item, category) pair to {@code action}. Returns the count applied. */
+    // reads the file and sends each valid (item, category) pair to action, returning the applied count
     private static int process(BiConsumer<Item, String> action) {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);

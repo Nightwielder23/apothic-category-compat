@@ -1,10 +1,10 @@
 # Apothic Compat
 
-A small server-side 1.20.1 Forge mod that fills in Apotheosis loot-category assignments for weapon/armor mods that don't ship them. Uses Apotheosis's own IMC override API, so nothing is patched or mixin'd.
+A small server-side 1.19.2 Forge mod that fills in Apotheosis loot-category assignments for weapon/armor mods that don't ship them. Uses Apotheosis's own IMC override API, so nothing is patched or mixin'd.
 
 ## What it does
 
-Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. A lot of modded weapons either don't have a category at all or get the wrong one, so affixes never appear on them. This mod sends the right categories at load time.
+Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. A lot of modded weapons either don't have a category at all or get the wrong one, so affixes never appear on them. Apothic Compat sends the right categories at load time.
 
 ## Supported mods
 
@@ -22,7 +22,6 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Spartan Shields**: all shields
 - **Dungeons and Combat**: polearms and hammers as heavy weapons
 - **Spartan Weaponry**: suffix-matched for all material variants
-- **Armageddon**: placeholder, vanilla-class fallback handles most items
 - **Epic Knights**: polearms and mauls as heavy weapons, shield overrides
 - **Marium's Soulslike Weaponry**: greatswords/scythes/spears as heavy, named legendaries pinned
 - **Born in Chaos**: scythes/axes/hammers as heavy, swords and daggers as swords
@@ -34,6 +33,10 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Deeper and Darker**: suffix-matched swords and knives
 - **Knight Quest Reforged**: Paladin Sword as heavy, Cleaver/Uchigatana/Nail/Kukri as swords
 - **Enigmatic Legacy**: Voracious Pan as sword, Axe of Executioner and Astral Breaker as heavy weapons
+- **Malum**: scythes (crude, soul stained steel, edge of deliverance, weight of worlds) as heavy weapons, tyrving and sundering anchor as swords
+- **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters as swords, Mazebreaker Pickaxe as pickaxe, Ice Bomb as none. Standard swords, bows, axes, and pickaxes go through the universal fallback
+- **The Undergarden**: cloggrum, forgotten, froststeel, and utherium battleaxes as heavy weapons, spear as sword, slingshot as bow. Standard items go through the universal fallback
+- **Epic Fight**: greatswords as heavy weapons; longswords, daggers, spears, tachis, bokken, uchigatana, and glove as swords
 - **Spartan and Fire**: picks up Spartan Weaponry tag registrations
 - **Immersive Armors**: handled by universal fallback
 - **Universal fallback**: anything else categorized by Java class
@@ -54,11 +57,11 @@ Valid category names: `sword`, `heavy_weapon`, `bow`, `crossbow`, `shield`, `hel
 
 ## Reload command
 
-`/apothiccompat reload` or `/ac reload` (op level 2) re-applies the config without a restart. It's a no-op if the file hasn't changed.
+`/apothiccompat reload` or `/ac reload` (op level 2) re-reads the config and re-applies it without a restart, every time it's run.
 
 ## Requirements
 
-Minecraft 1.20.1, Forge 47.x, Apotheosis 7.4.x. Everything else is optional.
+Minecraft 1.19.2, Forge 43.x, Apotheosis 6.5.2. Everything else is optional.
 
 ## Installation
 

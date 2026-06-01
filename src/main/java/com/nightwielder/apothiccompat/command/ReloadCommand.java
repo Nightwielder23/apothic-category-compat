@@ -27,13 +27,8 @@ public final class ReloadCommand {
                         return 0;
                     }
                     ApothicCompatConfig.ReloadResult result = ApothicCompatConfig.reload();
-                    if (result.unchanged()) {
-                        ctx.getSource().sendSuccess(Component.literal("Config unchanged."), false);
-                        return 0;
-                    }
-                    int count = result.count();
-                    ctx.getSource().sendSuccess(Component.literal("Applied " + count + " override(s)."), true);
-                    return count;
+                    ctx.getSource().sendSuccess(Component.literal("Config reloaded."), true);
+                    return result.count();
                 }));
     }
 }
