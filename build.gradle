@@ -126,7 +126,8 @@ dependencies {
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    compileOnly fg.deobf(files("C:/Users/ayand/Downloads/apotheosis-1.19.2.jar"))
+    compileOnly fg.deobf("shadows:Apotheosis:${minecraft_version}-${apotheosis_version}")
+    compileOnly fg.deobf("shadows:Placebo:${minecraft_version}-${placebo_version}")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
