@@ -5,8 +5,8 @@ import shadows.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Map;
 
-public final class SamuraiDynastyCompat {
-    private static final String NAMESPACE = "samurai_dynasty";
+public final class EpicSamuraiCompat {
+    private static final String NAMESPACE = "epicsamurai";
 
     private static final Map<String, String> OVERRIDES = Map.of(
             "katana", LootCategory.SWORD.getName(),
@@ -18,7 +18,7 @@ public final class SamuraiDynastyCompat {
             "sai", LootCategory.SWORD.getName()
     );
 
-    private SamuraiDynastyCompat() {}
+    private EpicSamuraiCompat() {}
 
     public static void send() {
         CompatImc.sendOverrides(NAMESPACE, OVERRIDES, CompatImc.SkipMode.SILENT);

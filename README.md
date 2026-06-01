@@ -10,7 +10,7 @@ Apotheosis uses loot categories to decide which affixes and gem sockets an item 
 
 Every module is a soft dep. A module only runs when both Apotheosis and the target mod are loaded.
 
-- **Samurai Dynasty**: katanas and kama as swords, spears as heavy weapons
+- **Epic Samurai**: katanas, kama, and spears as swords
 - **Dread Steel**: scythe as heavy weapon, shield as shield
 - **Tetra**: fixes miscategorized bows, crossbows, and stabilizer-upgraded weapons
 - **Weapons of Miracles**: overrides for named weapons and armor
@@ -20,10 +20,8 @@ Every module is a soft dep. A module only runs when both Apotheosis and the targ
 - **Aquamirae**: weapons and armor
 - **Mowzie's Mobs**: weapons and armor
 - **Spartan Shields**: all shields
-- **Dungeons and Combat**: polearms and hammers as heavy weapons
 - **Spartan Weaponry**: suffix-matched for all material variants
 - **Epic Knights**: polearms and mauls as heavy weapons, shield overrides
-- **Marium's Soulslike Weaponry**: greatswords/scythes/spears as heavy, named legendaries pinned
 - **Born in Chaos**: scythes/axes/hammers as heavy, swords and daggers as swords
 - **Celestisynth**: nine named weapons, mostly swords with Poltergeist as heavy and Rainfall Serenity as bow
 - **Alex's Mobs**: Blood Sprayer as bow
