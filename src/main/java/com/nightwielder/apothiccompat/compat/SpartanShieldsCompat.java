@@ -1,22 +1,15 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatImc;
 import shadows.apotheosis.adventure.loot.LootCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ShieldItem;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Map;
-
-/**
- * Spartan Shields adds only shields; scan the namespace and accept anything
- * that extends {@link ShieldItem}. Non-shield items (if any are added in a
- * future update) fall through untouched.
- */
+// Spartan Shields adds only shields. Scan the namespace and accept anything extending ShieldItem.
 public final class SpartanShieldsCompat {
     private static final String NAMESPACE = "spartanshields";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private SpartanShieldsCompat() {}
 
@@ -25,8 +18,7 @@ public final class SpartanShieldsCompat {
             if (!NAMESPACE.equals(id.getNamespace())) continue;
             Item item = ForgeRegistries.ITEMS.getValue(id);
             if (!(item instanceof ShieldItem)) continue;
-            String name = LootCategory.SHIELD.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
+            CompatImc.send(item, LootCategory.SHIELD.getName());
         }
     }
 }

@@ -1,23 +1,15 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatScan;
 import shadows.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Map;
 import java.util.Set;
 
-/**
- * Meet Your Fight boss drops. Pickaxe/axe/shovel/hoe variants are vanilla-class
- * tools that UniversalCompat handles, so only the combat weapons need overrides.
- * Suffix fallback covers any additional weapon-shaped items added in later
- * versions without needing an exact-name update.
- */
+// Meet Your Fight boss drops. Pickaxe/axe/shovel/hoe variants are vanilla-class tools UniversalCompat
+// handles so only the combat weapons need overrides. Suffix fallback covers weapon-shaped items added
+// in later versions without an exact-name update.
 public final class MeetYourFightCompat {
     private static final String NAMESPACE = "meetyourfight";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private static final Set<String> SWORD_PATHS = Set.of(
             "mossy_sword", "shoulder_revolver", "dusk_blade");
@@ -35,24 +27,16 @@ public final class MeetYourFightCompat {
     private MeetYourFightCompat() {}
 
     public static void send() {
-        for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
-            if (!NAMESPACE.equals(id.getNamespace())) continue;
-            LootCategory cat = categorize(id.getPath());
-            if (cat == null) continue;
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            if (item == null) continue;
-            String name = cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
-        }
+        CompatScan.byPath(NAMESPACE, MeetYourFightCompat::categorize);
     }
 
-    private static LootCategory categorize(String path) {
-        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON;
-        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD;
-        if (CROSSBOW_PATHS.contains(path)) return LootCategory.CROSSBOW;
-        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
-        for (String s : CROSSBOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.CROSSBOW;
+    private static String categorize(String path) {
+        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON.getName();
+        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD.getName();
+        if (CROSSBOW_PATHS.contains(path)) return LootCategory.CROSSBOW.getName();
+        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON.getName();
+        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
+        for (String s : CROSSBOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.CROSSBOW.getName();
         return null;
     }
 }

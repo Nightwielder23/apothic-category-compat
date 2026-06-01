@@ -1,5 +1,6 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatImc;
 import shadows.apotheosis.adventure.loot.LootCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.AxeItem;
@@ -7,7 +8,6 @@ import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SwordItem;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.LinkedHashMap;
@@ -15,7 +15,6 @@ import java.util.Map;
 
 public final class WeaponsOfMiraclesCompat {
     private static final String NAMESPACE = "wom";
-    private static final String IMC_METHOD = "loot_category_override";
     private static final Map<String, LootCategory> OVERRIDES = new LinkedHashMap<>();
 
     static {
@@ -50,8 +49,7 @@ public final class WeaponsOfMiraclesCompat {
             ResourceLocation id = new ResourceLocation(NAMESPACE, e.getKey());
             Item item = ForgeRegistries.ITEMS.getValue(id);
             if (item == null) continue;
-            String name = e.getValue().getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
+            CompatImc.send(item, e.getValue().getName());
         }
         for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
             if (!NAMESPACE.equals(id.getNamespace())) continue;
@@ -60,8 +58,7 @@ public final class WeaponsOfMiraclesCompat {
             if (item == null) continue;
             LootCategory cat = categorize(item);
             if (cat == null) continue;
-            String name = cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
+            CompatImc.send(item, cat.getName());
         }
     }
 

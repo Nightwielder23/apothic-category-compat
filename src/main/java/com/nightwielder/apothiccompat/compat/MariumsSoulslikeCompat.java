@@ -1,25 +1,16 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.util.CompatScan;
 import shadows.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Map;
 import java.util.Set;
 
-/**
- * Marium's Soulslike Weaponry registers most weapons as TieredItem, so neither
- * Apotheosis's builtin categorization nor UniversalCompat's class-based fallback
- * picks them up. Suffix matching handles the consistent {material}_{shape} names
- * (greatswords, scythes, spears, glaives, shortswords); the rest are one-off
- * legendary names that we override explicitly. Exact overrides are checked first
- * so entries like master_sword (HEAVY per design) beat the generic _sword suffix.
- */
+// Marium's Soulslike Weaponry registers most weapons as TieredItem so neither Apotheosis nor
+// UniversalCompat picks them up. Suffix matching handles the {material}_{shape} names and the rest are
+// one-off legendaries listed exactly. Exact paths are checked first so master_sword (heavy by design)
+// beats the generic _sword suffix.
 public final class MariumsSoulslikeCompat {
     private static final String NAMESPACE = "soulsweapons";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private static final Set<String> HEAVY_PATHS = Set.of(
             "darkin_blade", "darkin_scythe_pre", "glaive_of_hodir", "kirkhammer",
@@ -54,25 +45,17 @@ public final class MariumsSoulslikeCompat {
     private MariumsSoulslikeCompat() {}
 
     public static void send() {
-        for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
-            if (!NAMESPACE.equals(id.getNamespace())) continue;
-            LootCategory cat = categorize(id.getPath());
-            if (cat == null) continue;
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            if (item == null) continue;
-            String name = cat.getName();
-            InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, name));
-        }
+        CompatScan.byPath(NAMESPACE, MariumsSoulslikeCompat::categorize);
     }
 
-    private static LootCategory categorize(String path) {
-        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON;
-        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD;
-        if (BOW_PATHS.contains(path)) return LootCategory.BOW;
-        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON;
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD;
-        for (String s : BOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.BOW;
-        for (String s : CROSSBOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.CROSSBOW;
+    private static String categorize(String path) {
+        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON.getName();
+        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD.getName();
+        if (BOW_PATHS.contains(path)) return LootCategory.BOW.getName();
+        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON.getName();
+        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
+        for (String s : BOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.BOW.getName();
+        for (String s : CROSSBOW_SUFFIXES) if (path.endsWith(s)) return LootCategory.CROSSBOW.getName();
         return null;
     }
 }

@@ -3,7 +3,6 @@ package com.nightwielder.apothiccompat;
 import com.mojang.logging.LogUtils;
 import com.nightwielder.apothiccompat.compat.AlexsMobsCompat;
 import com.nightwielder.apothiccompat.compat.AquamiraeCompat;
-import com.nightwielder.apothiccompat.compat.ArmageddonCompat;
 import com.nightwielder.apothiccompat.compat.BornInChaosCompat;
 import com.nightwielder.apothiccompat.compat.BossesOfMassDestructionCompat;
 import com.nightwielder.apothiccompat.compat.CelestisynthCompat;
@@ -55,7 +54,7 @@ public class ApothicCompat {
     // Apotheosis's loot_category_override IMC accepts only Map.Entry<Item, String> (item + category);
     // there is no slot parameter. Equipment-slot tooltip lines (e.g. literal "{mainhand}") come from
     // vanilla's item.modifiers.<slot> lang keys or a third-party tooltip mod (Curios, etc.), not from
-    // anything Apotheosis or this mod renders. Do not try to "fix" it by changing the IMC payload.
+    // anything Apothic Compat or Apotheosis renders. Do not try to "fix" it by changing the IMC payload.
     private void sendCategoryOverrides(InterModEnqueueEvent event) {
         if (!ModList.get().isLoaded("apotheosis")) {
             LOGGER.info("Apotheosis not present; skipping all compat modules.");
@@ -73,7 +72,6 @@ public class ApothicCompat {
         if (ModList.get().isLoaded("spartanshields")) SpartanShieldsCompat.send();
         if (ModList.get().isLoaded("dungeons_and_combat")) DungeonsAndCombatCompat.send();
         if (ModList.get().isLoaded("spartanweaponry")) SpartanWeaponryCompat.send();
-        if (ModList.get().isLoaded("armageddon_mod")) ArmageddonCompat.send();
         if (ModList.get().isLoaded("magistuarmory")) EpicKnightsCompat.send();
         if (ModList.get().isLoaded("soulsweapons")) MariumsSoulslikeCompat.send();
         if (ModList.get().isLoaded("born_in_chaos_v1")) BornInChaosCompat.send();
