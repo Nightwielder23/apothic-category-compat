@@ -55,7 +55,7 @@ public class ApothicCompat {
     // Apotheosis's loot_category_override IMC accepts only Map.Entry<Item, String> (item + category);
     // there is no slot parameter. Equipment-slot tooltip lines (e.g. literal "{mainhand}") come from
     // vanilla's item.modifiers.<slot> lang keys or a third-party tooltip mod (Curios, etc.), not from
-    // anything Apotheosis or this mod renders — do not try to "fix" it by changing the IMC payload.
+    // anything Apotheosis or this mod renders. Do not try to "fix" it by changing the IMC payload.
     private void sendCategoryOverrides(InterModEnqueueEvent event) {
         if (!ModList.get().isLoaded("apotheosis")) {
             LOGGER.info("Apotheosis not present; skipping all compat modules.");

@@ -12,9 +12,6 @@ run/
 *.ipr
 *.iws
 
-# Gradle wrapper jar
-gradle/wrapper/gradle-wrapper.jar
-
 # Logs & crash reports
 logs/
 crash-reports/

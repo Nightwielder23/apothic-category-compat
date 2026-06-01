@@ -11,8 +11,8 @@ import java.util.Set;
 
 /**
  * Celestisynth weapons use one-off legendary names (crescentia, frostbound,
- * keres, â€¦) with no shared suffix, so exact-name matching is the only option.
- * Most extend SkilledSwordItem (â†’ SwordItem) and would already be picked up
+ * keres) with no shared suffix, so exact-name matching is the only option.
+ * Most extend SkilledSwordItem (a SwordItem subclass) and would already be picked up
  * by Apotheosis's builtin SwordItem match, but we send explicit overrides so
  * poltergeist (SkilledAxeItem, under UniversalCompat's 8.0 HEAVY threshold)
  * and rainfall_serenity (BowItem) are guaranteed to land in the right bucket.

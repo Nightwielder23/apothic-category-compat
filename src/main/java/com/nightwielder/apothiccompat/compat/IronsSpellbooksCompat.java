@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * Iron's Spellbooks contains mostly magic items (scrolls, spellbooks, staves that
- * trigger spells) that should NOT be categorized â€” gem/affix rolls don't make sense
+ * trigger spells) that should NOT be categorized. Gem/affix rolls don't make sense
  * for them. We only categorize the handful of straight-melee weapons.
  */
 public final class IronsSpellbooksCompat {
