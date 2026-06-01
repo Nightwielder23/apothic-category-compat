@@ -47,7 +47,7 @@ public final class WeaponsOfMiraclesCompat {
     public static void send() {
         for (Map.Entry<String, LootCategory> e : OVERRIDES.entrySet()) {
             ResourceLocation id = new ResourceLocation(NAMESPACE, e.getKey());
-            Item item = ForgeRegistries.ITEMS.getValue(id);
+            Item item = RegistryLookup.item(id);
             if (item == null) continue;
             CompatImc.send(item, e.getValue().getName());
         }

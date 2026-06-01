@@ -2,6 +2,7 @@ package com.nightwielder.apothiccompat.config;
 
 import com.electronwill.nightconfig.core.UnmodifiableConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.core.io.ParsingException;
 import com.nightwielder.apothiccompat.ApothicCompat;
 import shadows.apotheosis.adventure.AdventureConfig;
 import shadows.apotheosis.adventure.AdventureModule;
@@ -20,16 +21,11 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiConsumer;
 
 public final class ApothicCompatConfig {
     private static final String FILE_NAME = "apothic_compat.toml";
     private static final String IMC_METHOD = "loot_category_override";
-    private static final Set<String> VALID_CATEGORIES = Set.of(
-            "sword", "heavy_weapon", "bow", "crossbow", "shield",
-            "helmet", "chestplate", "leggings", "boots", "pickaxe",
-            "shovel", "none");
 
     private static final String DEFAULT_CONTENTS = """
             # User-defined loot category overrides for Apothic Compat.
@@ -42,7 +38,7 @@ public final class ApothicCompatConfig {
             # changes without restarting the server.
             #
             # Valid loot category names (Apotheosis 6.5.2):
-            #   sword, heavy_weapon, bow, crossbow, shield,
+            #   sword, heavy_weapon, trident, bow, crossbow, shield,
             #   helmet, chestplate, leggings, boots, pickaxe, shovel, none
             #
             # Keys MUST be quoted because item and tag IDs contain a ':' separator
@@ -112,13 +108,27 @@ public final class ApothicCompatConfig {
         ensureDefaultFile(path);
         int[] count = {0};
         try (CommentedFileConfig config = CommentedFileConfig.builder(path).sync().build()) {
-            config.load();
+            loadTolerant(config);
             count[0] += processItemOverrides(config, action);
             count[0] += processTagOverrides(config, action);
         } catch (Exception e) {
             ApothicCompat.LOGGER.error("Failed to read {}", FILE_NAME, e);
         }
         return count[0];
+    }
+
+    private static void loadTolerant(CommentedFileConfig config) {
+        try {
+            config.load();
+        } catch (ParsingException e) {
+            // NightConfig throws this when the file ends without a trailing newline after a table header
+            // like [tag_overrides]. everything above the EOF is already parsed so keep going.
+            if (e.getMessage() != null && e.getMessage().contains("Not enough data available")) {
+                ApothicCompat.LOGGER.debug("Tolerating trailing-EOF parse hiccup in {}: {}", FILE_NAME, e.getMessage());
+            } else {
+                throw e;
+            }
+        }
     }
 
     private static void ensureDefaultFile(Path path) {
@@ -142,7 +152,7 @@ public final class ApothicCompatConfig {
                 ApothicCompat.LOGGER.warn("[item_overrides] '{}' must map to a string category, got {}", key, value);
                 continue;
             }
-            if (!VALID_CATEGORIES.contains(categoryName)) {
+            if (LootCategory.byId(categoryName) == null) {
                 ApothicCompat.LOGGER.warn("[item_overrides] '{}' uses unknown category '{}'", key, categoryName);
                 continue;
             }
@@ -173,7 +183,7 @@ public final class ApothicCompatConfig {
                 ApothicCompat.LOGGER.warn("[tag_overrides] '{}' must map to a string category, got {}", key, value);
                 continue;
             }
-            if (!VALID_CATEGORIES.contains(categoryName)) {
+            if (LootCategory.byId(categoryName) == null) {
                 ApothicCompat.LOGGER.warn("[tag_overrides] '{}' uses unknown category '{}'", key, categoryName);
                 continue;
             }
