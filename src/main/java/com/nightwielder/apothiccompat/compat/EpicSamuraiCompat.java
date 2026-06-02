@@ -5,17 +5,14 @@ import shadows.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Map;
 
+// Epic Samurai's bladed weapons extend SwordItem, so UniversalCompat splits them by attack speed. The
+// shuriken is a thrown plain Item with no melee attack-damage attribute, so the speed path never reaches
+// it; this explicit override lets it roll sword affixes per the user's request.
 public final class EpicSamuraiCompat {
     private static final String NAMESPACE = "epicsamurai";
 
     private static final Map<String, String> OVERRIDES = Map.of(
-            "katana", LootCategory.SWORD.getName(),
-            "kama", LootCategory.SWORD.getName(),
-            "sai", LootCategory.SWORD.getName(),
-            "nagamaki", LootCategory.SWORD.getName(),
-            "naginata", LootCategory.SWORD.getName(),
-            "kunai", LootCategory.NONE.getName(),
-            "shuriken", LootCategory.NONE.getName()
+            "shuriken", LootCategory.SWORD.getName()
     );
 
     private EpicSamuraiCompat() {}

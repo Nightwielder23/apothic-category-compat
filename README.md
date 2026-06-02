@@ -4,40 +4,21 @@ A small server-side 1.19.2 Forge mod that fills in Apotheosis loot-category assi
 
 ## What it does
 
-Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. A lot of modded weapons either don't have a category at all or get the wrong one, so affixes never appear on them. Apothic Compat sends the right categories at load time.
+Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. A lot of modded weapons either don't have a category at all or get the wrong one, so affixes never appear on them. Apothic Compat sends the right categories at load time over Apotheosis's IMC override API.
 
-## Supported mods
+The core rule is universal: every registered item is categorized by what it actually is, not by a hardcoded list. Any item that deals melee attack damage is split into `sword` or `heavy_weapon` by its attack speed, using the same thresholds Obscure API shows in its weapon tooltips: an attack speed above 1.0 reads as a sword, at or below 1.0 reads as a heavy weapon. This works for any mod's weapons no matter which Java class they extend, including plain `Item`, `TieredItem`, `DiggerItem`, and modular subclasses. Bows, crossbows, tridents, pickaxes, shovels, shields, and armor are read straight from the vanilla class hierarchy.
 
-Every module is a soft dep. A module only runs when both Apotheosis and the target mod are loaded.
+## Per-mod modules
 
-- **Epic Samurai**: katanas, kama, and spears as swords
-- **Dread Steel**: scythe as heavy weapon, shield as shield
-- **Tetra**: fixes miscategorized bows, crossbows, and stabilizer-upgraded weapons
-- **Weapons of Miracles**: overrides for named weapons and armor
-- **L'Ender's Cataclysm**: full weapon, shield, and armor coverage
-- **Simply Swords**: suffix-matched, heavy variants as heavy weapons
-- **Iron's Spellbooks**: melee weapons only (staves, scythes, blades)
-- **Aquamirae**: weapons and armor
-- **Mowzie's Mobs**: weapons and armor
-- **Spartan Shields**: all shields
-- **Spartan Weaponry**: suffix-matched for all material variants
-- **Epic Knights**: polearms and mauls as heavy weapons, shield overrides
-- **Born in Chaos**: scythes/axes/hammers as heavy, swords and daggers as swords
-- **Celestisynth**: nine named weapons, mostly swords with Poltergeist as heavy and Rainfall Serenity as bow
+The universal rule covers almost everything on its own. A few mods register ranged weapons, shields, or utility items under custom classes that carry no usable hierarchy, so those get small explicit overrides. A module only runs when both Apotheosis and the target mod are loaded.
+
+- **L'Ender's Cataclysm**: cursed bow and wrath of the desert as bows, the assault shoulder weapons and laser gatling as crossbows, and bulwark of the flame as a shield (all plain `Item` or `ProjectileWeaponItem`; the black steel targe is a real `ShieldItem` so the universal rule covers it)
+- **Tetra**: modular bow, crossbow, and shield (all extend `ModularItem`, not the vanilla ranged or shield classes); modular melee builds go through the universal rule by attack speed
+- **Meet Your Fight**: the Guns Without Roses compat shotgun and rifle as crossbows
 - **Alex's Mobs**: Blood Sprayer as bow
-- **Forbidden and Arcanus**: Draco Arcanus axe as heavy, rest as swords
-- **Bosses of Mass Destruction**: Obsidian Spear as heavy, Nether Staff as sword
-- **Meet Your Fight**: Dusk Greatsword as heavy, rest as swords, Bell Crossbow as crossbow
-- **Deeper and Darker**: suffix-matched swords and knives
-- **Knight Quest Reforged**: Paladin Sword as heavy, Cleaver/Uchigatana/Nail/Kukri as swords
-- **Enigmatic Legacy**: Voracious Pan as sword, Axe of Executioner and Astral Breaker as heavy weapons
-- **Malum**: scythes (crude, soul stained steel, edge of deliverance, weight of worlds) as heavy weapons, tyrving and sundering anchor as swords
-- **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters as swords, Mazebreaker Pickaxe as pickaxe, Ice Bomb as none. Standard swords, bows, axes, and pickaxes go through the universal fallback
-- **The Undergarden**: cloggrum, forgotten, froststeel, and utherium battleaxes as heavy weapons, spear as sword, slingshot as bow. Standard items go through the universal fallback
-- **Epic Fight**: greatswords as heavy weapons; longswords, daggers, spears, tachis, bokken, uchigatana, and glove as swords
-- **Spartan and Fire**: picks up Spartan Weaponry tag registrations
-- **Immersive Armors**: handled by universal fallback
-- **Universal fallback**: anything else categorized by Java class
+- **The Undergarden**: slingshot as bow (extends `ProjectileWeaponItem`)
+- **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters and Ice Bomb as none (utility items with no attack damage)
+- **Everything else** (including all `ShieldItem` shields, e.g. Dread Steel, Spartan Shields, Epic Knights): categorized by the universal rule above
 
 ## Config
 

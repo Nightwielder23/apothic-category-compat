@@ -19,7 +19,9 @@ public final class AlexsMobsCompat {
     }
 
     private static String categorize(String path) {
-        if (BOW_PATHS.contains(path)) return LootCategory.BOW.getName();
+        if (BOW_PATHS.contains(path)) {
+            return LootCategory.BOW.getName();
+        }
         return null;
     }
 }

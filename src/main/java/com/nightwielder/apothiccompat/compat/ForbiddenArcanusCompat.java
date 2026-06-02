@@ -1,32 +1,23 @@
 package com.nightwielder.apothiccompat.compat;
 
-import com.nightwielder.apothiccompat.util.CompatScan;
+import com.nightwielder.apothiccompat.util.CompatImc;
 import shadows.apotheosis.adventure.loot.LootCategory;
 
-import java.util.Set;
+import java.util.Map;
 
-// Forbidden Arcanus weapons. The draco_arcanus set plus mystical_dagger are explicit, and material
-// gavels share a _blacksmith_gavel suffix. Trinkets, seeds, orbs, and amulets fall through.
+// Forbidden and Arcanus melee weapons extend SwordItem and route through UniversalCompat by speed.
+// draco_arcanus_scepter extends plain Item with no melee attack-damage attribute, so the speed path never
+// sees it; this explicit override maps it to sword per the user's request.
 public final class ForbiddenArcanusCompat {
     private static final String NAMESPACE = "forbidden_arcanus";
 
-    private static final Set<String> SWORD_PATHS = Set.of(
-            "mystical_dagger", "draco_arcanus_scepter", "draco_arcanus_sword");
-
-    private static final Set<String> HEAVY_PATHS = Set.of("draco_arcanus_axe");
-
-    private static final String[] SWORD_SUFFIXES = {"_blacksmith_gavel"};
+    private static final Map<String, String> OVERRIDES = Map.of(
+            "draco_arcanus_scepter", LootCategory.SWORD.getName()
+    );
 
     private ForbiddenArcanusCompat() {}
 
     public static void send() {
-        CompatScan.byPath(NAMESPACE, ForbiddenArcanusCompat::categorize);
-    }
-
-    private static String categorize(String path) {
-        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON.getName();
-        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD.getName();
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
-        return null;
+        CompatImc.sendOverrides(NAMESPACE, OVERRIDES, CompatImc.SkipMode.SILENT);
     }
 }

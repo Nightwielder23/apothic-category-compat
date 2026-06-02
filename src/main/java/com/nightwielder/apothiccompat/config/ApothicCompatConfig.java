@@ -4,6 +4,7 @@ import com.electronwill.nightconfig.core.UnmodifiableConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.ParsingException;
 import com.nightwielder.apothiccompat.ApothicCompat;
+import com.nightwielder.apothiccompat.util.CompatImc;
 import shadows.apotheosis.adventure.AdventureConfig;
 import shadows.apotheosis.adventure.AdventureModule;
 import shadows.apotheosis.adventure.loot.LootCategory;
@@ -90,9 +91,13 @@ public final class ApothicCompatConfig {
         int count = process((item, categoryName) -> {
             ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
             LootCategory cat = LootCategory.byId(categoryName);
-            if (id == null || cat == null) return;
+            if (id == null || cat == null) {
+                return;
+            }
             AdventureConfig.TYPE_OVERRIDES.put(id, cat);
-            if (imcMirror != null) imcMirror.put(id, cat);
+            if (imcMirror != null) {
+                imcMirror.put(id, cat);
+            }
         });
         ApothicCompat.LOGGER.info("Apothic Compat config reloaded.");
         return ReloadResult.ofApplied(count);
@@ -100,6 +105,37 @@ public final class ApothicCompatConfig {
 
     public record ReloadResult(int count) {
         public static ReloadResult ofApplied(int count) { return new ReloadResult(count); }
+    }
+
+    // Second-pass re-categorization after deferred mod init (FMLLoadCompleteEvent). The IMC window is closed,
+    // so swap CompatImc's sink to write Apotheosis's live override map and mirror IMC_TYPE_OVERRIDES the same
+    // way reload() does, run the supplied module dispatch, then restore the IMC sink. Only items whose
+    // category changed from the first-pass IMC value are written; returns that change count.
+    public static int reapply(Runnable dispatch) {
+        Map<ResourceLocation, LootCategory> imcMirror = getImcOverrideMap();
+        int[] changed = {0};
+        CompatImc.setSink((item, categoryName) -> {
+            ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
+            LootCategory cat = LootCategory.byId(categoryName);
+            if (id == null || cat == null) {
+                return;
+            }
+            LootCategory prev = imcMirror != null ? imcMirror.get(id) : AdventureConfig.TYPE_OVERRIDES.get(id);
+            if (cat.equals(prev)) {
+                return;
+            }
+            AdventureConfig.TYPE_OVERRIDES.put(id, cat);
+            if (imcMirror != null) {
+                imcMirror.put(id, cat);
+            }
+            changed[0]++;
+        });
+        try {
+            dispatch.run();
+        } finally {
+            CompatImc.resetSink();
+        }
+        return changed[0];
     }
 
     // reads the file and sends each valid (item, category) pair to action, returning the applied count
@@ -132,7 +168,9 @@ public final class ApothicCompatConfig {
     }
 
     private static void ensureDefaultFile(Path path) {
-        if (Files.exists(path)) return;
+        if (Files.exists(path)) {
+            return;
+        }
         try {
             Files.createDirectories(path.getParent());
             Files.writeString(path, DEFAULT_CONTENTS);
@@ -143,7 +181,9 @@ public final class ApothicCompatConfig {
 
     private static int processItemOverrides(CommentedFileConfig config, BiConsumer<Item, String> action) {
         Object raw = config.get("item_overrides");
-        if (!(raw instanceof UnmodifiableConfig section)) return 0;
+        if (!(raw instanceof UnmodifiableConfig section)) {
+            return 0;
+        }
         int count = 0;
         for (UnmodifiableConfig.Entry entry : section.entrySet()) {
             String key = entry.getKey();
@@ -174,7 +214,9 @@ public final class ApothicCompatConfig {
 
     private static int processTagOverrides(CommentedFileConfig config, BiConsumer<Item, String> action) {
         Object raw = config.get("tag_overrides");
-        if (!(raw instanceof UnmodifiableConfig section)) return 0;
+        if (!(raw instanceof UnmodifiableConfig section)) {
+            return 0;
+        }
         int count = 0;
         for (UnmodifiableConfig.Entry entry : section.entrySet()) {
             String key = entry.getKey();
