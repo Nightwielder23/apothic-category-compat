@@ -11,13 +11,29 @@
 - Iron's Spellbooks staffs route to the Fallen Gems & Affixes staffs category.
 - Forbidden and Arcanus draco_arcanus_scepter and Alex's Caves sea and sugar staves defer to the staffs category when present.
 - Born in Chaos pumpkinhandgun (Pumpkin Pistol) categorized as crossbow.
+- Configurable name based heavy override, name_based_heavy_override, off by default: when on, items whose registry id contains a heavy weapon name such as greatsword, claymore, or zweihander are forced to heavy_weapon regardless of attack speed and damage.
+- Configurable dual-purpose pickaxe handling, weapon_pickaxes_as_heavy, on by default: combat tools that subclass PickaxeItem (the Void Forge, Infernal Forge, and Blacksmith Gavels) categorize as heavy_weapon instead of pickaxe.
 
 ### Fixed
 - Traveloptics scepters and staffs emit the staffs category explicitly instead of relying on Fallen Gems autodetection, which never claimed them.
 - Malum scythes route by attack speed as melee weapons again, rather than deferring to staffs.
+- MULTIPLY_BASE attack attribute math now matches vanilla: the base and addition sum is scaled together by the multiplier instead of dropping the base term, so weapons carrying a MULTIPLY_BASE modifier read the correct attack damage and speed.
 
 ### Removed
 - Per mod modules whose items the universal rule already covers: Simply Swords, Integrated Simply Swords, Spartan Weaponry, Spartan Shields, Epic Knights, Samurai Dynasty, Dread Steel, Mowzie's Mobs, Bosses of Mass Destruction, Deeper and Darker, Knight Quest, Enigmatic Legacy, and RPG Style More Weapons.
+
+## v1.8.0
+
+### Added
+- Affix blacklist: a config list that stops specific affixes from rolling on newly generated gear (loot drops, reforging, trades, and gem application), reapplied on server start and after /reload.
+- Malum, Twilight Forest, and Undergarden compat modules.
+
+### Changed
+- Routed Twilight Forest scepters to the Fallen Gems & Affixes staffs category when present.
+- Consolidated the per mod compat modules.
+
+### Fixed
+- /apothiccompat reload now reapplies overrides correctly instead of dropping them.
 
 ## v1.7.1
 

@@ -61,20 +61,36 @@ public final class ApothicCompatConfig {
             # (namespace:path), which TOML does not allow in bare keys.
 
             # ----------------------------------------------------------------------
+            # Categorization settings.
+            #
+            # name_based_heavy_override (default false): When enabled, items whose
+            # registry id contains a heavy weapon name (greatsword, claymore,
+            # zweihander, etc.) are categorized as HEAVY_WEAPON regardless of their
+            # attack speed and damage. Disable to use pure speed and damage.
+            #
+            # weapon_pickaxes_as_heavy (default true): When enabled, items in the
+            # dual-purpose pickaxe list (combat tools like the Void Forge, Infernal
+            # Forge, and Blacksmith Gavels) categorize as HEAVY_WEAPON instead of
+            # PICKAXE. Disable for pure PickaxeItem-class behavior.
+            # ----------------------------------------------------------------------
+            name_based_heavy_override = false
+            weapon_pickaxes_as_heavy = true
+
+            # ----------------------------------------------------------------------
             # Affix blacklist. Stops the listed affixes from rolling on newly
             # generated gear (loot drops, reforging, trades, gem application).
             # Existing items keep any affixes they already have; this only blocks
             # future rolls. Apotheosis's own datapack affix overrides still win.
             #
             #   value = array of affix ids, each "namespace:path"
-            #           e.g. "apotheosis:berserking", "apotheosis:telepathic"
+            #           e.g. "apotheosis:sword/attribute/vampiric"
             #
             # Find affix ids from JEI tooltips on affixed gear, or from the files
             # under data/<namespace>/affixes/ inside a mod's jar. Edit this list then
             # run /apothiccompat reload (op 2) to reapply without a restart.
             #
             # Example:
-            #   affix_blacklist = ["apotheosis:berserking", "apotheosis:telepathic"]
+            #   affix_blacklist = ["apotheosis:sword/attribute/vampiric", "apotheosis:heavy_weapon/attribute/berserking"]
             # ----------------------------------------------------------------------
             affix_blacklist = []
 
@@ -104,7 +120,33 @@ public final class ApothicCompatConfig {
             [tag_overrides]
             """;
 
+    private static boolean nameBasedHeavyOverride = false;
+    private static boolean weaponPickaxesAsHeavy = true;
+
     private ApothicCompatConfig() {}
+
+    public static boolean nameBasedHeavyOverride() {
+        return nameBasedHeavyOverride;
+    }
+
+    public static boolean weaponPickaxesAsHeavy() {
+        return weaponPickaxesAsHeavy;
+    }
+
+    // Reads the categorization toggles into static fields so UniversalCompat can consult them during the
+    // dispatch passes, which run before the per item config load. Defaults hold when the file or a key is
+    // missing, so a config written before these keys existed keeps the documented behavior.
+    public static void loadSettings() {
+        Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
+        ensureDefaultFile(path);
+        try (CommentedFileConfig config = CommentedFileConfig.builder(path).sync().build()) {
+            loadTolerant(config);
+            nameBasedHeavyOverride = config.getOrElse("name_based_heavy_override", false);
+            weaponPickaxesAsHeavy = config.getOrElse("weapon_pickaxes_as_heavy", true);
+        } catch (Exception e) {
+            ApothicCompat.LOGGER.error("Failed to read categorization settings from {}", FILE_NAME, e);
+        }
+    }
 
     // First apply during InterModEnqueueEvent, over IMC since that's the only path that works pre game.
     public static void load() {

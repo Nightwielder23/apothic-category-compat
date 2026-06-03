@@ -11,7 +11,6 @@ import com.nightwielder.apothiccompat.compat.EpicFightCompat;
 import com.nightwielder.apothiccompat.compat.EpicFightNightfallCompat;
 import com.nightwielder.apothiccompat.compat.EpicFightResurrectionCompat;
 import com.nightwielder.apothiccompat.compat.ForbiddenArcanusCompat;
-import com.nightwielder.apothiccompat.compat.IronsSpellbooksCompat;
 import com.nightwielder.apothiccompat.compat.LEnderCataclysmCompat;
 import com.nightwielder.apothiccompat.compat.MariumsSoulslikeCompat;
 import com.nightwielder.apothiccompat.compat.MeetYourFightCompat;
@@ -110,6 +109,8 @@ public class ApothicCompat {
     // override map writes for the second) decides where the results land, so the module code is identical.
     // UniversalCompat runs first, per mod modules run after so their explicit decisions win.
     private void dispatchModules() {
+        // UniversalCompat reads the categorization toggles, so refresh them before it runs.
+        ApothicCompatConfig.loadSettings();
         UniversalCompat.send();
         if (ModList.get().isLoaded("tetra")) {
             TetraCompat.send();
@@ -158,9 +159,6 @@ public class ApothicCompat {
         }
         if (ModList.get().isLoaded("traveloptics")) {
             TravelopticsCompat.send();
-        }
-        if (ModList.get().isLoaded("irons_spellbooks")) {
-            IronsSpellbooksCompat.send();
         }
         if (ModList.get().isLoaded("twilightforest")) {
             TwilightForestCompat.send();

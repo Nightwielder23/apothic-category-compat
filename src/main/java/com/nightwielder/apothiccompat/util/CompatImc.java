@@ -102,9 +102,11 @@ public final class CompatImc {
         return liveValue(stack, Attributes.ATTACK_DAMAGE, 1.0);
     }
 
-    // base + summed ADDITION + addition sum scaled by summed MULTIPLY_BASE, read through
-    // stack.getAttributeModifiers rather than the item defaults. That fires Forge's
-    // ItemAttributeModifierEvent, so mods that adjust a weapon's attributes at runtime are reflected.
+    // Vanilla layers the attribute in order: start from base, add every ADDITION, then scale that whole sum
+    // by (1 + summed MULTIPLY_BASE). Scaling only the additions would drop the base * multiplyBase term and
+    // underreport the value, so the base is folded in before the multiply. Read through
+    // stack.getAttributeModifiers rather than the item defaults, which fires Forge's
+    // ItemAttributeModifierEvent so mods that adjust a weapon's attributes at runtime are reflected.
     private static double liveValue(ItemStack stack, Attribute attribute, double base) {
         Multimap<Attribute, AttributeModifier> mods = stack.getAttributeModifiers(EquipmentSlot.MAINHAND);
         double addition = 0;
@@ -116,6 +118,6 @@ public final class CompatImc {
                 multiplyBase += m.getAmount();
             }
         }
-        return base + addition + addition * multiplyBase;
+        return (base + addition) * (1 + multiplyBase);
     }
 }

@@ -14,7 +14,7 @@ A second pass runs at the end of mod loading. Some mods finalize a weapon's atta
 
 The universal rule covers almost everything on its own. A few mods register ranged weapons, shields, scepters, or other items under custom classes that carry no usable hierarchy or attack damage attribute, so those get small explicit overrides. A module only runs when both Apotheosis and the target mod are loaded.
 
-- **L'Ender's Cataclysm**: Cursed Bow and Wrath of the Desert as bows, the assault shoulder weapons and Laser Gatling as crossbows (plain `Item` or `ProjectileWeaponItem`), Void Forge and Infernal Forge as heavy weapons (they extend `PickaxeItem` but are wielded as weapons). Every melee weapon and every shield is read by the universal rule
+- **L'Ender's Cataclysm**: Cursed Bow and Wrath of the Desert as bows, the assault shoulder weapons and Laser Gatling as crossbows (plain `Item` or `ProjectileWeaponItem`). Every melee weapon and every shield is read by the universal rule; Void Forge and Infernal Forge are `PickaxeItem` combat tools handled by the dual-purpose pickaxe setting
 - **Tetra**: modular bow, crossbow, and shield (all extend `ModularItem`, not the vanilla ranged or shield classes); modular melee builds go through the universal rule by attack speed
 - **Weapons of Miracles**: Overly Large Cylindre as a shield (plain `Item`). The rest of its Epic Fight weapons expose real attack stats, so the universal rule handles them
 - **Aquamirae**: Poisoned Chakra as a sword (extends `TieredItem` with no attack damage attribute)
@@ -36,6 +36,13 @@ The universal rule covers almost everything on its own. A few mods register rang
 ## Handled by the universal rule
 
 These mods extend the right vanilla classes or carry real attack stats, so the universal rule categorizes them with no explicit module: Simply Swords, Integrated Simply Swords, Spartan Weaponry, Spartan Shields, Epic Knights, Samurai Dynasty, Dread Steel, Iron's Spellbooks, Mowzie's Mobs, Bosses of Mass Destruction, Deeper and Darker, Knight Quest, Enigmatic Legacy, Malum, RPG Style More Weapons, Farmer's Delight, Dungeons Delight, Cataclysm Weaponry, Armageddon, and anything else with vanilla class weapons or weapons that carry an attack damage attribute, plus armor.
+
+## Categorization settings
+
+Two toggles in `apothic_compat.toml` adjust how the universal rule categorizes items. They apply during mod load, so edit the file and restart the server to change them.
+
+- `name_based_heavy_override` (default `false`): when enabled, any item whose registry id contains a heavy weapon name (greatsword, claymore, zweihander, warhammer, halberd, bardiche, glaive, battleaxe, greataxe, lance, pike, maul, naginata, odachi, flamberge, scythe, and the like) is categorized as `heavy_weapon` regardless of its attack speed and damage. Leave it off to categorize purely by speed and damage. Staff, scepter, and wand items are unaffected, since name based staff routing runs first.
+- `weapon_pickaxes_as_heavy` (default `true`): the dual-purpose pickaxe list holds combat tools that extend `PickaxeItem` but are swung as weapons. When enabled they categorize as `heavy_weapon` instead of `pickaxe`. The list covers L'Ender's Cataclysm's Void Forge and Infernal Forge and Forbidden and Arcanus's Blacksmith Gavels (every material tier). Disable it for plain `PickaxeItem` behavior.
 
 ## Config
 
