@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -104,6 +106,7 @@ public final class ApothicCompatConfig {
     public static void loadSettings() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
+        addMissingSettings(path);
         try (CommentedFileConfig config = CommentedFileConfig.builder(path).sync().build()) {
             loadTolerant(config);
             nameBasedHeavyOverride = config.getOrElse("name_based_heavy_override", false);
@@ -111,6 +114,65 @@ public final class ApothicCompatConfig {
         } catch (Exception e) {
             ApothicCompat.LOGGER.error("Failed to read categorization settings from {}", FILE_NAME, e);
         }
+    }
+
+    // ensureDefaultFile only writes a brand new file, so a config saved before these toggles existed never
+    // gets the keys and getOrElse falls back to the default forever. Add any missing toggle at top level,
+    // since a bare key written after a [table] header would bind to that table instead of the root.
+    private static void addMissingSettings(Path path) {
+        try {
+            List<String> lines = new ArrayList<>(Files.readAllLines(path));
+            List<String> additions = new ArrayList<>();
+            if (!hasTopLevelKey(lines, "name_based_heavy_override")) {
+                additions.add("name_based_heavy_override = false");
+            }
+            if (!hasTopLevelKey(lines, "weapon_pickaxes_as_heavy")) {
+                additions.add("weapon_pickaxes_as_heavy = true");
+            }
+            if (additions.isEmpty()) {
+                return;
+            }
+            additions.add(0, "# Categorization settings");
+            additions.add(0, "");
+            lines.addAll(settingsInsertIndex(lines), additions);
+            Files.writeString(path, String.join("\n", lines) + "\n");
+            ApothicCompat.LOGGER.info("Added missing categorization toggles to {}", FILE_NAME);
+        } catch (IOException e) {
+            ApothicCompat.LOGGER.error("Failed to add categorization toggles to {}", FILE_NAME, e);
+        }
+    }
+
+    private static boolean hasTopLevelKey(List<String> lines, String key) {
+        for (String line : lines) {
+            String trimmed = line.trim();
+            if (trimmed.startsWith("[")) {
+                return false;
+            }
+            if (trimmed.startsWith(key) && trimmed.substring(key.length()).trim().startsWith("=")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Drop in after the last root level value and before the comment block that introduces the first table.
+    private static int settingsInsertIndex(List<String> lines) {
+        int i = lines.size();
+        for (int j = 0; j < lines.size(); j++) {
+            if (lines.get(j).trim().startsWith("[")) {
+                i = j;
+                break;
+            }
+        }
+        while (i > 0) {
+            String prev = lines.get(i - 1).trim();
+            if (prev.isEmpty() || prev.startsWith("#")) {
+                i--;
+            } else {
+                break;
+            }
+        }
+        return i;
     }
 
     // First apply during InterModEnqueueEvent, over IMC since that's the only path that works pre game.
