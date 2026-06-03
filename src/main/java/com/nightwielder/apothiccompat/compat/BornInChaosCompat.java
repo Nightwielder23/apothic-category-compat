@@ -1,41 +1,25 @@
 package com.nightwielder.apothiccompat.compat;
 
-import com.nightwielder.apothiccompat.util.CompatScan;
+import com.nightwielder.apothiccompat.util.CompatImc;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
-import java.util.Set;
+import java.util.Map;
 
-// Born in Chaos is MCreator-generated so its weapons don't extend vanilla classes and go uncategorized.
-// Most follow a {name}_{shape} convention so suffix matching covers them, and the three that don't
-// (darkwarblade, trident_hayfork, soulbane) are listed exactly.
+// Born in Chaos is MCreator generated. Its bladed weapons subclass SwordItem/AxeItem and carry attack
+// damage, so UniversalCompat splits them by speed. Two items extend plain Item and slip past the class and
+// speed checks: trident_hayfork carries no attack damage so it keeps a heavy_weapon override, and
+// pumpkinhandgun (the Pumpkin Pistol) is a GeoItem gun that fires projectiles, so it maps to crossbow.
 public final class BornInChaosCompat {
     private static final String NAMESPACE = "born_in_chaos_v1";
 
-    private static final Set<String> HEAVY_PATHS = Set.of(
-            "darkwarblade", "trident_hayfork");
-
-    private static final Set<String> SWORD_PATHS = Set.of(
-            "soulbane");
-
-    private static final String[] HEAVY_SUFFIXES = {
-            "_scythe", "_axe", "_hammer", "_mace"
-    };
-
-    private static final String[] SWORD_SUFFIXES = {
-            "_sword", "_dagger", "_cutlass", "_blade"
-    };
+    private static final Map<String, String> OVERRIDES = Map.of(
+            "trident_hayfork", LootCategory.HEAVY_WEAPON.getName(),
+            "pumpkinhandgun", LootCategory.CROSSBOW.getName()
+    );
 
     private BornInChaosCompat() {}
 
     public static void send() {
-        CompatScan.byPath(NAMESPACE, BornInChaosCompat::categorize);
-    }
-
-    private static String categorize(String path) {
-        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON.getName();
-        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD.getName();
-        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON.getName();
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
-        return null;
+        CompatImc.sendOverrides(NAMESPACE, OVERRIDES, CompatImc.SkipMode.SILENT);
     }
 }

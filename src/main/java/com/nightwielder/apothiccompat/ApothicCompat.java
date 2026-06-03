@@ -5,30 +5,16 @@ import com.nightwielder.apothiccompat.compat.AlexsCavesCompat;
 import com.nightwielder.apothiccompat.compat.AlexsMobsCompat;
 import com.nightwielder.apothiccompat.compat.AquamiraeCompat;
 import com.nightwielder.apothiccompat.compat.BornInChaosCompat;
-import com.nightwielder.apothiccompat.compat.BossesOfMassDestructionCompat;
 import com.nightwielder.apothiccompat.compat.CelestisynthCompat;
-import com.nightwielder.apothiccompat.compat.DeeperAndDarkerCompat;
-import com.nightwielder.apothiccompat.compat.DreadSteelCompat;
 import com.nightwielder.apothiccompat.compat.DungeonsAndCombatCompat;
-import com.nightwielder.apothiccompat.compat.EnigmaticLegacyCompat;
 import com.nightwielder.apothiccompat.compat.EpicFightCompat;
 import com.nightwielder.apothiccompat.compat.EpicFightNightfallCompat;
 import com.nightwielder.apothiccompat.compat.EpicFightResurrectionCompat;
-import com.nightwielder.apothiccompat.compat.EpicKnightsCompat;
 import com.nightwielder.apothiccompat.compat.ForbiddenArcanusCompat;
-import com.nightwielder.apothiccompat.compat.IntegratedSimplySwordsCompat;
 import com.nightwielder.apothiccompat.compat.IronsSpellbooksCompat;
-import com.nightwielder.apothiccompat.compat.KnightQuestCompat;
 import com.nightwielder.apothiccompat.compat.LEnderCataclysmCompat;
-import com.nightwielder.apothiccompat.compat.MalumCompat;
 import com.nightwielder.apothiccompat.compat.MariumsSoulslikeCompat;
 import com.nightwielder.apothiccompat.compat.MeetYourFightCompat;
-import com.nightwielder.apothiccompat.compat.MowziesMobsCompat;
-import com.nightwielder.apothiccompat.compat.RpgStyleMoreWeaponsCompat;
-import com.nightwielder.apothiccompat.compat.SamuraiDynastyCompat;
-import com.nightwielder.apothiccompat.compat.SimplySwordsCompat;
-import com.nightwielder.apothiccompat.compat.SpartanShieldsCompat;
-import com.nightwielder.apothiccompat.compat.SpartanWeaponryCompat;
 import com.nightwielder.apothiccompat.compat.TetraCompat;
 import com.nightwielder.apothiccompat.compat.TravelopticsCompat;
 import com.nightwielder.apothiccompat.compat.TwilightForestCompat;
@@ -44,6 +30,7 @@ import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
@@ -56,6 +43,7 @@ public class ApothicCompat {
     public ApothicCompat(FMLJavaModLoadingContext context) {
         IEventBus modBus = context.getModEventBus();
         modBus.addListener(this::sendCategoryOverrides);
+        modBus.addListener(this::reapplyAfterDeferredInit);
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
         MinecraftForge.EVENT_BUS.addListener(this::onServerStarted);
         MinecraftForge.EVENT_BUS.addListener(this::onDatapackSync);
@@ -65,64 +53,120 @@ public class ApothicCompat {
         ReloadCommand.register(event.getDispatcher());
     }
 
-    // affixes load with datapacks after the IMC pass, so apply the blacklist here instead of through
+    // Affixes load with datapacks after the IMC pass, so apply the blacklist here instead of through
     // IMC. ServerStartedEvent covers startup and OnDatapackSyncEvent covers /reload, which rebuilds
-    // Apoth's affix pool and would drop the filter otherwise. per-player sync is skipped since the
+    // Apoth's affix pool and would drop the filter otherwise. Per player sync is skipped since the
     // pool only changes on a full reload.
     private void onServerStarted(ServerStartedEvent event) {
-        if (!ModList.get().isLoaded("apotheosis")) return;
+        if (!ModList.get().isLoaded("apotheosis")) {
+            return;
+        }
         ApothicCompatConfig.loadAffixBlacklist();
     }
 
     private void onDatapackSync(OnDatapackSyncEvent event) {
-        if (event.getPlayer() != null) return;
-        if (!ModList.get().isLoaded("apotheosis")) return;
+        if (event.getPlayer() != null) {
+            return;
+        }
+        if (!ModList.get().isLoaded("apotheosis")) {
+            return;
+        }
         ApothicCompatConfig.loadAffixBlacklist();
     }
 
-    // Apotheosis's category-override IMC (see CompatImc.IMC_METHOD) only takes Map.Entry<Item, String>
-    // and has no slot parameter. equipment-slot tooltip lines like "{mainhand}" come from vanilla's
-    // item.modifiers.<slot> lang keys or a tooltip mod like Curios, not from anything we render, so
+    // Apotheosis's category override IMC (see CompatImc.IMC_METHOD) only takes Map.Entry<Item, String>
+    // and has no slot parameter. Equipment slot tooltip lines like "{mainhand}" come from vanilla's
+    // item.modifiers.<slot> lang keys or a tooltip mod like Curios, not from rendering here, so
     // don't try to "fix" this by changing the IMC payload.
+    //
+    // Apotheosis stores overrides last wins (TYPE_OVERRIDES is a plain put), so send order is precedence
+    // order. UniversalCompat runs first as the speed based default for every item, the per mod modules run
+    // next so their explicit ranged/shield/utility decisions overwrite that default, the config loads last
+    // so a user's per item override beats everything.
     private void sendCategoryOverrides(InterModEnqueueEvent event) {
         if (!ModList.get().isLoaded("apotheosis")) {
             LOGGER.info("Apotheosis not present; skipping all compat modules.");
             return;
         }
-        if (ModList.get().isLoaded("samurai_dynasty")) SamuraiDynastyCompat.send();
-        if (ModList.get().isLoaded("dreadsteel")) DreadSteelCompat.send();
-        if (ModList.get().isLoaded("tetra")) TetraCompat.send();
-        if (ModList.get().isLoaded("wom")) WeaponsOfMiraclesCompat.send();
-        if (ModList.get().isLoaded("cataclysm")) LEnderCataclysmCompat.send();
-        if (ModList.get().isLoaded("simplyswords")) SimplySwordsCompat.send();
-        if (ModList.get().isLoaded("integrated_simply_swords")) IntegratedSimplySwordsCompat.send();
-        if (ModList.get().isLoaded("irons_spellbooks")) IronsSpellbooksCompat.send();
-        if (ModList.get().isLoaded("aquamirae")) AquamiraeCompat.send();
-        if (ModList.get().isLoaded("mowziesmobs")) MowziesMobsCompat.send();
-        if (ModList.get().isLoaded("spartanshields")) SpartanShieldsCompat.send();
-        if (ModList.get().isLoaded("dungeons_and_combat")) DungeonsAndCombatCompat.send();
-        if (ModList.get().isLoaded("spartanweaponry")) SpartanWeaponryCompat.send();
-        if (ModList.get().isLoaded("magistuarmory")) EpicKnightsCompat.send();
-        if (ModList.get().isLoaded("soulsweapons")) MariumsSoulslikeCompat.send();
-        if (ModList.get().isLoaded("born_in_chaos_v1")) BornInChaosCompat.send();
-        if (ModList.get().isLoaded("celestisynth")) CelestisynthCompat.send();
-        if (ModList.get().isLoaded("alexsmobs")) AlexsMobsCompat.send();
-        if (ModList.get().isLoaded("alexscaves")) AlexsCavesCompat.send();
-        if (ModList.get().isLoaded("forbidden_arcanus")) ForbiddenArcanusCompat.send();
-        if (ModList.get().isLoaded("bosses_of_mass_destruction")) BossesOfMassDestructionCompat.send();
-        if (ModList.get().isLoaded("meetyourfight")) MeetYourFightCompat.send();
-        if (ModList.get().isLoaded("deeperdarker")) DeeperAndDarkerCompat.send();
-        if (ModList.get().isLoaded("knightquest") || ModList.get().isLoaded("knight_quest")) KnightQuestCompat.send();
-        if (ModList.get().isLoaded("enigmaticlegacy")) EnigmaticLegacyCompat.send();
-        if (ModList.get().isLoaded("epicfight")) EpicFightCompat.send();
-        if (ModList.get().isLoaded("cdmoveset")) EpicFightResurrectionCompat.send();
-        if (ModList.get().isLoaded("efn")) EpicFightNightfallCompat.send();
-        if (ModList.get().isLoaded("rpg_style_more_weapons_r")) RpgStyleMoreWeaponsCompat.send();
-        if (ModList.get().isLoaded("traveloptics")) TravelopticsCompat.send();
-        if (ModList.get().isLoaded("malum")) MalumCompat.send();
-        if (ModList.get().isLoaded("twilightforest")) TwilightForestCompat.send();
-        if (ModList.get().isLoaded("undergarden")) UndergardenCompat.send();
-        UniversalCompat.send();
+        dispatchModules();
         ApothicCompatConfig.load();
+    }
+
+    // Some mods (e.g. Mowzie's Mobs) finalize weapon attack damage/speed from config during deferred work
+    // enqueued at FMLCommonSetupEvent, which completes after the InterModEnqueueEvent scan above. The
+    // first pass live read then sees stale stats and can miscategorize those items. FMLLoadCompleteEvent is
+    // the last mod loading event, after all such deferred init, so rerun the same dispatch here. The IMC
+    // window is closed by now, so this pass writes Apotheosis's override maps directly (see
+    // ApothicCompatConfig.reapply), the same runtime path /apothiccompat reload uses.
+    private void reapplyAfterDeferredInit(FMLLoadCompleteEvent event) {
+        if (!ModList.get().isLoaded("apotheosis")) {
+            return;
+        }
+        int changed = ApothicCompatConfig.reapply(this::dispatchModules);
+        LOGGER.info("Apothic Compat second pass recategorized {} item(s) after deferred mod init.", changed);
+    }
+
+    // Shared dispatch used by both passes. The active CompatImc sink (IMC for the first pass, runtime
+    // override map writes for the second) decides where the results land, so the module code is identical.
+    // UniversalCompat runs first, per mod modules run after so their explicit decisions win.
+    private void dispatchModules() {
+        UniversalCompat.send();
+        if (ModList.get().isLoaded("tetra")) {
+            TetraCompat.send();
+        }
+        if (ModList.get().isLoaded("wom")) {
+            WeaponsOfMiraclesCompat.send();
+        }
+        if (ModList.get().isLoaded("cataclysm")) {
+            LEnderCataclysmCompat.send();
+        }
+        if (ModList.get().isLoaded("aquamirae")) {
+            AquamiraeCompat.send();
+        }
+        if (ModList.get().isLoaded("dungeons_and_combat")) {
+            DungeonsAndCombatCompat.send();
+        }
+        if (ModList.get().isLoaded("soulsweapons")) {
+            MariumsSoulslikeCompat.send();
+        }
+        if (ModList.get().isLoaded("born_in_chaos_v1")) {
+            BornInChaosCompat.send();
+        }
+        if (ModList.get().isLoaded("celestisynth")) {
+            CelestisynthCompat.send();
+        }
+        if (ModList.get().isLoaded("alexsmobs")) {
+            AlexsMobsCompat.send();
+        }
+        if (ModList.get().isLoaded("alexscaves")) {
+            AlexsCavesCompat.send();
+        }
+        if (ModList.get().isLoaded("forbidden_arcanus")) {
+            ForbiddenArcanusCompat.send();
+        }
+        if (ModList.get().isLoaded("meetyourfight")) {
+            MeetYourFightCompat.send();
+        }
+        if (ModList.get().isLoaded("epicfight")) {
+            EpicFightCompat.send();
+        }
+        if (ModList.get().isLoaded("cdmoveset")) {
+            EpicFightResurrectionCompat.send();
+        }
+        if (ModList.get().isLoaded("efn")) {
+            EpicFightNightfallCompat.send();
+        }
+        if (ModList.get().isLoaded("traveloptics")) {
+            TravelopticsCompat.send();
+        }
+        if (ModList.get().isLoaded("irons_spellbooks")) {
+            IronsSpellbooksCompat.send();
+        }
+        if (ModList.get().isLoaded("twilightforest")) {
+            TwilightForestCompat.send();
+        }
+        if (ModList.get().isLoaded("undergarden")) {
+            UndergardenCompat.send();
+        }
     }
 }

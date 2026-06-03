@@ -20,6 +20,12 @@ Thumbs.db
 logs/
 crash-reports/
 
+# Internal decision log, not shipped
+legacy_classifications.md
+
+# Test verification item list, not shipped
+test_item_ids.md
+
 # Server / world data
 saves/
 world/

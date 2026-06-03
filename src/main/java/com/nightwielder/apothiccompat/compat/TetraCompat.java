@@ -2,37 +2,26 @@ package com.nightwielder.apothiccompat.compat;
 
 import com.nightwielder.apothiccompat.util.CompatImc;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.CrossbowItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.SwordItem;
-import net.minecraftforge.registries.ForgeRegistries;
 
-// Tetra modular items get categorized by class plus attack damage, so this needs the Item itself and
-// keeps its own scan instead of CompatScan.byPath, which only hands over the path.
+import java.util.Map;
+
+// Tetra's modular items all extend ModularItem (ultimately plain Item), so they never match the vanilla
+// class checks: the bow, crossbow, and shield need explicit ids. The melee builds (ModularBladedItem,
+// ModularSingleHeadedItem, ModularDoubleHeadedItem) carry attack damage, so UniversalCompat splits them
+// by attack speed.
 public final class TetraCompat {
     private static final String NAMESPACE = "tetra";
+
+    private static final Map<String, String> OVERRIDES = Map.of(
+            "modular_bow", LootCategory.BOW.getName(),
+            "modular_crossbow", LootCategory.CROSSBOW.getName(),
+            "modular_shield", LootCategory.SHIELD.getName(),
+            "modular_shield_blocking", LootCategory.SHIELD.getName()
+    );
 
     private TetraCompat() {}
 
     public static void send() {
-        for (ResourceLocation id : ForgeRegistries.ITEMS.getKeys()) {
-            if (!NAMESPACE.equals(id.getNamespace())) continue;
-            Item item = ForgeRegistries.ITEMS.getValue(id);
-            if (item == null) continue;
-            LootCategory cat = categorize(item);
-            if (cat == null) continue;
-            CompatImc.send(item, cat.getName());
-        }
-    }
-
-    private static LootCategory categorize(Item item) {
-        if (item instanceof BowItem) return LootCategory.BOW;
-        if (item instanceof CrossbowItem) return LootCategory.CROSSBOW;
-        if (item instanceof SwordItem) {
-            return CompatImc.getAttackDamage(item) > CompatImc.HEAVY_WEAPON_THRESHOLD ? LootCategory.HEAVY_WEAPON : LootCategory.SWORD;
-        }
-        return null;
+        CompatImc.sendOverrides(NAMESPACE, OVERRIDES, CompatImc.SkipMode.SILENT);
     }
 }

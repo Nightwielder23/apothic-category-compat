@@ -21,9 +21,15 @@ public final class FallenGemsCompat {
     }
 
     // FG&A registers its "staffs" category only when Iron's Spellbooks is loaded too
-    // (StaffLootCategory.<clinit> is gated on irons_spellbooks). sending "staffs" via IMC without
+    // (StaffLootCategory.<clinit> is gated on irons_spellbooks). Sending "staffs" via IMC without
     // that registration NPEs Apotheosis's IMC handler.
     public static boolean hasStaffsCategory() {
         return isLoaded() && ModList.get().isLoaded("irons_spellbooks");
+    }
+
+    // Returns the staffs category when FG&A can supply it, otherwise the given fallback. The scepter and
+    // staff modules call this so the deferral decision is defined once.
+    public static String staffsOr(String fallbackCategory) {
+        return hasStaffsCategory() ? STAFFS_CATEGORY : fallbackCategory;
     }
 }

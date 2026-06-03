@@ -1,42 +1,38 @@
 package com.nightwielder.apothiccompat.compat;
 
 import com.nightwielder.apothiccompat.util.CompatImc;
-import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-// Iron's Spellbooks is mostly magic items (scrolls, spellbooks, spell staves) that shouldn't be
-// categorized since gem/affix rolls make no sense on them. Only the plain melee weapons get overrides.
+// Iron's Spellbooks staffs carry a slow melee attack, so UniversalCompat's speed split files them as
+// heavy_weapon before FG&A can claim them. When FG&A's staffs category is available (it registers only
+// alongside Iron's Spellbooks), send the staffs there explicitly so this override lands after the universal
+// pass and wins. Without that category there is no better fit, so leave them to UniversalCompat. The melee
+// weapons (rapiers, claymores, flamberges) are SwordItem subclasses and route by speed on their own.
 public final class IronsSpellbooksCompat {
     private static final String NAMESPACE = "irons_spellbooks";
 
-    private static final Map<String, String> OVERRIDES = Map.ofEntries(
-            Map.entry("amethyst_rapier", LootCategory.SWORD.getName()),
-            Map.entry("boreal_blade", LootCategory.SWORD.getName()),
-            Map.entry("claymore", LootCategory.SWORD.getName()),
-            Map.entry("decrepit_scythe", LootCategory.SWORD.getName()),
-            Map.entry("dreadsword", LootCategory.SWORD.getName()),
-            Map.entry("fiery_dagger", LootCategory.SWORD.getName()),
-            Map.entry("firebrand", LootCategory.SWORD.getName()),
-            Map.entry("hellrazor", LootCategory.SWORD.getName()),
-            Map.entry("keeper_flamberge", LootCategory.SWORD.getName()),
-            Map.entry("legionnaire_flamberge", LootCategory.SWORD.getName()),
-            Map.entry("magehunter", LootCategory.SWORD.getName()),
-            Map.entry("misery", LootCategory.SWORD.getName()),
-            Map.entry("obsidian_katana", LootCategory.SWORD.getName()),
-            Map.entry("spellbreaker", LootCategory.SWORD.getName()),
-            Map.entry("truthseeker", LootCategory.SWORD.getName()),
-            Map.entry("twilight_gale", LootCategory.SWORD.getName()),
-            Map.entry("autoloader_crossbow", LootCategory.CROSSBOW.getName())
+    private static final List<String> STAFFS = List.of(
+            "blood_staff",
+            "improved_blood_staff",
+            "pyrium_staff",
+            "graybeard_staff",
+            "ice_staff",
+            "staff_of_the_nines"
     );
 
     private IronsSpellbooksCompat() {}
 
     public static void send() {
-        // FG&A's "staffs" category only matches Iron's StaffItem subclasses. the items here are all
-        // SwordItem and CrossbowItem, which Apotheosis's builtin forItem already handles, so skip the
-        // redundant IMC sends when FG&A is present.
-        if (FallenGemsCompat.isLoaded()) return;
-        CompatImc.sendOverrides(NAMESPACE, OVERRIDES, CompatImc.SkipMode.WARN);
+        if (!FallenGemsCompat.hasStaffsCategory()) {
+            return;
+        }
+        Map<String, String> overrides = new LinkedHashMap<>();
+        for (String staff : STAFFS) {
+            overrides.put(staff, FallenGemsCompat.STAFFS_CATEGORY);
+        }
+        CompatImc.sendOverrides(NAMESPACE, overrides, CompatImc.SkipMode.SILENT);
     }
 }

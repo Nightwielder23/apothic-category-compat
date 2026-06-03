@@ -5,7 +5,7 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-// Base Epic Fight has five material-suffixed weapon families (greatsword, longsword, dagger, spear,
+// Base Epic Fight has five material suffixed weapon families (greatsword, longsword, dagger, spear,
 // tachi) plus three uniques (bokken, uchigatana, glove). Greatswords are HEAVY, and everything else is
 // SWORD since spears, tachis, and gloves all count as light melee.
 public final class EpicFightCompat {
@@ -27,9 +27,19 @@ public final class EpicFightCompat {
     }
 
     private static String categorize(String path) {
-        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD.getName();
-        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON.getName();
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
+        if (SWORD_PATHS.contains(path)) {
+            return LootCategory.SWORD.getName();
+        }
+        for (String s : HEAVY_SUFFIXES) {
+            if (path.endsWith(s)) {
+                return LootCategory.HEAVY_WEAPON.getName();
+            }
+        }
+        for (String s : SWORD_SUFFIXES) {
+            if (path.endsWith(s)) {
+                return LootCategory.SWORD.getName();
+            }
+        }
         return null;
     }
 }

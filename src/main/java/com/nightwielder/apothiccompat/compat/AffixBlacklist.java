@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// Stops blacklisted affixes from rolling on new gear by rebuilding Apoth's cached affix-by-type map
+// Stops blacklisted affixes from rolling on new gear by rebuilding Apoth's cached affix by type map
 // without them. The backing AffixRegistry is left alone so existing affixed items keep working, and
 // the map gets rebuilt on every datapack reload so this has to rerun each time.
 public final class AffixBlacklist {
@@ -32,12 +32,11 @@ public final class AffixBlacklist {
         blacklist = (ids == null) ? Set.of() : Set.copyOf(ids);
     }
 
-    // Returns:
-    //  - the number of affixes actually disabled (those that matched a registered affix)
+    // Returns the number of affixes actually disabled, those that matched a registered affix.
     public static int apply() {
         Collection<Affix> all = AffixRegistry.INSTANCE.getValues();
         if (all.isEmpty()) {
-            // affixes haven't loaded yet so rebuilding now would wipe the whole pool
+            // Affixes haven't loaded yet so rebuilding now would wipe the whole pool
             ApothicCompat.LOGGER.debug("Affix registry empty; skipping blacklist apply.");
             return 0;
         }
@@ -59,21 +58,25 @@ public final class AffixBlacklist {
             keptByType.merge(type, 1, Integer::sum);
         }
 
-        // blacklist ids with no matching affix, either misspelled or from a mod that isn't installed.
-        // warn so the operator can fix the toml.
+        // Blacklist ids with no matching affix, either misspelled or from a mod that isn't installed.
+        // Warn so the operator can fix the toml.
         List<ResourceLocation> unknown = new ArrayList<>();
         for (ResourceLocation id : bl) {
-            if (!matched.contains(id)) unknown.add(id);
+            if (!matched.contains(id)) {
+                unknown.add(id);
+            }
         }
         if (!unknown.isEmpty()) {
             ApothicCompat.LOGGER.warn("Affix blacklist: {} unknown affix id(s) skipped: {}", unknown.size(), unknown);
         }
 
-        // types the blacklist emptied out completely. Apoth just rolls fewer affixes when a type has no
+        // Types the blacklist emptied out completely. Apoth rolls fewer affixes when a type has no
         // candidates so it's allowed, but flag it so the operator knows that category can't appear anymore.
         List<AffixType> emptied = new ArrayList<>();
         for (Map.Entry<AffixType, Integer> e : originalByType.entrySet()) {
-            if (keptByType.getOrDefault(e.getKey(), 0) == 0) emptied.add(e.getKey());
+            if (keptByType.getOrDefault(e.getKey(), 0) == 0) {
+                emptied.add(e.getKey());
+            }
         }
         if (!emptied.isEmpty()) {
             ApothicCompat.LOGGER.warn("Affix blacklist emptied these affix types completely: {}", emptied);

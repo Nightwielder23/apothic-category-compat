@@ -11,42 +11,30 @@ public final class LEnderCataclysmCompat {
     private static final Map<String, String> OVERRIDES = new LinkedHashMap<>();
 
     static {
-        put(LootCategory.SWORD,
-                "ancient_spear", "astrape", "athame", "black_steel_sword",
-                "blazing_grips", "ceraunus", "chitin_claw", "coral_spear",
-                "khopesh", "lionfish", "soul_render", "sticky_gloves",
-                "the_immolator", "tidal_claws", "void_forge", "zweiender");
-        put(LootCategory.HEAVY_WEAPON,
-                "black_steel_axe", "coral_bardiche", "emp", "final_fractal",
-                "gauntlet_of_bulwark", "gauntlet_of_guard", "gauntlet_of_maelstrom",
-                "meat_shredder", "the_annihilator", "the_incinerator");
+        // cursed_bow extends ProjectileWeaponItem and wrath_of_the_desert extends plain Item, so neither
+        // is caught by the BowItem class check. The shoulder weapons and laser_gatling extend plain Item.
         put(LootCategory.BOW, "cursed_bow", "wrath_of_the_desert");
         put(LootCategory.CROSSBOW,
                 "void_assault_shoulder_weapon", "wither_assault_shoulder_weapon",
                 "laser_gatling");
-        put(LootCategory.SHIELD,
-                "azure_sea_shield", "black_steel_targe", "bulwark_of_the_flame");
-        put(LootCategory.HELMET,
-                "bone_reptile_helmet", "cursium_helmet", "ignitium_helmet",
-                "monstrous_helm");
-        put(LootCategory.CHESTPLATE,
-                "bone_reptile_chestplate", "cursium_chestplate",
-                "ignitium_chestplate", "ignitium_elytra_chestplate",
-                "bloom_stone_pauldrons");
-        put(LootCategory.LEGGINGS, "cursium_leggings", "ignitium_leggings");
-        put(LootCategory.BOOTS, "cursium_boots", "ignitium_boots");
-        put(LootCategory.PICKAXE, "black_steel_pickaxe");
-        put(LootCategory.SHOVEL, "black_steel_shovel");
+        // void_forge and infernal_forge are the only Cataclysm items that extend PickaxeItem, so
+        // UniversalCompat would file them under pickaxe, both are wielded as heavy weapons, so override them
+        // explicitly (per mod modules run after the universal pass and win). Every melee Cataclysm_Weapon_Item
+        // carries attack damage and routes through the speed split, and the shields all extend ShieldItem, so
+        // none of those need an entry here.
+        put(LootCategory.HEAVY_WEAPON, "void_forge", "infernal_forge");
     }
 
     private LEnderCataclysmCompat() {}
 
     private static void put(LootCategory cat, String... ids) {
         String name = cat.getName();
-        for (String id : ids) OVERRIDES.put(id, name);
+        for (String id : ids) {
+            OVERRIDES.put(id, name);
+        }
     }
 
     public static void send() {
-        CompatImc.sendOverrides(NAMESPACE, OVERRIDES, CompatImc.SkipMode.WARN);
+        CompatImc.sendOverrides(NAMESPACE, OVERRIDES, CompatImc.SkipMode.SILENT);
     }
 }

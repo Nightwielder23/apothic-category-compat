@@ -7,7 +7,7 @@ modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
 authors="${mod_authors}"
-# Server-only: do not cause a red X when the mod is on the server but not the client.
+# Server only: do not cause a red X when the mod is on the server but not the client.
 displayTest="IGNORE_SERVER_VERSION"
 description='''${mod_description}'''
 
@@ -27,20 +27,6 @@ description='''${mod_description}'''
 
 [[dependencies.${mod_id}]]
     modId="apotheosis"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="samurai_dynasty"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="dreadsteel"
     mandatory=false
     versionRange="[0,)"
     ordering="AFTER"
@@ -68,20 +54,6 @@ description='''${mod_description}'''
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="simplyswords"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="irons_spellbooks"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
     modId="aquamirae"
     mandatory=false
     versionRange="[0,)"
@@ -89,42 +61,7 @@ description='''${mod_description}'''
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="mowziesmobs"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="spartanshields"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
     modId="dungeons_and_combat"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="spartanweaponry"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="armageddon_mod"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="magistuarmory"
     mandatory=false
     versionRange="[0,)"
     ordering="AFTER"
@@ -173,13 +110,6 @@ description='''${mod_description}'''
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="bosses_of_mass_destruction"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
     modId="meetyourfight"
     mandatory=false
     versionRange="[0,)"
@@ -187,28 +117,14 @@ description='''${mod_description}'''
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="deeperdarker"
+    modId="fallen_gems_affixes"
     mandatory=false
     versionRange="[0,)"
     ordering="AFTER"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="knightquest"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="knight_quest"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="enigmaticlegacy"
+    modId="irons_spellbooks"
     mandatory=false
     versionRange="[0,)"
     ordering="AFTER"
@@ -229,13 +145,6 @@ description='''${mod_description}'''
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="fallen_gems_affixes"
-    mandatory=false
-    versionRange="[0,)"
-    ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
     modId="traveloptics"
     mandatory=false
     versionRange="[0,)"
@@ -250,14 +159,14 @@ description='''${mod_description}'''
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="integrated_simply_swords"
+    modId="twilightforest"
     mandatory=false
     versionRange="[0,)"
     ordering="AFTER"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
-    modId="rpg_style_more_weapons_r"
+    modId="undergarden"
     mandatory=false
     versionRange="[0,)"
     ordering="AFTER"

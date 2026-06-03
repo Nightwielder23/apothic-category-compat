@@ -1,66 +1,45 @@
 # Apothic Compat
 
-A small server-side 1.20.1 Forge mod that fills in Apotheosis loot-category assignments for weapon/armor mods that don't set them. Uses the Apotheosis IMC override API, so nothing is patched or mixin'd.
+A small server side 1.20.1 Forge mod that fills in Apotheosis loot category assignments for weapon/armor mods that don't set them. Uses the Apotheosis IMC override API, so nothing is patched or mixin'd.
 
 ## What it does
 
 Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. A lot of modded weapons either don't have a category at all or get the wrong one, so affixes never appear on them. Apothic Compat sends the right categories at load time.
 
-## Supported mods
+The core rule is universal: every registered item is categorized by what it actually is, not by a hardcoded list. Any item that deals melee attack damage is split into `sword` or `heavy_weapon` by its attack speed, using the same thresholds Obscure API shows in its weapon tooltips: a weapon at or below 1.0 attack speed reads as heavy, anything faster reads as a sword, and a fast weapon that still hits very hard (10.0 or more effective damage) is bumped to heavy. The attack speed and damage are read live from the item stack, so combat mods that adjust a weapon's stats at runtime are reflected. This works for any mod's weapons no matter which Java class they extend, including plain `Item`, `TieredItem`, `DiggerItem`, and modular subclasses. Bows, crossbows, tridents, pickaxes, shovels, shields, and armor are read straight from the vanilla class hierarchy.
 
-Every module is a soft dep. A module only runs when both Apotheosis and the target mod are loaded.
+A second pass runs at the end of mod loading. Some mods finalize a weapon's attack stats during deferred setup that completes after the first scan, so the second pass reruns the same categorization once everything is settled and corrects anything that read stale.
 
-- **L'Ender's Cataclysm**: full weapon, shield, and armor coverage
-- **Iron's Spellbooks**: melee weapons only (staves, scythes, blades). Defers to Fallen Gems & Affixes when loaded.
-- **Tetra**: fixes miscategorized bows, crossbows, and stabilizer-upgraded weapons
-- **Alex's Mobs**: Blood Sprayer as bow
-- **Alex's Caves**: spears, dagger, staves, ortholance, and gauntlet as swords. Primitive Club as heavy. Dreadbow and Raygun as bows.
-- **Spartan Weaponry**: suffix-matched for all material variants
-- **Simply Swords**: claymores, longswords, rapiers, katanas, cutlasses, twinblades, scythes, sai, warglaives, spears, and chakrams as swords. Glaives, halberds, greataxes, and greathammers as heavy weapons.
-- **Integrated Simply Swords**: matches the Simply Swords mapping across cross-mod material variants. Alex's Caves Polarizer integration as heavy weapon.
-- **Enigmatic Legacy**: Voracious Pan as sword, Axe of Executioner and Astral Breaker as heavy weapons
-- **Mowzie's Mobs**: weapons and armor
-- **Bosses of Mass Destruction**: Earthdive Spear as sword (older Obsidian Spear and Nether Staff entries retained for back-compat)
-- **Forbidden and Arcanus**: Draco Arcanus axe as heavy, rest as swords
-- **Born in Chaos**: scythes/axes/hammers as heavy, swords and daggers as swords
-- **Deeper and Darker**: suffix-matched swords and knives
-- **Spartan Shields**: all shields
-- **Knight Quest**: supports both GPL (knightquest) and Count Grimhart (knight_quest) variants. Paladin Sword as heavy, other weapons as swords
-- **Aquamirae**: weapons and armor
-- **Epic Knights**: polearms and mauls as heavy weapons, shield overrides
-- **Spartan and Fire**: Spartan-style additions handled via Spartan Weaponry compat
-- **Meet Your Fight**: Dusk Greatsword as heavy, rest as swords, Bell Crossbow as crossbow
-- **Samurai Dynasty**: katanas, kama, and spears as swords
-- **Dread Steel**: scythe as heavy weapon, shield as shield
-- **Marium's Soulslike Weaponry**: greatswords/scythes/glaives as heavy, spears/swordspears as swords, named legendaries pinned
-- **Dungeons and Combat**: hammers as heavy weapons, pyromancer/sanguine/fairy/scepter of compensation as staffs when FG&A and Iron's Spellbooks are both loaded (otherwise sword)
-- **Weapons of Miracles**: overrides for named weapons and armor
-- **Epic Fight**: greatswords as heavy weapons; longswords, daggers, spears, tachis, bokken, uchigatana, and glove as swords
-- **EpicFight-Resurrection**: greatswords and great tachi as heavy weapons, longswords as swords
-- **EpicFight-Nightfall**: Ruins Greatsword and Ghiza's Wheel as heavy weapons
-- **Celestisynth**: nine named weapons, mostly swords with Poltergeist as heavy and Rainfall Serenity as bow. Defers to Fallen Gems & Affixes when loaded.
-- **T.O Magic 'n Extras**: boss weapons across all four upgrade tiers. Most as swords, Galenic Polarizer as heavy weapon, Trident of the Eternal Maelstrom as trident. Staffs as swords unless Fallen Gems & Affixes is loaded.
-- **RPG Style More Weapons**: battle axes and greatswords as heavy weapons, knives as swords
-- **Malum**: scythes (crude, soul stained steel, edge of deliverance, weight of worlds) as heavy weapons, tyrving and sundering anchor as swords. Scythes defer to Fallen Gems & Affixes' staffs category when it and Iron's Spellbooks are both loaded.
-- **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters as swords, or as Fallen Gems & Affixes' staffs category when it and Iron's Spellbooks are both loaded; Mazebreaker Pickaxe as pickaxe, Ice Bomb as none. Standard swords, bows, axes, and pickaxes go through the universal fallback.
-- **The Undergarden**: cloggrum, forgotten, froststeel, and utherium battleaxes as heavy weapons (they extend SwordItem, so the fallback alone would call them swords), spear as sword, slingshot as bow. Standard swords, axes, and pickaxes go through the universal fallback.
-- **Fallen Gems & Affixes**: when present, Iron's Spellbooks, T.O Magic 'n Extras staffs, and Celestisynth skip our overrides so FG&A's Staffs and Celestial Melee/Ranged categories apply.
+## Per mod modules
 
-## Handled by universal fallback
+The universal rule covers almost everything on its own. A few mods register ranged weapons, shields, scepters, or other items under custom classes that carry no usable hierarchy or attack damage attribute, so those get small explicit overrides. A module only runs when both Apotheosis and the target mod are loaded.
 
-These mods extend the right vanilla classes (SwordItem, AxeItem, BowItem, etc.) so the universal fallback categorizes them correctly without needing an explicit module:
+- **L'Ender's Cataclysm**: Cursed Bow and Wrath of the Desert as bows, the assault shoulder weapons and Laser Gatling as crossbows (plain `Item` or `ProjectileWeaponItem`), Void Forge and Infernal Forge as heavy weapons (they extend `PickaxeItem` but are wielded as weapons). Every melee weapon and every shield is read by the universal rule
+- **Tetra**: modular bow, crossbow, and shield (all extend `ModularItem`, not the vanilla ranged or shield classes); modular melee builds go through the universal rule by attack speed
+- **Weapons of Miracles**: Overly Large Cylindre as a shield (plain `Item`). The rest of its Epic Fight weapons expose real attack stats, so the universal rule handles them
+- **Aquamirae**: Poisoned Chakra as a sword (extends `TieredItem` with no attack damage attribute)
+- **Dungeons and Combat**: the pyromancer, sanguine, fairy, and compensation scepters as staffs (Fallen Gems & Affixes) or sword
+- **Marium's Soulslike Weaponry**: the custom bows (Galeforce, Kraken Slayer, longbows, bowblades) and crossbows, which extend a Ranged Weapon API class rather than the vanilla bow/crossbow classes
+- **Born in Chaos**: Trident Hayfork as a heavy weapon (plain `Item`)
+- **Celestisynth**: Poltergeist pinned to heavy (an axe the user wants heavy regardless of speed). Defers to Fallen Gems & Affixes when loaded
+- **Alex's Mobs**: Blood Sprayer as a bow
+- **Alex's Caves**: Galena Gauntlet as a sword and the sea and sugar staves as staffs (Fallen Gems & Affixes) or sword (all plain `Item`), Dreadbow and Raygun as bows
+- **Forbidden and Arcanus**: Draco Arcanus Scepter as staffs (Fallen Gems & Affixes) or sword (plain `Item`)
+- **Meet Your Fight**: the Guns Without Roses compat guns (Jägershot, Phantasmal Rifle, Dredged Cannonade) as crossbows
+- **Epic Fight**: greatswords as heavy weapons, the other weapon types as swords. Epic Fight keeps each weapon's real combat power in its own attribute system and leaves the vanilla attributes at tier defaults, so the speed rule can't place these on its own
+- **EpicFight Resurrection / Nightfall**: greatswords, the great tachi, the scythe, and Ghiza's Wheel as heavy weapons
+- **T.O Magic 'n Extras**: Galenic Polarizer as a heavy weapon, Trident of the Eternal Maelstrom as a trident, the staffs as Fallen Gems & Affixes staffs or sword. The sword shaped boss weapons go through the universal rule
+- **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters as staffs or sword, Ice Bomb as none (utility item with no attack damage)
+- **The Undergarden**: Slingshot as a bow (extends `ProjectileWeaponItem`)
+- **Fallen Gems & Affixes**: when present, any item whose registry id names a staff, scepter, or wand routes to its Staffs category, and Celestisynth defers to its Celestial Melee/Ranged categories
 
-- **Farmer's Delight**: knives as swords
-- **Dungeons Delight**: knives and cleavers as swords
-- **dacxirons**: staves as swords
-- **Cataclysm Weaponry**: ignitium tools and sword
-- **Immersive Armors**: armor pieces
-- **Armageddon**: most items
-- Anything else with vanilla-class weapons/armor
+## Handled by the universal rule
+
+These mods extend the right vanilla classes or carry real attack stats, so the universal rule categorizes them with no explicit module: Simply Swords, Integrated Simply Swords, Spartan Weaponry, Spartan Shields, Epic Knights, Samurai Dynasty, Dread Steel, Iron's Spellbooks, Mowzie's Mobs, Bosses of Mass Destruction, Deeper and Darker, Knight Quest, Enigmatic Legacy, Malum, RPG Style More Weapons, Farmer's Delight, Dungeons Delight, Cataclysm Weaponry, Armageddon, and anything else with vanilla class weapons or weapons that carry an attack damage attribute, plus armor.
 
 ## Config
 
-A config file shows up at `config/apothic_compat.toml` on first launch. Per-item and per-tag overrides go there:
+A config file shows up at `config/apothic_compat.toml` on first launch. Per item and per tag overrides go there:
 
 ```toml
 [item_overrides]
@@ -72,7 +51,7 @@ A config file shows up at `config/apothic_compat.toml` on first launch. Per-item
 
 Valid category names: `sword`, `heavy_weapon`, `trident`, `bow`, `crossbow`, `shield`, `helmet`, `chestplate`, `leggings`, `boots`, `pickaxe`, `shovel`, `none`. Set an item to none to fully blacklist it from rolling any affixes. Categories registered by other mods (such as staffs from Fallen Gems & Affixes) are also accepted.
 
-## Affix Blacklist
+## Affix blacklist
 
 Stops specific affixes from rolling on newly generated gear (loot drops, reforging, trades, and gem application) without editing datapacks. List the affix ids in the `affix_blacklist` array in `apothic_compat.toml`:
 
@@ -86,11 +65,11 @@ Notes:
 
 - This blocks future rolls only. Items that already carry a blacklisted affix keep it.
 - Apotheosis's own datapack affix overrides still take precedence.
-- The blacklist re-applies automatically on server start and after `/reload`. Edit the list and run `/ac reload` (or `/apothiccompat reload`) to apply it without a restart.
+- The blacklist reapplies automatically on server start and after `/reload`. Edit the list and run `/ac reload` (or `/apothiccompat reload`) to apply it without a restart.
 
 ## Items already handled by Apotheosis
 
-Apotheosis hardcodes defaults in `config/apotheosis/adventure.cfg` under the `Equipment Type Overrides` list. These take precedence over both Apothic Compat's config and built-in compat modules. As of Apotheosis 7.4.8 the hardcoded defaults are:
+Apotheosis hardcodes defaults in `config/apotheosis/adventure.cfg` under the `Equipment Type Overrides` list. These take precedence over both Apothic Compat's config and built in compat modules. As of Apotheosis 7.4.8 the hardcoded defaults are:
 
 - `minecraft:iron_sword` set to `sword`
 - `minecraft:shulker_shell` set to `none`
@@ -99,7 +78,7 @@ Setting these items in `apothic_compat.toml` will not work. To override them, ed
 
 ## Reload command
 
-`/apothiccompat reload` or `/ac reload` (op level 2) re-reads the config and re-applies it without a restart, every time it's run.
+`/apothiccompat reload` or `/ac reload` (op level 2) rereads the config and reapplies it without a restart, every time it's run.
 
 ## Requirements
 
@@ -107,7 +86,7 @@ Minecraft 1.20.1, Forge 47.x, Apotheosis 7.4.x. Everything else is optional.
 
 ## Installation
 
-Drop the jar in `mods/`. Server-side only (clients don't need it).
+Drop the jar in `mods/`. Server side only (clients don't need it).
 
 ## License
 

@@ -7,27 +7,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// T.O Magic 'n Extras boss weapons each have four upgrade tiers and don't extend vanilla classes
-// cleanly, so every tier gets listed with the same category. Staffs defer to FG&A's Staffs category when
-// it's loaded and fall back to SWORD otherwise.
+// T.O Magic 'n Extras boss weapons each have four upgrade tiers. The sword shaped ones extend a
+// GeoMagicSword (an Iron's Spellbooks MagicSwordItem) and expose real attack stats, so UniversalCompat
+// splits them by speed. The rest need explicit overrides: galenic_polarizer is a GeoMagicSword used as a
+// heavy launcher, trident_of_the_eternal_maelstrom is a GeoMagicSpear rather than a vanilla TridentItem,
+// and the staffs read as heavy under the speed split while FG&A's autodetect never claims GeoStaffItem, so
+// they are sent explicitly to FG&A's staffs category when loaded, sword otherwise.
 public final class TravelopticsCompat {
     private static final String NAMESPACE = "traveloptics";
-
-    private static final List<String> SWORD_BASES = List.of(
-            "flames_of_eldritch",
-            "cursed_wraithblade",
-            "the_obliterator",
-            "abyssal_tidecaller",
-            "voidstrike_reaper",
-            "mechanized_wraithblade",
-            "charged_sands",
-            "thorns_of_oblivion",
-            "stellothorn",
-            "scourge_of_the_sands",
-            "harbingers_wrath",
-            "infernal_devastator",
-            "gauntlet_of_extinction"
-    );
 
     private static final List<String> HEAVY_BASES = List.of(
             "galenic_polarizer"
@@ -53,14 +40,12 @@ public final class TravelopticsCompat {
 
     public static void send() {
         Map<String, String> overrides = new LinkedHashMap<>();
-        addBases(overrides, SWORD_BASES, LootCategory.SWORD.getName());
         addBases(overrides, HEAVY_BASES, LootCategory.HEAVY_WEAPON.getName());
         addBases(overrides, TRIDENT_BASES, LootCategory.TRIDENT.getName());
 
-        // FG&A owns the Staffs category, so only categorize staffs here when it's absent
-        if (!FallenGemsCompat.isLoaded()) {
-            addBases(overrides, STAFF_BASES, LootCategory.SWORD.getName());
-        }
+        String staffCategory = FallenGemsCompat.staffsOr(LootCategory.SWORD.getName());
+        addBases(overrides, STAFF_BASES, staffCategory);
+
         CompatImc.sendOverrides(NAMESPACE, overrides, CompatImc.SkipMode.WARN);
     }
 

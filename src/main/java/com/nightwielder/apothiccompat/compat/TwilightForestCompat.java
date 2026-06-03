@@ -7,15 +7,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// TF's normal gear extends vanilla item classes so UniversalCompat already handles it. These overrides
-// cover the four scepters, mazebreaker_pickaxe, and ice_bomb.
+// Twilight Forest's normal gear extends vanilla item classes, so UniversalCompat handles it (swords and
+// axes by speed, mazebreaker_pickaxe as a pickaxe through the PickaxeItem branch). The four scepters extend
+// plain Item with no attack damage attribute, so the speed path never categorizes them. They go to FG&A's
+// staffs category when present (sword otherwise). The ice_bomb is a thrown utility pinned to none.
 public final class TwilightForestCompat {
     private static final String NAMESPACE = "twilightforest";
     private static final Map<String, String> OVERRIDES = new LinkedHashMap<>();
 
-    // magic-caster scepters. they extend plain Item so class inference can't place them. send FG&A's
-    // staffs category when present, otherwise SWORD. resolved at send time so the deferral sees the
-    // final mod list, mirroring DungeonsAndCombatCompat.
     private static final List<String> SCEPTERS = List.of(
             "lifedrain_scepter",
             "twilight_scepter",
@@ -24,19 +23,16 @@ public final class TwilightForestCompat {
     );
 
     static {
-        // block_and_chain and cube_of_annihilation stay unmapped. their projectile entity deals the
-        // damage, not a melee swing, so melee affixes can't proc, and bare Item falls back to NONE.
+        // block_and_chain and cube_of_annihilation stay unmapped. Their projectile entity deals the
+        // damage, not a melee swing, so melee affixes can't proc, and bare Item falls back to none.
         OVERRIDES.put("ice_bomb", LootCategory.NONE.getName());
-        OVERRIDES.put("mazebreaker_pickaxe", LootCategory.PICKAXE.getName());
     }
 
     private TwilightForestCompat() {}
 
     public static void send() {
         Map<String, String> overrides = new LinkedHashMap<>(OVERRIDES);
-        String scepterCategory = FallenGemsCompat.hasStaffsCategory()
-                ? FallenGemsCompat.STAFFS_CATEGORY
-                : LootCategory.SWORD.getName();
+        String scepterCategory = FallenGemsCompat.staffsOr(LootCategory.SWORD.getName());
         for (String scepter : SCEPTERS) {
             overrides.put(scepter, scepterCategory);
         }

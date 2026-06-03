@@ -5,7 +5,7 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-// Epic Fight Resurrection (cdmoveset) ids don't always put an underscore before the weapon-type token
+// Epic Fight Resurrection (cdmoveset) ids don't always put an underscore before the weapon type token
 // (e.g. s_irongreatsword vs s_iron_greatsword), so suffixes are matched without a leading underscore.
 // Anything that matches no suffix falls through to UniversalCompat.
 public final class EpicFightResurrectionCompat {
@@ -28,9 +28,19 @@ public final class EpicFightResurrectionCompat {
     }
 
     private static String categorize(String path) {
-        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON.getName();
-        for (String s : HEAVY_SUFFIXES) if (path.endsWith(s)) return LootCategory.HEAVY_WEAPON.getName();
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
+        if (HEAVY_PATHS.contains(path)) {
+            return LootCategory.HEAVY_WEAPON.getName();
+        }
+        for (String s : HEAVY_SUFFIXES) {
+            if (path.endsWith(s)) {
+                return LootCategory.HEAVY_WEAPON.getName();
+            }
+        }
+        for (String s : SWORD_SUFFIXES) {
+            if (path.endsWith(s)) {
+                return LootCategory.SWORD.getName();
+            }
+        }
         return null;
     }
 }

@@ -26,8 +26,7 @@ public final class ReloadCommand {
                                 "Apotheosis is not loaded; nothing to apply."));
                         return 0;
                     }
-                    ApothicCompatConfig.ReloadResult result = ApothicCompatConfig.reload();
-                    int count = result.count();
+                    int count = ApothicCompatConfig.reload();
                     ctx.getSource().sendSuccess(() -> Component.literal("Config reloaded."), true);
                     return count;
                 }));

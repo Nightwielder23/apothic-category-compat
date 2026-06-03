@@ -1,33 +1,22 @@
 package com.nightwielder.apothiccompat.compat;
 
-import com.nightwielder.apothiccompat.util.CompatScan;
+import com.nightwielder.apothiccompat.util.CompatImc;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
-import java.util.Set;
+import java.util.Map;
 
-// Forbidden Arcanus weapons: the draco_arcanus set plus mystical_dagger are listed explicitly, and the
-// material gavels share a _blacksmith_gavel suffix so the suffix fallback catches them. Trinkets, seeds,
-// orbs, and amulets fall through to UniversalCompat.
+// Forbidden and Arcanus melee weapons extend SwordItem/AxeItem and route through the speed split, and the
+// blacksmith gavels extend PickaxeItem so UniversalCompat files them as pickaxes. The draco_arcanus_scepter
+// is the exception: it extends plain Item with no attack damage attribute, so the speed path never sees it.
+// It goes to FG&A's staffs category when present, sword otherwise.
 public final class ForbiddenArcanusCompat {
     private static final String NAMESPACE = "forbidden_arcanus";
-
-    private static final Set<String> SWORD_PATHS = Set.of(
-            "mystical_dagger", "draco_arcanus_scepter", "draco_arcanus_sword");
-
-    private static final Set<String> HEAVY_PATHS = Set.of("draco_arcanus_axe");
-
-    private static final String[] SWORD_SUFFIXES = {"_blacksmith_gavel"};
 
     private ForbiddenArcanusCompat() {}
 
     public static void send() {
-        CompatScan.byPath(NAMESPACE, ForbiddenArcanusCompat::categorize);
-    }
-
-    private static String categorize(String path) {
-        if (HEAVY_PATHS.contains(path)) return LootCategory.HEAVY_WEAPON.getName();
-        if (SWORD_PATHS.contains(path)) return LootCategory.SWORD.getName();
-        for (String s : SWORD_SUFFIXES) if (path.endsWith(s)) return LootCategory.SWORD.getName();
-        return null;
+        String category = FallenGemsCompat.staffsOr(LootCategory.SWORD.getName());
+        Map<String, String> overrides = Map.of("draco_arcanus_scepter", category);
+        CompatImc.sendOverrides(NAMESPACE, overrides, CompatImc.SkipMode.SILENT);
     }
 }
