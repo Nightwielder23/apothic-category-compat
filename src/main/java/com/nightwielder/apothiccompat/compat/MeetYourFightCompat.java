@@ -8,7 +8,7 @@ import java.util.Map;
 // Meet Your Fight's melee weapons extend SwordItem so UniversalCompat handles them. The two Guns Without
 // Roses compat guns extend GWR's own ShotgunItem/GunItem instead of a vanilla ranged class, so the
 // fallback skips them and they need explicit crossbow overrides. Both guns register only when Guns
-// Without Roses is installed, so on packs without it these two ids stay unbound and SILENT skips them.
+// Without Roses is installed, so on packs without it these two ids stay unbound and are silently skipped.
 public final class MeetYourFightCompat {
     private static final String NAMESPACE = "meetyourfight";
 

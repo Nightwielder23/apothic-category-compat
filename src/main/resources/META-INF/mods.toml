@@ -7,7 +7,7 @@ modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
 authors="${mod_authors}"
-# Server-only: do not cause a red X when the mod is on the server but not the client.
+# Server only: do not cause a red X when the mod is on the server but not the client.
 displayTest="IGNORE_SERVER_VERSION"
 description='''${mod_description}'''
 

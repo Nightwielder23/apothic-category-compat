@@ -15,7 +15,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-// One spot for the Apotheosis loot-category IMC, so the target mod id, method name, and payload shape stay
+// One spot for the Apotheosis loot category IMC, so the target mod id, method name, and payload shape stay
 // in one place.
 public final class CompatImc {
     public static final String APOTHEOSIS_MOD_ID = "apotheosis";
@@ -26,7 +26,7 @@ public final class CompatImc {
     // to HEAVY_WEAPON.
     public static final double SLOW_SPEED_MAX = 1.0;
 
-    // A medium-or-faster weapon that still hits this hard plays as heavy, so it maps to HEAVY_WEAPON
+    // A medium or faster weapon that still hits this hard plays as heavy, so it maps to HEAVY_WEAPON
     // regardless of speed. Tuned to catch greataxe and maul tier hitters that speed alone reads as swords.
     public static final double HEAVY_DAMAGE_THRESHOLD = 10.0;
 
@@ -36,8 +36,8 @@ public final class CompatImc {
     private CompatImc() {}
 
     // Where send() routes. The default is the startup IMC channel; the second pass swaps in a runtime sink
-    // that writes Apotheosis's override maps directly, so the same module code re-runs unchanged after
-    // deferred-init mods finalize their attributes.
+    // that writes Apotheosis's override maps directly, so the same module code reruns unchanged after
+    // deferred init mods finalize their attributes.
     private static BiConsumer<Item, String> sink = CompatImc::sendImc;
 
     public static void setSink(BiConsumer<Item, String> newSink) {
@@ -91,19 +91,21 @@ public final class CompatImc {
         return damage;
     }
 
-    // Live main-hand attack speed, the value vanilla and Obscure show in the tooltip.
+    // Live main hand attack speed, the value vanilla and Obscure show in the tooltip.
     public static double getAttackSpeed(ItemStack stack) {
         return liveValue(stack, Attributes.ATTACK_SPEED, 4.0);
     }
 
-    // Live main-hand effective attack damage, the value vanilla shows in the tooltip.
+    // Live main hand effective attack damage, the value vanilla shows in the tooltip.
     public static double getAttackDamage(ItemStack stack) {
         return liveValue(stack, Attributes.ATTACK_DAMAGE, 1.0);
     }
 
-    // base + summed ADDITION + addition sum scaled by summed MULTIPLY_BASE, read through
-    // stack.getAttributeModifiers rather than the item defaults. That fires Forge's
-    // ItemAttributeModifierEvent, so mods that adjust a weapon's attributes at runtime are reflected.
+    // Vanilla layers the attribute in order: start from base, add every ADDITION, then scale that whole sum
+    // by (1 + summed MULTIPLY_BASE). Scaling only the additions would drop the base * multiplyBase term and
+    // underreport the value, so the base is folded in before the multiply. Read through
+    // stack.getAttributeModifiers rather than the item defaults, which fires Forge's
+    // ItemAttributeModifierEvent so mods that adjust a weapon's attributes at runtime are reflected.
     private static double liveValue(ItemStack stack, Attribute attribute, double base) {
         Multimap<Attribute, AttributeModifier> mods = stack.getAttributeModifiers(EquipmentSlot.MAINHAND);
         double addition = 0;
@@ -115,6 +117,6 @@ public final class CompatImc {
                 multiplyBase += m.getAmount();
             }
         }
-        return base + addition + addition * multiplyBase;
+        return (base + addition) * (1 + multiplyBase);
     }
 }

@@ -5,8 +5,8 @@ import shadows.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Map;
 
-// Most Aquamirae weapons extend SwordItem and UniversalCompat handles them by speed. poisoned_chakra and
-// maze_rose extend TieredItem directly (not SwordItem), so Apotheosis would not class them and their
+// Most Aquamirae weapons extend SwordItem and UniversalCompat handles them by speed. The poisoned_chakra
+// and maze_rose extend TieredItem directly (not SwordItem), so Apotheosis would not class them and their
 // effective speed/damage does not push them to heavy; the user wants both as swords, so list them here.
 public final class AquamiraeCompat {
     private static final String NAMESPACE = "aquamirae";

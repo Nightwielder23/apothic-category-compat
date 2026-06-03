@@ -12,7 +12,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.tags.ITag;
@@ -26,15 +25,14 @@ import java.util.function.BiConsumer;
 
 public final class ApothicCompatConfig {
     private static final String FILE_NAME = "apothic_compat.toml";
-    private static final String IMC_METHOD = "loot_category_override";
 
     private static final String DEFAULT_CONTENTS = """
-            # User-defined loot category overrides for Apothic Compat.
+            # User defined loot category overrides for Apothic Compat.
             #
             # Maps Minecraft items (or item tags) to Apotheosis loot categories so the
             # affinity system can roll the right gem/affix pools on modded gear that
             # Apotheosis does not categorize on its own. Entries here are sent to
-            # Apotheosis via IMC at startup, alongside the mod's built-in compat
+            # Apotheosis via IMC at startup, alongside the mod's built in compat
             # modules. Edit this file then run /apothiccompat reload (op 2) to apply
             # changes without restarting the server.
             #
@@ -46,7 +44,23 @@ public final class ApothicCompatConfig {
             # (namespace:path), which TOML does not allow in bare keys.
 
             # ----------------------------------------------------------------------
-            # Per-item overrides.
+            # Categorization settings.
+            #
+            # name_based_heavy_override (default false): When enabled, items whose
+            # registry id contains a heavy weapon name (greatsword, claymore,
+            # zweihander, etc.) are categorized as HEAVY_WEAPON regardless of their
+            # attack speed and damage. Disable to use pure speed and damage.
+            #
+            # weapon_pickaxes_as_heavy (default true): When enabled, items in the
+            # dual-purpose pickaxe list (combat tools like the Void Forge, Infernal
+            # Forge, and Blacksmith Gavels) categorize as HEAVY_WEAPON instead of
+            # PICKAXE. Disable for pure PickaxeItem-class behavior.
+            # ----------------------------------------------------------------------
+            name_based_heavy_override = false
+            weapon_pickaxes_as_heavy = true
+
+            # ----------------------------------------------------------------------
+            # Per item overrides.
             #   key   = full item id (namespace:path)
             #   value = loot category name from the list above
             #
@@ -57,11 +71,11 @@ public final class ApothicCompatConfig {
             [item_overrides]
 
             # ----------------------------------------------------------------------
-            # Per-tag overrides. Every item carrying the tag receives the category.
+            # Per tag overrides. Every item carrying the tag receives the category.
             #   key   = full tag id (namespace:path)
             #   value = loot category name from the list above
             #
-            # Tags are resolved at apply time, so datapack-only tags that load with a
+            # Tags are resolved at apply time, so datapack only tags that load with a
             # world may not be visible during early startup. /apothiccompat reload
             # runs after world load, so tag expansion there sees datapack tags.
             #
@@ -71,22 +85,47 @@ public final class ApothicCompatConfig {
             [tag_overrides]
             """;
 
+    private static boolean nameBasedHeavyOverride = false;
+    private static boolean weaponPickaxesAsHeavy = true;
+
     private ApothicCompatConfig() {}
 
-    // first apply during InterModEnqueueEvent, over IMC since that's the only path that works pre-game
+    public static boolean nameBasedHeavyOverride() {
+        return nameBasedHeavyOverride;
+    }
+
+    public static boolean weaponPickaxesAsHeavy() {
+        return weaponPickaxesAsHeavy;
+    }
+
+    // Reads the categorization toggles into static fields so UniversalCompat can consult them during the
+    // dispatch passes, which run before the per item config load. Defaults hold when the file or a key is
+    // missing, so a config written before these keys existed keeps the documented behavior.
+    public static void loadSettings() {
+        Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
+        ensureDefaultFile(path);
+        try (CommentedFileConfig config = CommentedFileConfig.builder(path).sync().build()) {
+            loadTolerant(config);
+            nameBasedHeavyOverride = config.getOrElse("name_based_heavy_override", false);
+            weaponPickaxesAsHeavy = config.getOrElse("weapon_pickaxes_as_heavy", true);
+        } catch (Exception e) {
+            ApothicCompat.LOGGER.error("Failed to read categorization settings from {}", FILE_NAME, e);
+        }
+    }
+
+    // First apply during InterModEnqueueEvent, over IMC since that's the only path that works pre game.
     public static void load() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
-        process((item, categoryName) ->
-                InterModComms.sendTo("apotheosis", IMC_METHOD, () -> Map.entry(item, categoryName)));
+        process(CompatImc::send);
     }
 
-    // reapply for /apothiccompat reload. IMC is dead after load so write straight to Apoth's live
+    // Reapply for /apothiccompat reload. IMC is dead after load so write straight to Apoth's live
     // override map and mirror into AdventureModule.IMC_TYPE_OVERRIDES by reflection, otherwise the
-    // entries vanish when AdventureConfig.load recopies on the next Apoth reload. always re-reads the
-    // toml since the command is operator-invoked. additive only, so dropping a toml entry then reloading
+    // entries vanish when AdventureConfig.load recopies on the next Apoth reload. Always rereads the
+    // toml since the command is operator invoked. Additive only, so dropping a toml entry then reloading
     // keeps the live override and a restart is needed to drop it.
-    public static ReloadResult reload() {
+    public static int reload() {
         Map<ResourceLocation, LootCategory> imcMirror = getImcOverrideMap();
         int count = process((item, categoryName) -> {
             ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
@@ -100,17 +139,13 @@ public final class ApothicCompatConfig {
             }
         });
         ApothicCompat.LOGGER.info("Apothic Compat config reloaded.");
-        return ReloadResult.ofApplied(count);
+        return count;
     }
 
-    public record ReloadResult(int count) {
-        public static ReloadResult ofApplied(int count) { return new ReloadResult(count); }
-    }
-
-    // Second-pass re-categorization after deferred mod init (FMLLoadCompleteEvent). The IMC window is closed,
+    // Second pass recategorization after deferred mod init (FMLLoadCompleteEvent). The IMC window is closed,
     // so swap CompatImc's sink to write Apotheosis's live override map and mirror IMC_TYPE_OVERRIDES the same
     // way reload() does, run the supplied module dispatch, then restore the IMC sink. Only items whose
-    // category changed from the first-pass IMC value are written; returns that change count.
+    // category changed from the first pass IMC value are written; returns that change count.
     public static int reapply(Runnable dispatch) {
         Map<ResourceLocation, LootCategory> imcMirror = getImcOverrideMap();
         int[] changed = {0};
@@ -138,7 +173,7 @@ public final class ApothicCompatConfig {
         return changed[0];
     }
 
-    // reads the file and sends each valid (item, category) pair to action, returning the applied count
+    // Reads the file and sends each valid (item, category) pair to action, returning the applied count.
     private static int process(BiConsumer<Item, String> action) {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
@@ -158,9 +193,9 @@ public final class ApothicCompatConfig {
             config.load();
         } catch (ParsingException e) {
             // NightConfig throws this when the file ends without a trailing newline after a table header
-            // like [tag_overrides]. everything above the EOF is already parsed so keep going.
+            // like [tag_overrides]. Everything above the EOF is already parsed so keep going.
             if (e.getMessage() != null && e.getMessage().contains("Not enough data available")) {
-                ApothicCompat.LOGGER.debug("Tolerating trailing-EOF parse hiccup in {}: {}", FILE_NAME, e.getMessage());
+                ApothicCompat.LOGGER.debug("Tolerating trailing EOF parse hiccup in {}: {}", FILE_NAME, e.getMessage());
             } else {
                 throw e;
             }
@@ -189,21 +224,21 @@ public final class ApothicCompatConfig {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (!(value instanceof String categoryName)) {
-                ApothicCompat.LOGGER.warn("[item_overrides] '{}' must map to a string category, got {}", key, value);
+                ApothicCompat.LOGGER.warn("[item_overrides] Key '{}' must map to a string category, got {}", key, value);
                 continue;
             }
             if (LootCategory.byId(categoryName) == null) {
-                ApothicCompat.LOGGER.warn("[item_overrides] '{}' uses unknown category '{}'", key, categoryName);
+                ApothicCompat.LOGGER.warn("[item_overrides] Key '{}' uses unknown category '{}'", key, categoryName);
                 continue;
             }
             ResourceLocation id = ResourceLocation.tryParse(key);
             if (id == null) {
-                ApothicCompat.LOGGER.warn("[item_overrides] invalid item id '{}'", key);
+                ApothicCompat.LOGGER.warn("[item_overrides] Invalid item id '{}'", key);
                 continue;
             }
             Item item = ForgeRegistries.ITEMS.getValue(id);
             if (item == null) {
-                ApothicCompat.LOGGER.info("[item_overrides] item '{}' not present; skipping", key);
+                ApothicCompat.LOGGER.info("[item_overrides] Item '{}' not present; skipping", key);
                 continue;
             }
             action.accept(item, categoryName);
@@ -222,22 +257,22 @@ public final class ApothicCompatConfig {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (!(value instanceof String categoryName)) {
-                ApothicCompat.LOGGER.warn("[tag_overrides] '{}' must map to a string category, got {}", key, value);
+                ApothicCompat.LOGGER.warn("[tag_overrides] Key '{}' must map to a string category, got {}", key, value);
                 continue;
             }
             if (LootCategory.byId(categoryName) == null) {
-                ApothicCompat.LOGGER.warn("[tag_overrides] '{}' uses unknown category '{}'", key, categoryName);
+                ApothicCompat.LOGGER.warn("[tag_overrides] Key '{}' uses unknown category '{}'", key, categoryName);
                 continue;
             }
             ResourceLocation id = ResourceLocation.tryParse(key);
             if (id == null) {
-                ApothicCompat.LOGGER.warn("[tag_overrides] invalid tag id '{}'", key);
+                ApothicCompat.LOGGER.warn("[tag_overrides] Invalid tag id '{}'", key);
                 continue;
             }
             TagKey<Item> tagKey = TagKey.create(Registry.ITEM_REGISTRY, id);
             ITag<Item> tag = ForgeRegistries.ITEMS.tags().getTag(tagKey);
             if (tag.isEmpty()) {
-                ApothicCompat.LOGGER.info("[tag_overrides] tag '{}' empty or not yet bound; skipping", key);
+                ApothicCompat.LOGGER.info("[tag_overrides] Tag '{}' empty or not yet bound; skipping", key);
                 continue;
             }
             for (Item item : tag) {

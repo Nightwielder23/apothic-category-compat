@@ -9,7 +9,7 @@ public final class RegistryLookup {
     private RegistryLookup() {}
 
     // ForgeRegistries.ITEMS.getValue hands back Items.AIR (the registry default) for unregistered keys,
-    // not null. containsKey filters those out, and warn on a miss so version-skew ids show up in the log
+    // not null. containsKey filters those out, and warns on a miss so version-skew ids show up in the log
     // instead of dispatching overrides onto minecraft:air.
     public static Item item(ResourceLocation id) {
         if (!ForgeRegistries.ITEMS.containsKey(id)) {
