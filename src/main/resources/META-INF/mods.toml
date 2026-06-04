@@ -54,6 +54,20 @@ description='''${mod_description}'''
     side="BOTH"
 
 [[dependencies.${mod_id}]]
+    modId="born_in_chaos_v1"
+    mandatory=false
+    versionRange="[0,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="celestisynth"
+    mandatory=false
+    versionRange="[0,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
     modId="meetyourfight"
     mandatory=false
     versionRange="[0,)"

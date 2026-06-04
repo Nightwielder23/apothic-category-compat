@@ -7,7 +7,7 @@ import java.util.Map;
 
 // Forbidden and Arcanus melee weapons extend SwordItem and route through UniversalCompat by speed.
 // The draco_arcanus_scepter extends plain Item with no melee attack damage attribute, so the speed path
-// never sees it; this explicit override maps it to sword per the user's request.
+// never sees it; this explicit override maps it to sword.
 public final class ForbiddenArcanusCompat {
     private static final String NAMESPACE = "forbidden_arcanus";
 

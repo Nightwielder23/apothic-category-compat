@@ -3,6 +3,8 @@ package com.nightwielder.apothiccompat;
 import com.mojang.logging.LogUtils;
 import com.nightwielder.apothiccompat.compat.AlexsMobsCompat;
 import com.nightwielder.apothiccompat.compat.AquamiraeCompat;
+import com.nightwielder.apothiccompat.compat.BornInChaosCompat;
+import com.nightwielder.apothiccompat.compat.CelestisynthCompat;
 import com.nightwielder.apothiccompat.compat.EpicFightCompat;
 import com.nightwielder.apothiccompat.compat.EpicSamuraiCompat;
 import com.nightwielder.apothiccompat.compat.ForbiddenArcanusCompat;
@@ -15,7 +17,9 @@ import com.nightwielder.apothiccompat.compat.UniversalCompat;
 import com.nightwielder.apothiccompat.command.ReloadCommand;
 import com.nightwielder.apothiccompat.config.ApothicCompatConfig;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
@@ -34,10 +38,33 @@ public class ApothicCompat {
         modBus.addListener(this::sendCategoryOverrides);
         modBus.addListener(this::reapplyAfterDeferredInit);
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
+        MinecraftForge.EVENT_BUS.addListener(this::onServerStarted);
+        MinecraftForge.EVENT_BUS.addListener(this::onDatapackSync);
     }
 
     private void onRegisterCommands(RegisterCommandsEvent event) {
         ReloadCommand.register(event.getDispatcher());
+    }
+
+    // Affixes load with datapacks after the IMC pass, so apply the blacklist here instead of through IMC.
+    // ServerStartedEvent covers startup and OnDatapackSyncEvent covers /reload, which rebuilds Apoth's affix
+    // pool and would drop the filter otherwise. Per player sync is skipped since the pool only changes on a
+    // full reload.
+    private void onServerStarted(ServerStartedEvent event) {
+        if (!ModList.get().isLoaded("apotheosis")) {
+            return;
+        }
+        ApothicCompatConfig.loadAffixBlacklist();
+    }
+
+    private void onDatapackSync(OnDatapackSyncEvent event) {
+        if (event.getPlayer() != null) {
+            return;
+        }
+        if (!ModList.get().isLoaded("apotheosis")) {
+            return;
+        }
+        ApothicCompatConfig.loadAffixBlacklist();
     }
 
     // Apotheosis's loot_category_override IMC accepts only Map.Entry<Item, String> (item + category);
@@ -86,6 +113,12 @@ public class ApothicCompat {
         }
         if (ModList.get().isLoaded("alexsmobs")) {
             AlexsMobsCompat.send();
+        }
+        if (ModList.get().isLoaded("born_in_chaos_v1")) {
+            BornInChaosCompat.send();
+        }
+        if (ModList.get().isLoaded("celestisynth")) {
+            CelestisynthCompat.send();
         }
         if (ModList.get().isLoaded("meetyourfight")) {
             MeetYourFightCompat.send();

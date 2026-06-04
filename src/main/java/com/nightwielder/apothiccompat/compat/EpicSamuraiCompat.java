@@ -7,7 +7,7 @@ import java.util.Map;
 
 // Epic Samurai's bladed weapons extend SwordItem, so UniversalCompat splits them by attack speed. The
 // shuriken is a thrown plain Item with no melee attack damage attribute, so the speed path never reaches
-// it; this explicit override lets it roll sword affixes per the user's request.
+// it; this explicit override is what lets it roll sword affixes.
 public final class EpicSamuraiCompat {
     private static final String NAMESPACE = "epicsamurai";
 

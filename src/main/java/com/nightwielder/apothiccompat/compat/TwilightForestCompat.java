@@ -8,7 +8,7 @@ import java.util.Map;
 
 // TF's normal gear extends vanilla item classes so UniversalCompat already handles it (swords and axes by
 // attack speed, mazebreaker_pickaxe as a pickaxe). The four scepters extend plain Item with no attack
-// damage attribute, so the speed path never categorizes them; per the user's request they are mapped to
+// damage attribute, so the speed path never categorizes them; these explicit overrides map them to
 // sword so they can roll melee affixes. The ice_bomb is a thrown utility and stays none.
 public final class TwilightForestCompat {
     private static final String NAMESPACE = "twilightforest";

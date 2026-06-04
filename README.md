@@ -22,20 +22,22 @@ The universal rule covers almost everything on its own. A few mods register rang
 - **Aquamirae**: Poisoned Chakra and Maze Rose as swords (extend `TieredItem` directly, so the universal rule won't class them)
 - **Forbidden and Arcanus**: Draco Arcanus Scepter as sword (plain `Item` with no attack damage attribute)
 - **Alex's Mobs**: Blood Sprayer as bow
+- **Born in Chaos**: Trident Hayfork as a heavy weapon and the two Pumpkin Pistols as crossbows (all plain `Item`; the pistols are GeoItem guns that fire projectiles)
+- **Celestisynth**: Poltergeist pinned to heavy weapon (a `SkilledAxeItem`; the override sets it heavy rather than letting the speed rule decide)
 - **The Undergarden**: slingshot as bow (extends `ProjectileWeaponItem`)
 - **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters as swords (plain `Item` with no attack damage, so the universal rule can't place them but they should still roll melee affixes), Ice Bomb as none
 - **Everything else** (including all `ShieldItem` shields, e.g. Dread Steel, Spartan Shields, Epic Knights): categorized by the universal rule above
 
 ## Categorization settings
 
-Two toggles in `apothic_compat.toml` adjust how the universal rule categorizes items. They apply during mod load, so edit the file and restart the server to change them.
+Two toggles in `apothic_compat-common.toml` adjust how the universal rule categorizes items. They apply during mod load, so edit the file and restart the server to change them.
 
 - `name_based_heavy_override` (default `false`): when enabled, any item whose registry id contains a heavy weapon name (greatsword, claymore, zweihander, warhammer, halberd, bardiche, glaive, battleaxe, greataxe, lance, pike, maul, naginata, odachi, flamberge, scythe, and the like) is categorized as `heavy_weapon` regardless of its attack speed and damage. Leave it off to categorize purely by speed and damage.
 - `weapon_pickaxes_as_heavy` (default `true`): the dual-purpose pickaxe list holds combat tools that extend `PickaxeItem` but are swung as weapons. When enabled they categorize as `heavy_weapon` instead of `pickaxe`. The list covers L'Ender's Cataclysm's Void Forge and Infernal Forge and Forbidden and Arcanus's Blacksmith Gavels (every material tier). Disable it for plain `PickaxeItem` behavior.
 
 ## Config
 
-A config file shows up at `config/apothic_compat.toml` on first launch. Per item and per tag overrides go there:
+A config file shows up at `config/apothic_compat-common.toml` on first launch. Per item and per tag overrides go there:
 
 ```toml
 [item_overrides]
@@ -46,6 +48,22 @@ A config file shows up at `config/apothic_compat.toml` on first launch. Per item
 ```
 
 Valid category names: `sword`, `heavy_weapon`, `trident`, `bow`, `crossbow`, `shield`, `helmet`, `chestplate`, `leggings`, `boots`, `pickaxe`, `shovel`, `none`.
+
+## Affix blacklist
+
+Stops specific affixes from rolling on newly generated gear (loot drops, reforging, trades, and gem application) without editing datapacks. List the affix ids in the `affix_blacklist` array in `apothic_compat-common.toml`:
+
+```toml
+affix_blacklist = ["apotheosis:sword/attribute/vampiric", "apotheosis:heavy_weapon/attribute/berserking"]
+```
+
+Affix ids are paths matching the JSON file location, e.g. `data/apotheosis/affixes/sword/attribute/vampiric.json` corresponds to the id `apotheosis:sword/attribute/vampiric`. To find ids: hover an affixed item with JEI open, or browse the affix files under `data/<namespace>/affixes/` inside a mod's jar (Apotheosis's own affixes live in `data/apotheosis/affixes/`).
+
+Notes:
+
+- This blocks future rolls only. Items that already carry a blacklisted affix keep it.
+- Apotheosis's own datapack affix overrides still take precedence.
+- The blacklist reapplies automatically on server start and after `/reload`. Edit the list and run `/ac reload` (or `/apothiccompat reload`) to apply it without a restart.
 
 ## Reload command
 

@@ -26,9 +26,12 @@ public final class ReloadCommand {
                                 "Apotheosis is not loaded; nothing to apply."));
                         return 0;
                     }
-                    int count = ApothicCompatConfig.reload();
-                    ctx.getSource().sendSuccess(Component.literal("Config reloaded."), true);
-                    return count;
+                    ApothicCompatConfig.ReloadResult result = ApothicCompatConfig.reload();
+                    ctx.getSource().sendSuccess(Component.literal(result.message()), true);
+                    if (result.warning() != null) {
+                        ctx.getSource().sendSuccess(Component.literal(result.warning()), true);
+                    }
+                    return result.count();
                 }));
     }
 }
