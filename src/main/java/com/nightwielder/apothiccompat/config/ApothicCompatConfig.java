@@ -23,6 +23,8 @@ import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +32,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 
 public final class ApothicCompatConfig {
-    private static final String FILE_NAME = "apothic_compat.toml";
+    private static final String FILE_NAME = "apothic_compat-common.toml";
 
     private static final String DEFAULT_CONTENTS = """
             # Apothic Compat: user defined loot category overrides.
@@ -124,6 +126,18 @@ public final class ApothicCompatConfig {
     private static boolean nameBasedHeavyOverride = false;
     private static boolean weaponPickaxesAsHeavy = true;
 
+    // Snapshot of the last applied state, so /apothiccompat reload can skip a no-op reload and report a diff.
+    private static int lastFileHash;
+    private static long lastFileMtime;
+    private static boolean reloadStateCaptured;
+    private static boolean startupSnapshotTaken;
+    private static boolean startupNameOverride;
+    private static boolean startupWeaponPickaxes;
+    private static Map<ResourceLocation, LootCategory> lastAppliedOverrides = Map.of();
+    private static Set<ResourceLocation> lastAppliedBlacklist = Set.of();
+
+    public record ReloadResult(String message, String warning, int count) {}
+
     private ApothicCompatConfig() {}
 
     public static boolean nameBasedHeavyOverride() {
@@ -141,12 +155,44 @@ public final class ApothicCompatConfig {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
         addMissingSettings(path);
+        boolean[] toggles = readToggles(path);
+        nameBasedHeavyOverride = toggles[0];
+        weaponPickaxesAsHeavy = toggles[1];
+        // The first read is what UniversalCompat applied at startup, so keep it to compare against on reload.
+        if (!startupSnapshotTaken) {
+            startupNameOverride = toggles[0];
+            startupWeaponPickaxes = toggles[1];
+            startupSnapshotTaken = true;
+        }
+    }
+
+    // index 0 is name_based_heavy_override, index 1 is weapon_pickaxes_as_heavy.
+    private static boolean[] readToggles(Path path) {
+        boolean nameOverride = false;
+        boolean pickaxesHeavy = true;
         try (CommentedFileConfig config = CommentedFileConfig.builder(path).sync().build()) {
             loadTolerant(config);
-            nameBasedHeavyOverride = config.getOrElse("name_based_heavy_override", false);
-            weaponPickaxesAsHeavy = config.getOrElse("weapon_pickaxes_as_heavy", true);
+            nameOverride = config.getOrElse("name_based_heavy_override", false);
+            pickaxesHeavy = config.getOrElse("weapon_pickaxes_as_heavy", true);
         } catch (Exception e) {
             ApothicCompat.LOGGER.error("Failed to read categorization settings from {}", FILE_NAME, e);
+        }
+        return new boolean[]{nameOverride, pickaxesHeavy};
+    }
+
+    private static long fileMtime(Path path) {
+        try {
+            return Files.getLastModifiedTime(path).toMillis();
+        } catch (IOException e) {
+            return -1;
+        }
+    }
+
+    private static int fileHash(Path path) {
+        try {
+            return Arrays.hashCode(Files.readAllBytes(path));
+        } catch (IOException e) {
+            return 0;
         }
     }
 
@@ -213,17 +259,40 @@ public final class ApothicCompatConfig {
     public static void load() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
-        process(CompatImc::send);
+        Map<ResourceLocation, LootCategory> applied = new LinkedHashMap<>();
+        process((item, categoryName) -> {
+            CompatImc.send(item, categoryName);
+            ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
+            LootCategory cat = LootCategory.byId(categoryName);
+            if (id != null && cat != null) {
+                applied.put(id, cat);
+            }
+        });
+        lastAppliedOverrides = applied;
+        lastFileMtime = fileMtime(path);
+        lastFileHash = fileHash(path);
+        reloadStateCaptured = true;
     }
 
-    // Reapply for /apothiccompat reload. IMC is dead after load, so write straight to Apoth's live
-    // override map and mirror into AdventureModule.IMC_TYPE_OVERRIDES by reflection, or the entries
-    // vanish when AdventureConfig.load recopies on the next Apoth reload. Always rereads the toml since
-    // the command is operator invoked (no mtime gate, fast successive writes can leave mtime unchanged).
-    // Additive only, dropping a toml entry then reloading keeps the live override, so restart to drop it.
-    public static int reload() {
+    // Reapply for /apothiccompat reload. IMC is dead after load, so write straight to Apoth's live override
+    // map and mirror into AdventureModule.IMC_TYPE_OVERRIDES by reflection, or the entries vanish when
+    // AdventureConfig.load recopies on the next Apoth reload. Skips when the file is byte for byte unchanged
+    // since the last apply: the mtime alone misses fast successive writes that leave it untouched, so the
+    // content hash backs it up. Additive only, dropping a toml entry then reloading keeps the live override,
+    // so restart to drop it.
+    public static ReloadResult reload() {
+        Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
+        ensureDefaultFile(path);
+        long mtime = fileMtime(path);
+        int hash = fileHash(path);
+        if (reloadStateCaptured && mtime == lastFileMtime && hash == lastFileHash) {
+            return new ReloadResult("No changes detected.", null, lastAppliedOverrides.size());
+        }
+
         Map<ResourceLocation, LootCategory> imcMirror = getImcOverrideMap();
-        int count = process((item, categoryName) -> {
+        Map<ResourceLocation, LootCategory> applied = new LinkedHashMap<>();
+        int[] tally = {0, 0, 0}; // new, changed, unchanged
+        process((item, categoryName) -> {
             ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
             LootCategory cat = LootCategory.byId(categoryName);
             if (id == null || cat == null) {
@@ -233,10 +302,73 @@ public final class ApothicCompatConfig {
             if (imcMirror != null) {
                 imcMirror.put(id, cat);
             }
+            applied.put(id, cat);
+            LootCategory prev = lastAppliedOverrides.get(id);
+            if (prev == null) {
+                tally[0]++;
+            } else if (prev.equals(cat)) {
+                tally[2]++;
+            } else {
+                tally[1]++;
+            }
         });
+
+        Set<ResourceLocation> prevBlacklist = lastAppliedBlacklist;
         int disabled = loadAffixBlacklist();
-        ApothicCompat.LOGGER.info("Apothic Compat config reloaded. Affix blacklist applied: {} affix(es) disabled.", disabled);
-        return count;
+        int blAdded = countMissing(lastAppliedBlacklist, prevBlacklist);
+        int blRemoved = countMissing(prevBlacklist, lastAppliedBlacklist);
+
+        boolean[] toggles = readToggles(path);
+        String warning = null;
+        if (startupSnapshotTaken
+                && (toggles[0] != startupNameOverride || toggles[1] != startupWeaponPickaxes)) {
+            warning = "Note: categorization toggles changed since startup. Restart Minecraft to apply.";
+        }
+
+        lastAppliedOverrides = applied;
+        lastFileMtime = mtime;
+        lastFileHash = hash;
+        reloadStateCaptured = true;
+
+        int total = tally[0] + tally[1] + tally[2];
+        String message = reloadMessage(total, tally[0], tally[1], tally[2], disabled, blAdded, blRemoved);
+        ApothicCompat.LOGGER.info(message);
+        return new ReloadResult(message, warning, total);
+    }
+
+    private static int countMissing(Set<ResourceLocation> from, Set<ResourceLocation> in) {
+        int n = 0;
+        for (ResourceLocation id : from) {
+            if (!in.contains(id)) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    private static String reloadMessage(int total, int added, int changed, int unchanged,
+                                        int disabled, int blAdded, int blRemoved) {
+        StringBuilder sb = new StringBuilder("Config reloaded. ");
+        if (total == 0) {
+            sb.append("No item or tag overrides defined.");
+        } else {
+            sb.append("Applied ").append(total).append(total == 1 ? " override (" : " overrides (")
+                    .append(added).append(" new, ").append(changed).append(" changed, ")
+                    .append(unchanged).append(" unchanged).");
+        }
+        sb.append(" Affix blacklist: ").append(disabled).append(" disabled");
+        if (blAdded > 0 || blRemoved > 0) {
+            List<String> parts = new ArrayList<>();
+            if (blAdded > 0) {
+                parts.add(blAdded + " added");
+            }
+            if (blRemoved > 0) {
+                parts.add(blRemoved + " removed");
+            }
+            sb.append(" (").append(String.join(", ", parts)).append(")");
+        }
+        sb.append(".");
+        return sb.toString();
     }
 
     // Second pass recategorization after deferred mod init (FMLLoadCompleteEvent). The IMC window is
@@ -284,6 +416,7 @@ public final class ApothicCompatConfig {
             ApothicCompat.LOGGER.error("Failed to read affix blacklist from {}", FILE_NAME, e);
         }
         AffixBlacklist.setBlacklist(ids);
+        lastAppliedBlacklist = ids;
         return AffixBlacklist.apply();
     }
 

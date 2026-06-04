@@ -17,10 +17,10 @@ The universal rule covers almost everything on its own. A few mods register rang
 - **L'Ender's Cataclysm**: Cursed Bow and Wrath of the Desert as bows, the assault shoulder weapons and Laser Gatling as crossbows (plain `Item` or `ProjectileWeaponItem`). Every melee weapon and every shield is read by the universal rule; Void Forge and Infernal Forge are `PickaxeItem` combat tools handled by the dual-purpose pickaxe setting
 - **Tetra**: modular bow, crossbow, and shield (all extend `ModularItem`, not the vanilla ranged or shield classes); modular melee builds go through the universal rule by attack speed
 - **Weapons of Miracles**: Overly Large Cylindre as a shield (plain `Item`). The rest of its Epic Fight weapons expose real attack stats, so the universal rule handles them
-- **Aquamirae**: Poisoned Chakra as a sword (extends `TieredItem` with no attack damage attribute)
-- **Dungeons and Combat**: the pyromancer, sanguine, fairy, and compensation scepters as staffs (Fallen Gems & Affixes) or sword
+- **Aquamirae**: Poisoned Chakra and Maze Rose as swords (extend `TieredItem` with no attack damage attribute)
+- **Dungeons and Combat**: the sanguine, fairy, and compensation scepters (plain `Item`) as staffs (Fallen Gems & Affixes) or sword. The Pyromancer Scepter is a `SwordItem`, so the name based staff routing or the speed rule already places it
 - **Marium's Soulslike Weaponry**: the custom bows (Galeforce, Kraken Slayer, longbows, bowblades) and crossbows, which extend a Ranged Weapon API class rather than the vanilla bow/crossbow classes
-- **Born in Chaos**: Trident Hayfork as a heavy weapon (plain `Item`)
+- **Born in Chaos**: Pumpkin Pistol as a crossbow (a plain `Item` gun that fires projectiles). The Trident Hayfork is a `SwordItem` the universal rule already handles
 - **Celestisynth**: Poltergeist pinned to heavy (an axe the user wants heavy regardless of speed). Defers to Fallen Gems & Affixes when loaded
 - **Alex's Mobs**: Blood Sprayer as a bow
 - **Alex's Caves**: Galena Gauntlet as a sword and the sea and sugar staves as staffs (Fallen Gems & Affixes) or sword (all plain `Item`), Dreadbow and Raygun as bows

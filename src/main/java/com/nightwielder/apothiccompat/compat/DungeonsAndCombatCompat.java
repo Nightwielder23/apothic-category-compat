@@ -8,15 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 // Dungeons and Combat's weapons extend SwordItem/AxeItem and its armor and shields extend the vanilla
-// classes, so UniversalCompat handles all of them by speed or class. The only gap is the magic caster
-// scepters: PyromancerScepterItem extends SwordItem and the other three extend plain Item, but the user
-// wants all four under Fallen Gems & Affixes' staffs category when it's loaded (sword otherwise), which
-// the automatic rule can't express, so they keep explicit overrides.
+// classes, so UniversalCompat handles those by speed or class. pyromancer_scepter is a SwordItem whose id
+// names a scepter, so name based staff detection (with FG&A) or the speed rule already places it. The other
+// three scepters extend plain Item with no attack damage, so the speed path never reaches them; they keep
+// explicit overrides routing to Fallen Gems & Affixes' staffs category when it's loaded, sword otherwise.
 public final class DungeonsAndCombatCompat {
     private static final String NAMESPACE = "dungeons_and_combat";
 
     private static final List<String> SCEPTERS = List.of(
-            "pyromancer_scepter",
             "sanguine_scepter",
             "fairy_scepter",
             "scepter_of_compensation"
