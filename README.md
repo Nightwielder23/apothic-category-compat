@@ -75,7 +75,7 @@ Minecraft 1.19.2, Forge 43.x, Apotheosis 6.5.2. Everything else is optional.
 
 ## Installation
 
-Drop the jar in `mods/`. Server side only (clients don't need it).
+Drop the jar in `mods/`. Install on both client and server for correct affix attribute display and gem socket bonuses. Server only works for gameplay (affix stats apply correctly during combat), but client tooltips and gem stats display based on the client's category resolution, which needs the mod installed locally.
 
 ## License
 
