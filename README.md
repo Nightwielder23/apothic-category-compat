@@ -21,7 +21,7 @@ The universal rule covers almost everything on its own. A few mods register rang
 - **Dungeons and Combat**: the sanguine, fairy, and compensation scepters (plain `Item`) as staffs (Fallen Gems & Affixes) or sword. The Pyromancer Scepter is a `SwordItem`, so the name based staff routing or the speed rule already places it
 - **Marium's Soulslike Weaponry**: the custom bows (Galeforce, Kraken Slayer, longbows, bowblades) and crossbows, which extend a Ranged Weapon API class rather than the vanilla bow/crossbow classes
 - **Born in Chaos**: Pumpkin Pistol as a crossbow (a plain `Item` gun that fires projectiles). The Trident Hayfork is a `SwordItem` the universal rule already handles
-- **Celestisynth**: Poltergeist pinned to heavy (an axe the user wants heavy regardless of speed). Defers to Fallen Gems & Affixes when loaded
+- **Celestisynth**: Poltergeist pinned to heavy (an axe; the override sets it heavy rather than letting the speed rule decide). Defers to Fallen Gems & Affixes when loaded
 - **Alex's Mobs**: Blood Sprayer as a bow
 - **Alex's Caves**: Galena Gauntlet as a sword and the sea and sugar staves as staffs (Fallen Gems & Affixes) or sword (all plain `Item`), Dreadbow and Raygun as bows
 - **Forbidden and Arcanus**: Draco Arcanus Scepter as staffs (Fallen Gems & Affixes) or sword (plain `Item`)
@@ -39,14 +39,14 @@ These mods extend the right vanilla classes or carry real attack stats, so the u
 
 ## Categorization settings
 
-Two toggles in `apothic_compat.toml` adjust how the universal rule categorizes items. They apply during mod load, so edit the file and restart the server to change them.
+Two toggles in `apothic_compat-common.toml` adjust how the universal rule categorizes items. They apply during mod load, so edit the file and restart the server to change them.
 
 - `name_based_heavy_override` (default `false`): when enabled, any item whose registry id contains a heavy weapon name (greatsword, claymore, zweihander, warhammer, halberd, bardiche, glaive, battleaxe, greataxe, lance, pike, maul, naginata, odachi, flamberge, scythe, and the like) is categorized as `heavy_weapon` regardless of its attack speed and damage. Leave it off to categorize purely by speed and damage. Staff, scepter, and wand items are unaffected, since name based staff routing runs first.
 - `weapon_pickaxes_as_heavy` (default `true`): the dual-purpose pickaxe list holds combat tools that extend `PickaxeItem` but are swung as weapons. When enabled they categorize as `heavy_weapon` instead of `pickaxe`. The list covers L'Ender's Cataclysm's Void Forge and Infernal Forge and Forbidden and Arcanus's Blacksmith Gavels (every material tier). Disable it for plain `PickaxeItem` behavior.
 
 ## Config
 
-A config file shows up at `config/apothic_compat.toml` on first launch. Per item and per tag overrides go there:
+A config file shows up at `config/apothic_compat-common.toml` on first launch. Per item and per tag overrides go there:
 
 ```toml
 [item_overrides]
@@ -60,7 +60,7 @@ Valid category names: `sword`, `heavy_weapon`, `trident`, `bow`, `crossbow`, `sh
 
 ## Affix blacklist
 
-Stops specific affixes from rolling on newly generated gear (loot drops, reforging, trades, and gem application) without editing datapacks. List the affix ids in the `affix_blacklist` array in `apothic_compat.toml`:
+Stops specific affixes from rolling on newly generated gear (loot drops, reforging, trades, and gem application) without editing datapacks. List the affix ids in the `affix_blacklist` array in `apothic_compat-common.toml`:
 
 ```toml
 affix_blacklist = ["apotheosis:sword/attribute/vampiric", "apotheosis:heavy_weapon/attribute/berserking"]
@@ -81,7 +81,7 @@ Apotheosis hardcodes defaults in `config/apotheosis/adventure.cfg` under the `Eq
 - `minecraft:iron_sword` set to `sword`
 - `minecraft:shulker_shell` set to `none`
 
-Setting these items in `apothic_compat.toml` will not work. To override them, edit `adventure.cfg` directly.
+Setting these items in `apothic_compat-common.toml` will not work. To override them, edit `adventure.cfg` directly.
 
 ## Reload command
 

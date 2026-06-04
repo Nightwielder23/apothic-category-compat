@@ -7,8 +7,8 @@ import java.util.Map;
 
 // Most Aquamirae weapons extend SwordItem and UniversalCompat splits them by speed. The lances are
 // SwordItem too, and the armor extends ArmorItem. The poisoned_chakra and maze_rose extend TieredItem
-// directly with no attack damage attribute, so the speed path never reaches them. The user wants both as
-// swords, so they keep explicit overrides.
+// directly with no attack damage attribute, so the speed path never reaches them; the explicit sword
+// override is what makes them roll sword affixes.
 public final class AquamiraeCompat {
     private static final String NAMESPACE = "aquamirae";
 
