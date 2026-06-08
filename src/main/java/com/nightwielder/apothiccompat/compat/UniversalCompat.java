@@ -1,5 +1,6 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.ApothicCompat;
 import com.nightwielder.apothiccompat.config.ApothicCompatConfig;
 import com.nightwielder.apothiccompat.util.CompatImc;
 import shadows.apotheosis.adventure.loot.LootCategory;
@@ -60,11 +61,17 @@ public final class UniversalCompat {
             if (stack.isEmpty()) {
                 continue;
             }
-            LootCategory cat = categorize(stack, id);
-            if (cat == null) {
-                continue;
+            // A broken attribute resolver in another mod can throw out of stack.getAttributeModifiers (e.g.
+            // Enigmatic Addons reaching for the server at IMC time). Catch per item so one bad item can't
+            // sink the whole dispatch, and the server boot with it.
+            try {
+                LootCategory cat = categorize(stack, id);
+                if (cat != null) {
+                    CompatImc.send(item, cat.getName());
+                }
+            } catch (Throwable t) {
+                ApothicCompat.LOGGER.warn("Skipping {} during categorization: {}", id, t.toString());
             }
-            CompatImc.send(item, cat.getName());
         }
     }
 
@@ -78,7 +85,7 @@ public final class UniversalCompat {
             return LootCategory.CROSSBOW;
         }
         if (item instanceof TridentItem) {
-            return LootCategory.HEAVY_WEAPON;
+            return LootCategory.TRIDENT;
         }
         // Combat tools that subclass PickaxeItem (the forges and gavels) read as weapons, not mining gear, so
         // route them to heavy when the toggle is on. With it off they fall through to the pickaxe branch below.

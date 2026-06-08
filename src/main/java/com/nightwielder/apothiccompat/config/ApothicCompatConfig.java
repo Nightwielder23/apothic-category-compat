@@ -242,18 +242,46 @@ public final class ApothicCompatConfig {
         return i;
     }
 
-    // First apply during InterModEnqueueEvent, over IMC since that's the only path that works pre game.
+    // First apply during InterModEnqueueEvent, over IMC since that's the only path that works pre game. Item
+    // overrides only: item tags aren't bound yet this early, so tag overrides are deferred to server start
+    // (see applyOverridesAtRuntime).
     public static void load() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
         Map<ResourceLocation, LootCategory> applied = new LinkedHashMap<>();
-        process((item, categoryName) -> {
+        processItems((item, categoryName) -> {
             CompatImc.send(item, categoryName);
             ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
             LootCategory cat = LootCategory.byId(categoryName);
             if (id != null && cat != null) {
                 applied.put(id, cat);
             }
+        });
+        lastAppliedOverrides = applied;
+        lastFileMtime = fileMtime(path);
+        lastFileHash = fileHash(path);
+        reloadStateCaptured = true;
+    }
+
+    // Re-applies the config overrides through the live override map after world load. By here datapack item
+    // tags are bound (the IMC pass can't see them) and the deferred-init second pass has run, so a user's
+    // [item_overrides] and [tag_overrides] land last and win as documented.
+    public static void applyOverridesAtRuntime() {
+        Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
+        ensureDefaultFile(path);
+        Map<ResourceLocation, LootCategory> imcMirror = getImcOverrideMap();
+        Map<ResourceLocation, LootCategory> applied = new LinkedHashMap<>();
+        process((item, categoryName) -> {
+            ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
+            LootCategory cat = LootCategory.byId(categoryName);
+            if (id == null || cat == null) {
+                return;
+            }
+            AdventureConfig.TYPE_OVERRIDES.put(id, cat);
+            if (imcMirror != null) {
+                imcMirror.put(id, cat);
+            }
+            applied.put(id, cat);
         });
         lastAppliedOverrides = applied;
         lastFileMtime = fileMtime(path);
@@ -398,6 +426,20 @@ public final class ApothicCompatConfig {
             loadTolerant(config);
             count[0] += processItemOverrides(config, action);
             count[0] += processTagOverrides(config, action);
+        } catch (Exception e) {
+            ApothicCompat.LOGGER.error("Failed to read {}", FILE_NAME, e);
+        }
+        return count[0];
+    }
+
+    // Item overrides only, for the early IMC pass before item tags are bound.
+    private static int processItems(BiConsumer<Item, String> action) {
+        Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
+        ensureDefaultFile(path);
+        int[] count = {0};
+        try (CommentedFileConfig config = CommentedFileConfig.builder(path).sync().build()) {
+            loadTolerant(config);
+            count[0] += processItemOverrides(config, action);
         } catch (Exception e) {
             ApothicCompat.LOGGER.error("Failed to read {}", FILE_NAME, e);
         }

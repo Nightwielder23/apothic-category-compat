@@ -55,6 +55,10 @@ public class ApothicCompat {
             return;
         }
         ApothicCompatConfig.loadAffixBlacklist();
+        // Item tags are bound by now and the second pass has already run, so reapply the config overrides
+        // here: this is where tag overrides finally resolve, and where a user's per item overrides reclaim
+        // last-wins after the deferred-init pass.
+        ApothicCompatConfig.applyOverridesAtRuntime();
     }
 
     private void onDatapackSync(OnDatapackSyncEvent event) {
