@@ -48,14 +48,25 @@ public final class AffixBlacklist {
         Map<AffixType, Integer> keptByType = new EnumMap<>(AffixType.class);
 
         for (Affix affix : all) {
-            AffixType type = affix.getType();
-            originalByType.merge(type, 1, Integer::sum);
-            if (bl.contains(affix.getId())) {
-                matched.add(affix.getId());
-                continue;
+            // A broken third-party affix can throw out of getType/getId. Catch per affix so it drops out of
+            // the pool instead of crashing the rebuild (and the server start that triggers it).
+            try {
+                AffixType type = affix.getType();
+                originalByType.merge(type, 1, Integer::sum);
+                if (bl.contains(affix.getId())) {
+                    matched.add(affix.getId());
+                    continue;
+                }
+                builder.put(type, AffixRegistry.INSTANCE.holder(affix));
+                keptByType.merge(type, 1, Integer::sum);
+            } catch (Throwable t) {
+                ResourceLocation badId = null;
+                try {
+                    badId = affix.getId();
+                } catch (Throwable ignored) {
+                }
+                ApothicCompat.LOGGER.warn("Skipping affix {} while rebuilding the pool: {}", badId, t.toString());
             }
-            builder.put(type, AffixRegistry.INSTANCE.holder(affix));
-            keptByType.merge(type, 1, Integer::sum);
         }
 
         // Blacklist ids with no matching affix, either misspelled or from a mod that isn't installed.

@@ -1,5 +1,6 @@
 package com.nightwielder.apothiccompat.compat;
 
+import com.nightwielder.apothiccompat.ApothicCompat;
 import com.nightwielder.apothiccompat.config.ApothicCompatConfig;
 import com.nightwielder.apothiccompat.util.CompatImc;
 import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
@@ -63,78 +64,102 @@ public final class UniversalCompat {
             if (stack.isEmpty()) {
                 continue;
             }
-            String category = categorize(stack, id);
-            if (category == null) {
-                continue;
+            // A broken attribute resolver in another mod can throw out of stack.getAttributeModifiers (e.g.
+            // Enigmatic Addons reaching for the server at IMC time). Catch per item so one bad item can't
+            // sink the whole dispatch, and the server boot with it.
+            try {
+                sendOne(item, stack, id);
+            } catch (Throwable t) {
+                ApothicCompat.LOGGER.warn("Skipping {} during categorization: {}", id, t.toString());
             }
-            CompatImc.send(item, category);
         }
     }
 
-    private static String categorize(ItemStack stack, ResourceLocation id) {
-        Item item = stack.getItem();
-        // Vanilla non melee classes carry their category in the class hierarchy, so they decide first.
+    private static void sendOne(Item item, ItemStack stack, ResourceLocation id) {
+        LootCategory classCategory = vanillaClass(item, id);
+        if (classCategory != null) {
+            CompatImc.send(item, classCategory.getName());
+            return;
+        }
+        if (item instanceof HoeItem) {
+            return;
+        }
+        // Name based staff fallback so modded casters don't each need a per mod override. Runs after the
+        // class branches so a bow or shield still wins, and before the speed rule so a slow scepter doesn't
+        // read as heavy. The staffs category resolves later (Apoth on the IMC pass, byId on the runtime
+        // passes), so the name goes through as is rather than as a LootCategory.
+        if (FallenGemsCompat.hasStaffsCategory() && isStaffByName(id)) {
+            CompatImc.send(item, FallenGemsCompat.STAFFS_CATEGORY);
+            return;
+        }
+        LootCategory speedCategory = bySpeed(stack, id);
+        if (speedCategory != null) {
+            CompatImc.send(item, speedCategory.getName());
+        }
+    }
+
+    // Vanilla non melee classes carry their category in the class hierarchy, so they decide first. Hoes are
+    // utility, so they return null here and sendOne drops them before the speed rule.
+    private static LootCategory vanillaClass(Item item, ResourceLocation id) {
         if (item instanceof BowItem) {
-            return LootCategory.BOW.getName();
+            return LootCategory.BOW;
         }
         if (item instanceof CrossbowItem) {
-            return LootCategory.CROSSBOW.getName();
+            return LootCategory.CROSSBOW;
         }
         if (item instanceof TridentItem) {
-            return LootCategory.HEAVY_WEAPON.getName();
+            return LootCategory.TRIDENT;
         }
         // Combat tools that subclass PickaxeItem (the forges and gavels) read as weapons, not mining gear, so
         // route them to heavy when the toggle is on. With it off they fall through to the pickaxe branch below.
         if (ApothicCompatConfig.weaponPickaxesAsHeavy() && DUAL_PURPOSE_PICKAXES.contains(id.toString())) {
-            return LootCategory.HEAVY_WEAPON.getName();
+            return LootCategory.HEAVY_WEAPON;
         }
         if (item instanceof PickaxeItem) {
-            return LootCategory.PICKAXE.getName();
+            return LootCategory.PICKAXE;
         }
         if (item instanceof ShovelItem) {
-            return LootCategory.SHOVEL.getName();
+            return LootCategory.SHOVEL;
         }
         if (item instanceof HoeItem) {
             return null;
         }
         if (item instanceof ShieldItem) {
-            return LootCategory.SHIELD.getName();
+            return LootCategory.SHIELD;
         }
         if (item instanceof ArmorItem armor) {
             return switch (armor.getEquipmentSlot()) {
-                case HEAD -> LootCategory.HELMET.getName();
-                case CHEST -> LootCategory.CHESTPLATE.getName();
-                case LEGS -> LootCategory.LEGGINGS.getName();
-                case FEET -> LootCategory.BOOTS.getName();
+                case HEAD -> LootCategory.HELMET;
+                case CHEST -> LootCategory.CHESTPLATE;
+                case LEGS -> LootCategory.LEGGINGS;
+                case FEET -> LootCategory.BOOTS;
                 default -> null;
             };
         }
-        // Name based staff fallback so modded casters don't each need a per mod override. Runs after the
-        // class branches so a bow or shield still wins, and before the speed rule so a slow scepter doesn't
-        // read as heavy. Only fires with FG&A loaded, since the staffs category exists only then.
-        if (FallenGemsCompat.hasStaffsCategory() && isStaffByName(id)) {
-            return FallenGemsCompat.STAFFS_CATEGORY;
-        }
-        // The static damage check confirms a melee weapon before the live reads, which fire
-        // ItemAttributeModifierEvent and so reflect combat mod stats. Slow weapons read heavy, so do
-        // medium or faster weapons at or above the heavy damage cutoff.
-        if (CompatImc.getAttackDamageGeneric(item) > 0) {
-            String category;
-            if (CompatImc.getAttackSpeed(stack) <= CompatImc.SLOW_SPEED_MAX) {
-                category = LootCategory.HEAVY_WEAPON.getName();
-            } else if (CompatImc.getAttackDamage(stack) >= CompatImc.HEAVY_DAMAGE_THRESHOLD) {
-                category = LootCategory.HEAVY_WEAPON.getName();
-            } else {
-                category = LootCategory.SWORD.getName();
-            }
-            // Opt-in name override: a heavy weapon name forces heavy even when the speed read landed on sword,
-            // so a fast greatsword still classes as heavy. Off by default, so the stat read stands.
-            if (ApothicCompatConfig.nameBasedHeavyOverride() && isHeavyByName(id)) {
-                return LootCategory.HEAVY_WEAPON.getName();
-            }
-            return category;
-        }
         return null;
+    }
+
+    // The static damage check confirms a melee weapon before the live reads, which fire
+    // ItemAttributeModifierEvent and so reflect combat mod stats. Slow weapons read heavy, so do medium or
+    // faster weapons at or above the heavy damage cutoff.
+    private static LootCategory bySpeed(ItemStack stack, ResourceLocation id) {
+        if (CompatImc.getAttackDamageGeneric(stack.getItem()) <= 0) {
+            return null;
+        }
+        LootCategory category;
+        if (CompatImc.getAttackSpeed(stack) <= CompatImc.SLOW_SPEED_MAX) {
+            category = LootCategory.HEAVY_WEAPON;
+        } else if (CompatImc.getAttackDamage(stack) >= CompatImc.HEAVY_DAMAGE_THRESHOLD) {
+            category = LootCategory.HEAVY_WEAPON;
+        } else {
+            category = LootCategory.SWORD;
+        }
+        // Opt-in name override: a heavy weapon name forces heavy even when the speed read landed on sword, so
+        // a fast greatsword still classes as heavy. Off by default, so the stat read stands.
+        if (ApothicCompatConfig.nameBasedHeavyOverride() && isHeavyByName(id)) {
+            return LootCategory.HEAVY_WEAPON;
+        }
+        return category;
     }
 
     // Matches a scepter, staff, or wand by registry id. Battle and war staves are melee polearms, and the

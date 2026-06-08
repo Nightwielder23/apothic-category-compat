@@ -6,7 +6,7 @@ A small server side 1.20.1 Forge mod that fills in Apotheosis loot category assi
 
 Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. A lot of modded weapons either don't have a category at all or get the wrong one, so affixes never appear on them. Apothic Compat sends the right categories at load time.
 
-The core rule is universal: every registered item is categorized by what it actually is, not by a hardcoded list. Any item that deals melee attack damage is split into `sword` or `heavy_weapon` by its attack speed, using the same thresholds Obscure API shows in its weapon tooltips: a weapon at or below 1.0 attack speed reads as heavy, anything faster reads as a sword, and a fast weapon that still hits very hard (10.0 or more effective damage) is bumped to heavy. The attack speed and damage are read live from the item stack, so combat mods that adjust a weapon's stats at runtime are reflected. This works for any mod's weapons no matter which Java class they extend, including plain `Item`, `TieredItem`, `DiggerItem`, and modular subclasses. Bows, crossbows, tridents, pickaxes, shovels, shields, and armor are read straight from the vanilla class hierarchy.
+The core rule is universal: every registered item is categorized by what it actually is, not by a hardcoded list. Any item that deals melee attack damage is split into `sword` or `heavy_weapon` by its attack speed, using the same thresholds Obscure API shows in its weapon tooltips: a weapon at or below 1.0 attack speed reads as heavy, anything faster reads as a sword, and a fast weapon that still hits very hard (10.0 or more effective damage) is bumped to heavy. The attack speed and damage are read live from the item stack, so combat mods that adjust a weapon's stats at runtime are reflected. This works for any mod's weapons no matter which Java class they extend, including plain `Item`, `TieredItem`, `DiggerItem`, and modular subclasses. Bows, crossbows, pickaxes, shovels, shields, and armor are read straight from the vanilla class hierarchy, and anything extending `TridentItem` goes to the `trident` category.
 
 A second pass runs at the end of mod loading. Some mods finalize a weapon's attack stats during deferred setup that completes after the first scan, so the second pass reruns the same categorization once everything is settled and corrects anything that read stale.
 
@@ -76,12 +76,12 @@ Notes:
 
 ## Items already handled by Apotheosis
 
-Apotheosis hardcodes defaults in `config/apotheosis/adventure.cfg` under the `Equipment Type Overrides` list. These take precedence over both Apothic Compat's config and built in compat modules. As of Apotheosis 7.4.8 the hardcoded defaults are:
+Apotheosis hardcodes defaults in `config/apotheosis/adventure.cfg` under the `Equipment Type Overrides` list. As of Apotheosis 7.4.8 the hardcoded defaults are:
 
 - `minecraft:iron_sword` set to `sword`
 - `minecraft:shulker_shell` set to `none`
 
-Setting these items in `apothic_compat-common.toml` will not work. To override them, edit `adventure.cfg` directly.
+When an item is set in both `adventure.cfg` and Apothic Compat (the config file or a compat module), Apothic Compat's value currently wins. To keep an `adventure.cfg` value for such an item, leave that item out of `apothic_compat-common.toml`.
 
 ## Reload command
 

@@ -1,5 +1,15 @@
 # Apothic Compat changelog
 
+## v2.0.1
+
+### Fixed
+- Categorization no longer takes down mod loading when another mod's item throws while its attack attributes are read (seen with Enigmatic Addons' Annihilating Sword, which reaches for the server during IMC). The offending item is logged and skipped.
+- Tag overrides apply at server start, when item tags are bound, instead of being skipped during early startup.
+- Per item and per tag overrides are reapplied after the deferred-init pass, so a user override is no longer overwritten by the second categorization pass.
+- Tridents and other TridentItem-class weapons categorize as trident instead of heavy_weapon.
+- A broken third-party affix no longer takes down the affix blacklist rebuild on server start; it is logged and skipped.
+- README trident wording corrected.
+
 ## v2.0.0
 
 ### Changed
@@ -110,7 +120,7 @@
 - Spears across all modules now categorized as SWORD instead of HEAVY_WEAPON. Affects Spartan Weaponry, Simply Swords, Samurai Dynasty, Bosses of Mass Destruction, Knight Quest, Marium's Soulslike, Mowzie's Mobs, Dungeons and Combat, Epic Knights, L'Ender's Cataclysm.
 - Cataclysm `void_core` removed from HEAVY_WEAPON (it's a mage cast item).
 
-## 1.4.0
+## v1.4.0
 
 Added compat modules for:
 
