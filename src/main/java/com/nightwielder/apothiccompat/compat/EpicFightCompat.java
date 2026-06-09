@@ -5,7 +5,7 @@ import shadows.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-// Epic Fight carries each weapon's real combat power in its own attribute system (impact, armor negation,
+// Epic Fight carries each weapon's combat power in its own attribute system (impact, armor negation,
 // max strikes), loaded from a datapack capability, and leaves the vanilla ATTACK_DAMAGE/ATTACK_SPEED at the
 // item's tier defaults. UniversalCompat reads those vanilla attributes, so it sees fast, low damage stats
 // and Apotheosis falls back to its SWORD_DIG class default for every Epic Fight weapon. This module instead

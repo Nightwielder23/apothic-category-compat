@@ -46,18 +46,15 @@ public class ApothicCompat {
         ReloadCommand.register(event.getDispatcher());
     }
 
-    // Affixes load with datapacks after the IMC pass, so apply the blacklist here instead of through IMC.
-    // ServerStartedEvent covers startup and OnDatapackSyncEvent covers /reload, which rebuilds Apoth's affix
-    // pool and would drop the filter otherwise. Per player sync is skipped since the pool only changes on a
-    // full reload.
+    // Affixes load with datapacks after the IMC pass, so apply the blacklist here, not through IMC. A /reload
+    // rebuilds Apoth's pool and drops the filter, so reapply on sync; per player sync is skipped.
     private void onServerStarted(ServerStartedEvent event) {
         if (!ModList.get().isLoaded("apotheosis")) {
             return;
         }
         ApothicCompatConfig.loadAffixBlacklist();
-        // Item tags are bound by now and the second pass has already run, so reapply the config overrides
-        // here: this is where tag overrides finally resolve, and where a user's per item overrides reclaim
-        // last-wins after the deferred-init pass.
+        // Item tags are bound and the second pass has run by now, so reapply config overrides here: tag
+        // overrides finally resolve and a user's per item overrides reclaim last-wins.
         ApothicCompatConfig.applyOverridesAtRuntime();
     }
 
@@ -71,15 +68,11 @@ public class ApothicCompat {
         ApothicCompatConfig.loadAffixBlacklist();
     }
 
-    // Apotheosis's loot_category_override IMC accepts only Map.Entry<Item, String> (item + category);
-    // there is no slot parameter. Equipment slot tooltip lines (e.g. literal "{mainhand}") come from
-    // vanilla's item.modifiers.<slot> lang keys or a third party tooltip mod (Curios, etc.), not from
-    // anything Apothic Compat or Apotheosis renders. Do not try to "fix" it by changing the IMC payload.
+    // Apotheosis's IMC takes only (item, category), no slot, so "{mainhand}" tooltip lines come from vanilla
+    // or Curios lang keys, not from changing the IMC payload here.
     //
-    // Apotheosis stores overrides last wins (its TYPE_OVERRIDES map is a plain put), so send order is
-    // precedence order. UniversalCompat runs first as the speed based default for every item; the per mod
-    // modules run next so their explicit ranged/shield/utility decisions overwrite that default; the config
-    // loads last so a user's per item override beats everything.
+    // Overrides store last wins, so send order is precedence: UniversalCompat first (speed default), per mod
+    // modules next (explicit decisions win), config last (user override beats all).
     private void sendCategoryOverrides(InterModEnqueueEvent event) {
         if (!ModList.get().isLoaded("apotheosis")) {
             LOGGER.info("Apotheosis not present; skipping all compat modules.");
@@ -89,12 +82,9 @@ public class ApothicCompat {
         ApothicCompatConfig.load();
     }
 
-    // Some mods (e.g. Mowzie's Mobs) finalize weapon attack damage/speed from config during deferred work
-    // enqueued at FMLCommonSetupEvent, which completes after the InterModEnqueueEvent scan above. The
-    // first pass live read then sees stale stats and can miscategorize those items. FMLLoadCompleteEvent is
-    // the last mod loading event, after all such deferred init, so rerun the same dispatch here. The IMC
-    // window is closed by now, so this pass writes Apotheosis's override maps directly (see
-    // ApothicCompatConfig.reapply), the same runtime path /apothiccompat reload uses.
+    // Some mods (e.g. Mowzie's Mobs) finalize attack stats in deferred init that runs after the IMC scan, so
+    // the first pass reads stale stats and miscategorizes. FMLLoadCompleteEvent is the last load event, so
+    // rerun the dispatch here, writing Apoth's override maps directly since the IMC window is closed.
     private void reapplyAfterDeferredInit(FMLLoadCompleteEvent event) {
         if (!ModList.get().isLoaded("apotheosis")) {
             return;

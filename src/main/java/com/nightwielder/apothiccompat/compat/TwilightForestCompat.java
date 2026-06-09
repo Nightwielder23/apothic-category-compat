@@ -19,8 +19,11 @@ public final class TwilightForestCompat {
         OVERRIDES.put("fortification_scepter", LootCategory.SWORD.getName());
         OVERRIDES.put("twilight_scepter", LootCategory.SWORD.getName());
         OVERRIDES.put("zombie_scepter", LootCategory.SWORD.getName());
-        // The block_and_chain and cube_of_annihilation stay unmapped. Their projectile entity deals the
-        // damage, not a melee swing, so melee affixes can't proc, and bare Item falls back to none.
+        // block_and_chain and cube_of_annihilation deal their damage through a projectile entity, not a
+        // melee swing, so they go to bow rather than a melee category. Apoth's bow affixes hook projectile
+        // entity hits, which is how these items land damage.
+        OVERRIDES.put("block_and_chain", LootCategory.BOW.getName());
+        OVERRIDES.put("cube_of_annihilation", LootCategory.BOW.getName());
         OVERRIDES.put("ice_bomb", LootCategory.NONE.getName());
     }
 

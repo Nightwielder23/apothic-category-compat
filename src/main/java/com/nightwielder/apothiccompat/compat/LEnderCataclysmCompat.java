@@ -18,7 +18,7 @@ public final class LEnderCataclysmCompat {
                 "void_assault_shoulder_weapon", "wither_assault_shoulder_weapon",
                 "laser_gatling");
         // The bulwark_of_the_flame extends plain Item, so the ShieldItem class check misses it. The
-        // black_steel_targe is a real ShieldItem, so UniversalCompat already maps it and no entry is needed here.
+        // black_steel_targe extends ShieldItem, so UniversalCompat already maps it and no entry is needed here.
         put(LootCategory.SHIELD, "bulwark_of_the_flame");
         // void_forge and infernal_forge are PickaxeItem combat tools handled by the weapon_pickaxes_as_heavy
         // config in UniversalCompat, so they no longer need an explicit override here.

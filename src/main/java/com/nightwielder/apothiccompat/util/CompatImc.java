@@ -21,9 +21,8 @@ public final class CompatImc {
     public static final String APOTHEOSIS_MOD_ID = "apotheosis";
     public static final String IMC_METHOD = "loot_category_override";
 
-    // Obscure API labels a weapon by attack speed: at or below 0.6 very slow, 1.0 slow, 2.0 medium, 3.0
-    // fast, otherwise very fast. Very slow and slow both read as heavy, so a speed at or below this maps
-    // to HEAVY_WEAPON.
+    // Obscure labels weapons by attack speed (<=0.6 very slow, 1.0 slow, 2.0 medium, 3.0 fast). Very slow
+    // and slow both read as heavy, so a speed at or below this maps to HEAVY_WEAPON.
     public static final double SLOW_SPEED_MAX = 1.0;
 
     // A medium or faster weapon that still hits this hard plays as heavy, so it maps to HEAVY_WEAPON
@@ -35,9 +34,8 @@ public final class CompatImc {
 
     private CompatImc() {}
 
-    // Where send() routes. The default is the startup IMC channel; the second pass swaps in a runtime sink
-    // that writes Apotheosis's override maps directly, so the same module code reruns unchanged after
-    // deferred init mods finalize their attributes.
+    // Where send() routes. Default is the startup IMC channel; the second pass swaps in a runtime sink that
+    // writes Apoth's override maps directly, so module code reruns unchanged after deferred init.
     private static BiConsumer<Item, String> sink = CompatImc::sendImc;
 
     public static void setSink(BiConsumer<Item, String> newSink) {
@@ -77,9 +75,8 @@ public final class CompatImc {
         return ForgeRegistries.ITEMS.getValue(id);
     }
 
-    // Cheap static precheck reading the item's own defaults (no event fires): a positive ADDITION on
-    // attack damage means the item swings as a melee weapon, so callers confirm that before paying for the
-    // live read below.
+    // Cheap static precheck on the item's defaults (no event fires): a positive ADDITION on attack damage
+    // means it swings as a melee weapon, so callers confirm that before paying for the live read.
     public static double getAttackDamageGeneric(Item item) {
         Multimap<Attribute, AttributeModifier> mods = item.getDefaultAttributeModifiers(EquipmentSlot.MAINHAND);
         double damage = 0;
@@ -91,21 +88,17 @@ public final class CompatImc {
         return damage;
     }
 
-    // Live main hand attack speed, the value vanilla and Obscure show in the tooltip.
     public static double getAttackSpeed(ItemStack stack) {
         return liveValue(stack, Attributes.ATTACK_SPEED, 4.0);
     }
 
-    // Live main hand effective attack damage, the value vanilla shows in the tooltip.
     public static double getAttackDamage(ItemStack stack) {
         return liveValue(stack, Attributes.ATTACK_DAMAGE, 1.0);
     }
 
-    // Vanilla layers the attribute in order: start from base, add every ADDITION, then scale that whole sum
-    // by (1 + summed MULTIPLY_BASE). Scaling only the additions would drop the base * multiplyBase term and
-    // underreport the value, so the base is folded in before the multiply. Read through
-    // stack.getAttributeModifiers rather than the item defaults, which fires Forge's
-    // ItemAttributeModifierEvent so mods that adjust a weapon's attributes at runtime are reflected.
+    // Vanilla folds the base into the additions before the MULTIPLY_BASE scale, so scaling only the
+    // additions would underreport. Read through stack.getAttributeModifiers, not item defaults, so Forge's
+    // ItemAttributeModifierEvent fires and runtime attribute changes from other mods are reflected.
     private static double liveValue(ItemStack stack, Attribute attribute, double base) {
         Multimap<Attribute, AttributeModifier> mods = stack.getAttributeModifiers(EquipmentSlot.MAINHAND);
         double addition = 0;

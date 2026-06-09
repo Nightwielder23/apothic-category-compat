@@ -20,14 +20,12 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Locale;
 import java.util.Set;
 
-// Default pass run before the per mod modules across every namespace, so their explicit decisions override
-// it (Apoth keeps overrides last wins). Vanilla non melee classes decide by hierarchy, anything that deals
-// melee damage is split into sword or heavy_weapon by attack speed (with a high damage cutoff), read live
-// from the stack so combat mods like Epic Fight are reflected.
+// Default pass before the per mod modules, so their explicit decisions override it (Apoth keeps overrides
+// last wins). Vanilla non melee classes decide by class; melee splits into sword or heavy_weapon by attack
+// speed (with a high damage cutoff), read live so combat mods like Epic Fight are reflected.
 public final class UniversalCompat {
-    // PickaxeItem-class items that are wielded as weapons, not mining tools. weapon_pickaxes_as_heavy routes
-    // these to heavy_weapon instead of pickaxe. Full registry ids so the match is exact and never catches an
-    // unrelated mod's same-named item.
+    // PickaxeItem items wielded as weapons, not mining tools. weapon_pickaxes_as_heavy routes these to
+    // heavy_weapon. Full registry ids so the match never catches an unrelated mod's same-named item.
     private static final Set<String> DUAL_PURPOSE_PICKAXES = Set.of(
             "cataclysm:void_forge",
             "cataclysm:infernal_forge",
@@ -61,9 +59,8 @@ public final class UniversalCompat {
             if (stack.isEmpty()) {
                 continue;
             }
-            // A broken attribute resolver in another mod can throw out of stack.getAttributeModifiers (e.g.
-            // Enigmatic Addons reaching for the server at IMC time). Catch per item so one bad item can't
-            // sink the whole dispatch, and the server boot with it.
+            // A broken attribute resolver in another mod can throw out of getAttributeModifiers (e.g.
+            // Enigmatic Addons hitting the server at IMC time), so catch per item to keep the dispatch alive.
             try {
                 LootCategory cat = categorize(stack, id);
                 if (cat != null) {
@@ -113,9 +110,8 @@ public final class UniversalCompat {
                 default -> null;
             };
         }
-        // The static damage check confirms a melee weapon before the live reads, which fire
-        // ItemAttributeModifierEvent and so reflect combat mod stats. Slow weapons read heavy, so do
-        // medium or faster weapons at or above the heavy damage cutoff.
+        // Static damage precheck confirms a melee weapon before the live reads, which fire
+        // ItemAttributeModifierEvent and reflect combat mod stats. Slow weapons read heavy, as do hard hitters.
         if (CompatImc.getAttackDamageGeneric(item) > 0) {
             LootCategory category;
             if (CompatImc.getAttackSpeed(stack) <= CompatImc.SLOW_SPEED_MAX) {

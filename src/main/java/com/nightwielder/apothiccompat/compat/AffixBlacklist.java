@@ -17,9 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// Stops blacklisted affixes from rolling on new gear by rebuilding Apoth's cached affix by type map
-// without them. The backing AffixManager registry is left alone so existing affixed items keep working,
-// and the map gets rebuilt on every datapack reload so this has to rerun each time.
+// Rebuilds Apoth's affix-by-type map without the blacklisted ids. The backing AffixManager is left alone
+// so existing affixed items keep working, and the map is rebuilt on every datapack reload, so this reruns.
 public final class AffixBlacklist {
     private static final String BY_TYPE_FIELD = "byType";
 
@@ -69,7 +68,6 @@ public final class AffixBlacklist {
         }
 
         // Blacklist ids with no matching affix, either misspelled or from a mod that isn't installed.
-        // Warn so the operator can fix the toml.
         List<ResourceLocation> unknown = new ArrayList<>();
         for (ResourceLocation id : bl) {
             if (!matched.contains(id)) {

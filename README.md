@@ -14,10 +14,10 @@ A second pass runs at the end of mod loading, so weapons whose attack stats are 
 
 The universal rule covers almost everything on its own. A few mods register ranged weapons, shields, utility items, or melee weapons under custom classes that carry no usable hierarchy or readable attack stats, so those get small explicit overrides. A module only runs when both Apotheosis and the target mod are loaded.
 
-- **L'Ender's Cataclysm**: cursed bow and wrath of the desert as bows, the assault shoulder weapons and laser gatling as crossbows, and bulwark of the flame as a shield (all plain `Item` or `ProjectileWeaponItem`; the black steel targe is a real `ShieldItem` so the universal rule covers it)
+- **L'Ender's Cataclysm**: cursed bow and wrath of the desert as bows, the assault shoulder weapons and laser gatling as crossbows, and bulwark of the flame as a shield (all plain `Item` or `ProjectileWeaponItem`; the black steel targe extends `ShieldItem` so the universal rule covers it)
 - **Tetra**: modular bow, crossbow and shield (all extend `ModularItem`, not the vanilla ranged or shield classes); modular melee builds go through the universal rule by attack speed
 - **Meet Your Fight**: the Guns Without Roses compat shotgun and rifle as crossbows
-- **Epic Fight**: greatswords as heavy weapons, the longswords, tachis, daggers, spears, glove, and uchigatana as swords. Epic Fight keeps each weapon's real combat power in its own attribute system and leaves the vanilla attributes at tier defaults, so the universal rule can't place these on its own; the module categorizes them by Epic Fight's own weapon type instead
+- **Epic Fight**: greatswords as heavy weapons, the longswords, tachis, daggers, spears, glove, and uchigatana as swords. Epic Fight keeps each weapon's combat power in its own attribute system and leaves the vanilla attributes at tier defaults, so the universal rule can't place these on its own; the module categorizes them by Epic Fight's own weapon type instead
 - **Epic Samurai**: Shuriken as sword (thrown plain `Item` with no attack damage attribute)
 - **Aquamirae**: Poisoned Chakra and Maze Rose as swords (extend `TieredItem` directly, so the universal rule won't class them)
 - **Forbidden and Arcanus**: Draco Arcanus Scepter as sword (plain `Item` with no attack damage attribute)
@@ -25,7 +25,7 @@ The universal rule covers almost everything on its own. A few mods register rang
 - **Born in Chaos**: Trident Hayfork as a heavy weapon and the two Pumpkin Pistols as crossbows (all plain `Item`; the pistols are GeoItem guns that fire projectiles)
 - **Celestisynth**: Poltergeist pinned to heavy weapon (a `SkilledAxeItem`; the override sets it heavy rather than letting the speed rule decide)
 - **The Undergarden**: slingshot as bow (extends `ProjectileWeaponItem`)
-- **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters as swords (plain `Item` with no attack damage, so the universal rule can't place them but they should still roll melee affixes), Ice Bomb as none
+- **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters as swords (plain `Item` with no attack damage, so the universal rule can't place them but they should still roll melee affixes), Block and Chain and Cube of Annihilation as bows (damage comes from a thrown projectile entity), Ice Bomb as none
 - **Everything else** (including all `ShieldItem` shields, e.g. Dread Steel, Spartan Shields, Epic Knights): categorized by the universal rule above
 
 ## Categorization settings
