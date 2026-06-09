@@ -5,11 +5,9 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-// Marium's melee weapons are mostly TieredItem/SwordItem with attack damage, so UniversalCompat splits
-// them by speed. The ranged weapons are the gap: the bows extend ModdedBow (which extends a Ranged Weapon
-// API CustomBow, not vanilla BowItem) and the crossbows extend ModdedCrossbow, so the BowItem/CrossbowItem
-// class checks miss them. Galeforce and Kraken Slayer have one off names, the rest follow a
-// {name}_{shape} convention so suffix matching covers them.
+// Melee weapons are TieredItem/SwordItem, so UniversalCompat splits them by speed. The ranged weapons are
+// the gap: bows extend ModdedBow (a Ranged Weapon API CustomBow, not vanilla BowItem) and crossbows extend
+// ModdedCrossbow, so the class checks miss them. Suffix matching covers them, plus the one off names.
 public final class MariumsSoulslikeCompat {
     private static final String NAMESPACE = "soulsweapons";
 

@@ -7,12 +7,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// T.O Magic 'n Extras boss weapons each have four upgrade tiers. The sword shaped ones extend a
-// GeoMagicSword (an Iron's Spellbooks MagicSwordItem) and expose real attack stats, so UniversalCompat
-// splits them by speed. The rest need explicit overrides: galenic_polarizer is a GeoMagicSword used as a
-// heavy launcher, trident_of_the_eternal_maelstrom is a GeoMagicSpear rather than a vanilla TridentItem,
-// and the staffs read as heavy under the speed split while FG&A's autodetect never claims GeoStaffItem, so
-// they are sent explicitly to FG&A's staffs category when loaded, sword otherwise.
+// The sword shaped boss weapons extend a GeoMagicSword with attack stats, so UniversalCompat splits them by
+// speed. The rest need overrides: galenic_polarizer is a GeoMagicSword used as a heavy launcher,
+// trident_of_the_eternal_maelstrom is a GeoMagicSpear (not a vanilla TridentItem), and the staffs read as
+// heavy under speed while FG&A never claims GeoStaffItem, so route them to FG&A staffs when loaded, else sword.
 public final class TravelopticsCompat {
     private static final String NAMESPACE = "traveloptics";
 

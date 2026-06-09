@@ -18,9 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-// Stops blacklisted affixes from rolling on new gear by rebuilding Apoth's cached affix by type map
-// without them. The backing AffixRegistry is left alone so existing affixed items keep working, and
-// the map gets rebuilt on every datapack reload so this has to rerun each time.
+// Rebuilds Apoth's affix-by-type map without the blacklisted ids. The backing AffixRegistry is left alone
+// so existing affixed items keep working, and the map is rebuilt on every datapack reload, so this reruns.
 public final class AffixBlacklist {
     private static final String BY_TYPE_FIELD = "byType";
 

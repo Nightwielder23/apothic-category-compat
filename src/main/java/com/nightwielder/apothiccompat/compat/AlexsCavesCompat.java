@@ -7,11 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// Alex's Caves spears, ortholance, dagger, and club extend custom classes that still set attack damage, so
-// UniversalCompat splits them by speed. The gaps are the items the class checks can't place: galena_gauntlet
-// and the two staves are plain Item with no attack damage attribute, dreadbow extends ProjectileWeaponItem
-// rather than BowItem, and raygun is a plain Item ranged weapon. The two staves defer to FG&A's staffs
-// category when present, sword otherwise.
+// The melee weapons set attack damage, so UniversalCompat splits them by speed. The gaps: galena_gauntlet
+// and the two staves are plain Item, dreadbow extends ProjectileWeaponItem (not BowItem), and raygun is a
+// plain Item ranged weapon. The staves defer to FG&A's staffs category when present, sword otherwise.
 public final class AlexsCavesCompat {
     private static final String NAMESPACE = "alexscaves";
 

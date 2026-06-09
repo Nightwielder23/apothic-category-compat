@@ -5,10 +5,8 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Map;
 
-// Born in Chaos is MCreator generated. Its bladed weapons subclass SwordItem/AxeItem and carry attack
-// damage (trident_hayfork is a SwordItem in this version), so UniversalCompat splits them by speed. The
-// only gap is pumpkinhandgun (the Pumpkin Pistol), a GeoItem gun that fires projectiles with no attack
-// damage attribute, so it maps to crossbow.
+// Bladed weapons subclass SwordItem/AxeItem with attack damage, so UniversalCompat splits them by speed.
+// The only gap is pumpkinhandgun (the Pumpkin Pistol), a GeoItem gun with no attack damage, so crossbow.
 public final class BornInChaosCompat {
     private static final String NAMESPACE = "born_in_chaos_v1";
 

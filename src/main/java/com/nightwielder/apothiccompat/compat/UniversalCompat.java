@@ -20,17 +20,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Locale;
 import java.util.Set;
 
-// Default pass run before the per mod modules across every namespace. Vanilla non melee classes decide by
-// hierarchy, anything that deals melee damage is split into sword or heavy_weapon by attack speed (with a
-// high damage cutoff), read live from the stack so combat mods like Epic Fight are reflected. With FG&A
-// loaded, an item whose id names a staff, scepter, or wand routes to the staffs category before the speed
-// split.
-// Per mod modules run after this and overwrite where their explicit decision disagrees (Apoth keeps
-// overrides last wins).
+// Default pass before the per mod modules, which overwrite where their explicit decision disagrees (Apoth
+// keeps overrides last wins). Vanilla non melee classes decide by class; melee splits into sword or
+// heavy_weapon by attack speed (high damage cutoff), read live so combat mods like Epic Fight are reflected.
+// With FG&A loaded, an id naming a staff, scepter, or wand routes to staffs before the speed split.
 public final class UniversalCompat {
-    // PickaxeItem-class items that are wielded as weapons, not mining tools. weapon_pickaxes_as_heavy routes
-    // these to heavy_weapon instead of pickaxe. Full registry ids so the match is exact and never catches an
-    // unrelated mod's same-named item.
+    // PickaxeItem items wielded as weapons, not mining tools. weapon_pickaxes_as_heavy routes these to
+    // heavy_weapon. Full registry ids so the match never catches an unrelated mod's same-named item.
     private static final Set<String> DUAL_PURPOSE_PICKAXES = Set.of(
             "cataclysm:void_forge",
             "cataclysm:infernal_forge",
@@ -64,9 +60,8 @@ public final class UniversalCompat {
             if (stack.isEmpty()) {
                 continue;
             }
-            // A broken attribute resolver in another mod can throw out of stack.getAttributeModifiers (e.g.
-            // Enigmatic Addons reaching for the server at IMC time). Catch per item so one bad item can't
-            // sink the whole dispatch, and the server boot with it.
+            // A broken attribute resolver in another mod can throw out of getAttributeModifiers (e.g.
+            // Enigmatic Addons hitting the server at IMC time), so catch per item to keep the dispatch alive.
             try {
                 sendOne(item, stack, id);
             } catch (Throwable t) {
@@ -84,10 +79,9 @@ public final class UniversalCompat {
         if (item instanceof HoeItem) {
             return;
         }
-        // Name based staff fallback so modded casters don't each need a per mod override. Runs after the
-        // class branches so a bow or shield still wins, and before the speed rule so a slow scepter doesn't
-        // read as heavy. The staffs category resolves later (Apoth on the IMC pass, byId on the runtime
-        // passes), so the name goes through as is rather than as a LootCategory.
+        // Name based staff fallback so modded casters don't each need an override. After the class branches
+        // (so a bow or shield wins) and before the speed rule (so a slow scepter isn't read as heavy). The
+        // staffs category resolves later, so the name goes through as is rather than a LootCategory.
         if (FallenGemsCompat.hasStaffsCategory() && isStaffByName(id)) {
             CompatImc.send(item, FallenGemsCompat.STAFFS_CATEGORY);
             return;
@@ -139,9 +133,8 @@ public final class UniversalCompat {
         return null;
     }
 
-    // The static damage check confirms a melee weapon before the live reads, which fire
-    // ItemAttributeModifierEvent and so reflect combat mod stats. Slow weapons read heavy, so do medium or
-    // faster weapons at or above the heavy damage cutoff.
+    // Static damage precheck confirms a melee weapon before the live reads, which fire
+    // ItemAttributeModifierEvent and reflect combat mod stats. Slow weapons read heavy, as do hard hitters.
     private static LootCategory bySpeed(ItemStack stack, ResourceLocation id) {
         if (CompatImc.getAttackDamageGeneric(stack.getItem()) <= 0) {
             return null;
@@ -170,9 +163,8 @@ public final class UniversalCompat {
             return false;
         }
         String path = id.getPath();
-        // The dungeons_and_combat namespace registers two ids for the same Wooden Battle Staff. The
-        // wooden_battle_staff id is already caught by the battle_staff exclusion below, but wooden_staff
-        // isn't and points at the same melee weapon, so exclude it explicitly.
+        // dungeons_and_combat registers two ids for the same Wooden Battle Staff; wooden_battle_staff is
+        // caught by the battle_staff exclusion below, but wooden_staff isn't, so exclude it explicitly.
         if (namespace.equals("dungeons_and_combat") && path.equals("wooden_staff")) {
             return false;
         }

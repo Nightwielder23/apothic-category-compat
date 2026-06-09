@@ -148,9 +148,8 @@ public final class ApothicCompatConfig {
         return weaponPickaxesAsHeavy;
     }
 
-    // Reads the categorization toggles into static fields so UniversalCompat can consult them during the
-    // dispatch passes, which run before the per item config load. Defaults hold when the file or a key is
-    // missing, so a config written before these keys existed keeps the documented behavior.
+    // Reads the categorization toggles into static fields so UniversalCompat can read them during the
+    // dispatch passes, which run before the per item config load. Defaults hold when a key is missing.
     public static void loadSettings() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
@@ -196,9 +195,8 @@ public final class ApothicCompatConfig {
         }
     }
 
-    // ensureDefaultFile only writes a brand new file, so a config saved before these toggles existed never
-    // gets the keys and getOrElse falls back to the default forever. Add any missing toggle at top level,
-    // since a bare key written after a [table] header would bind to that table instead of the root.
+    // A config saved before these toggles existed never gets the keys, so add any missing toggle at top
+    // level. A bare key after a [table] header would bind to that table instead of the root.
     private static void addMissingSettings(Path path) {
         try {
             List<String> lines = new ArrayList<>(Files.readAllLines(path));
@@ -255,9 +253,8 @@ public final class ApothicCompatConfig {
         return i;
     }
 
-    // First apply during InterModEnqueueEvent, over IMC since that's the only path that works pre game. Item
-    // overrides only: item tags aren't bound yet this early, so tag overrides are deferred to server start
-    // (see applyOverridesAtRuntime).
+    // First apply during InterModEnqueueEvent over IMC, the only path that works pre game. Item overrides
+    // only: item tags aren't bound this early, so tag overrides are deferred to server start.
     public static void load() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
@@ -276,9 +273,8 @@ public final class ApothicCompatConfig {
         reloadStateCaptured = true;
     }
 
-    // Re-applies the config overrides through the live override map after world load. By here datapack item
-    // tags are bound (the IMC pass can't see them) and the deferred-init second pass has run, so a user's
-    // [item_overrides] and [tag_overrides] land last and win as documented.
+    // Re-applies config overrides through the live override map after world load. By here datapack tags are
+    // bound (the IMC pass can't see them) and the second pass has run, so a user's overrides land last and win.
     public static void applyOverridesAtRuntime() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
@@ -302,12 +298,10 @@ public final class ApothicCompatConfig {
         reloadStateCaptured = true;
     }
 
-    // Reapply for /apothiccompat reload. IMC is dead after load, so write straight to Apoth's live override
-    // map and mirror into AdventureModule.IMC_TYPE_OVERRIDES by reflection, or the entries vanish when
-    // AdventureConfig.load recopies on the next Apoth reload. Skips when the file is byte for byte unchanged
-    // since the last apply: the mtime alone misses fast successive writes that leave it untouched, so the
-    // content hash backs it up. Additive only, dropping a toml entry then reloading keeps the live override,
-    // so restart to drop it.
+    // Reapply for /apothiccompat reload. IMC is dead after load, so write to Apoth's live override map and
+    // mirror into IMC_TYPE_OVERRIDES by reflection, or the entries vanish when AdventureConfig.load recopies
+    // on the next Apoth reload. Skips when the file is byte for byte unchanged (mtime alone misses fast
+    // writes, so the content hash backs it up). Additive only, so restart to drop a removed entry.
     public static ReloadResult reload() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
@@ -399,10 +393,9 @@ public final class ApothicCompatConfig {
         return sb.toString();
     }
 
-    // Second pass recategorization after deferred mod init (FMLLoadCompleteEvent). The IMC window is
-    // closed, so swap CompatImc's sink to write Apoth's live override map and mirror IMC_TYPE_OVERRIDES
-    // the same way reload() does, run the supplied module dispatch, then restore the IMC sink. Only items
-    // whose category changed from the first pass IMC value are written. Returns that changed count.
+    // Second pass after deferred mod init. The IMC window is closed, so swap CompatImc's sink to write
+    // Apoth's live override map (mirroring IMC_TYPE_OVERRIDES like reload does), run the dispatch, then
+    // restore the sink. Only items whose category changed from the first pass are written.
     public static int reapply(Runnable dispatch) {
         Map<ResourceLocation, LootCategory> imcMirror = getImcOverrideMap();
         int[] changed = {0};
@@ -430,9 +423,8 @@ public final class ApothicCompatConfig {
         return changed[0];
     }
 
-    // Reads affix_blacklist from the toml and reapplies it to Apoth's affix pool. Only safe after affixes
-    // have loaded (server start, datapack reload, /apothiccompat reload), never during the early IMC pass
-    // while the affix registry is still empty. Returns the number of affixes actually disabled.
+    // Reads affix_blacklist from the toml and reapplies it. Only safe once affixes have loaded (server
+    // start, datapack reload), never during the early IMC pass while the registry is still empty.
     public static int loadAffixBlacklist() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);

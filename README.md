@@ -16,7 +16,7 @@ The universal rule covers almost everything on its own. A few mods register rang
 
 - **L'Ender's Cataclysm**: Cursed Bow and Wrath of the Desert as bows, the assault shoulder weapons and Laser Gatling as crossbows (plain `Item` or `ProjectileWeaponItem`). Every melee weapon and every shield is read by the universal rule; Void Forge and Infernal Forge are `PickaxeItem` combat tools handled by the dual-purpose pickaxe setting
 - **Tetra**: modular bow, crossbow, and shield (all extend `ModularItem`, not the vanilla ranged or shield classes); modular melee builds go through the universal rule by attack speed
-- **Weapons of Miracles**: Overly Large Cylindre as a shield (plain `Item`). The rest of its Epic Fight weapons expose real attack stats, so the universal rule handles them
+- **Weapons of Miracles**: Overly Large Cylindre as a shield (plain `Item`). The rest of its Epic Fight weapons expose attack stats, so the universal rule handles them
 - **Aquamirae**: Poisoned Chakra and Maze Rose as swords (extend `TieredItem` with no attack damage attribute)
 - **Dungeons and Combat**: the sanguine, fairy, and compensation scepters (plain `Item`) as staffs (Fallen Gems & Affixes) or sword. The Pyromancer Scepter is a `SwordItem`, so the name based staff routing or the speed rule already places it
 - **Marium's Soulslike Weaponry**: the custom bows (Galeforce, Kraken Slayer, longbows, bowblades) and crossbows, which extend a Ranged Weapon API class rather than the vanilla bow/crossbow classes
@@ -26,10 +26,10 @@ The universal rule covers almost everything on its own. A few mods register rang
 - **Alex's Caves**: Galena Gauntlet as a sword and the sea and sugar staves as staffs (Fallen Gems & Affixes) or sword (all plain `Item`), Dreadbow and Raygun as bows
 - **Forbidden and Arcanus**: Draco Arcanus Scepter as staffs (Fallen Gems & Affixes) or sword (plain `Item`)
 - **Meet Your Fight**: the Guns Without Roses compat guns (Jägershot, Phantasmal Rifle, Dredged Cannonade) as crossbows
-- **Epic Fight**: greatswords as heavy weapons, the other weapon types as swords. Epic Fight keeps each weapon's real combat power in its own attribute system and leaves the vanilla attributes at tier defaults, so the speed rule can't place these on its own
+- **Epic Fight**: greatswords as heavy weapons, the other weapon types as swords. Epic Fight keeps each weapon's combat power in its own attribute system and leaves the vanilla attributes at tier defaults, so the speed rule can't place these on its own
 - **EpicFight Resurrection / Nightfall**: greatswords, the great tachi, the scythe, and Ghiza's Wheel as heavy weapons
 - **T.O Magic 'n Extras**: Galenic Polarizer as a heavy weapon, Trident of the Eternal Maelstrom as a trident, the staffs as Fallen Gems & Affixes staffs or sword. The sword shaped boss weapons go through the universal rule
-- **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters as staffs or sword, Ice Bomb as none (utility item with no attack damage)
+- **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters as staffs or sword, Block and Chain and Cube of Annihilation as bows (damage comes from a thrown projectile entity), Ice Bomb as none (utility item with no attack damage)
 - **The Undergarden**: Slingshot as a bow (extends `ProjectileWeaponItem`)
 - **Fallen Gems & Affixes**: when present, any item whose registry id names a staff, scepter, or wand routes to its Staffs category, and Celestisynth defers to its Celestial Melee/Ranged categories
 

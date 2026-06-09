@@ -7,10 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-// Twilight Forest's normal gear extends vanilla item classes, so UniversalCompat handles it (swords and
-// axes by speed, mazebreaker_pickaxe as a pickaxe through the PickaxeItem branch). The four scepters extend
-// plain Item with no attack damage attribute, so the speed path never categorizes them. They go to FG&A's
-// staffs category when present (sword otherwise). The ice_bomb is a thrown utility pinned to none.
+// Normal gear extends vanilla classes, so UniversalCompat handles it. The four scepters are plain Item, so
+// route them to FG&A's staffs category when present, sword otherwise. ice_bomb is a thrown utility, none.
 public final class TwilightForestCompat {
     private static final String NAMESPACE = "twilightforest";
     private static final Map<String, String> OVERRIDES = new LinkedHashMap<>();
@@ -23,8 +21,11 @@ public final class TwilightForestCompat {
     );
 
     static {
-        // block_and_chain and cube_of_annihilation stay unmapped. Their projectile entity deals the
-        // damage, not a melee swing, so melee affixes can't proc, and bare Item falls back to none.
+        // block_and_chain and cube_of_annihilation deal their damage through a projectile entity, not a
+        // melee swing, so they go to bow rather than a melee category. Apoth's bow affixes hook projectile
+        // entity hits, which is how these items land damage.
+        OVERRIDES.put("block_and_chain", LootCategory.BOW.getName());
+        OVERRIDES.put("cube_of_annihilation", LootCategory.BOW.getName());
         OVERRIDES.put("ice_bomb", LootCategory.NONE.getName());
     }
 

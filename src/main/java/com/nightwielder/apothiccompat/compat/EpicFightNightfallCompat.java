@@ -5,11 +5,9 @@ import dev.shadowsoffire.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
 
-// Epic Fight Nightfall (efn) adds a handful of weapons whose ids don't follow a predictable suffix, so
-// they're listed explicitly. Like base Epic Fight, efn keeps its real combat stats in Epic Fight's own
-// attribute system and leaves the vanilla attributes at tier defaults, so the speed split reads these as
-// swords. The heavy ones (the greatsword, Ghiza's Wheel, and the scythe) are pinned here. Anything else
-// falls through to UniversalCompat's SWORD class match.
+// Nightfall ids don't follow a predictable suffix, so they're listed explicitly. Like base Epic Fight, it
+// keeps combat stats in its own attribute system, leaving vanilla attributes at defaults, so the speed
+// split reads these as swords. Only the heavy ones (greatsword, Ghiza's Wheel, scythe) are pinned here.
 public final class EpicFightNightfallCompat {
     private static final String NAMESPACE = "efn";
 

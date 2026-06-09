@@ -1,5 +1,10 @@
 # Apothic Compat changelog
 
+## v2.0.2
+
+### Fixed
+- Twilight Forest Block and Chain and Cube of Annihilation now categorize as bow. Both deal their damage through a thrown projectile entity, which is what Apotheosis's bow affixes hook, so they were left uncategorized before.
+
 ## v2.0.1
 
 ### Fixed
