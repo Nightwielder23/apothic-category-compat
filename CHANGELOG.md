@@ -1,138 +1,26 @@
 # Apothic Compat changelog
 
-## v2.0.1
-
-### Fixed
-- Categorization no longer takes down mod loading when another mod's item throws while its attack attributes are read (seen with Enigmatic Addons' Annihilating Sword, which reaches for the server during IMC). The offending item is logged and skipped.
-- Tag overrides apply at server start, when item tags are bound, instead of being skipped during early startup.
-- Per item and per tag overrides are reapplied after the deferred-init pass, so a user override is no longer overwritten by the second categorization pass.
-- Tridents and other TridentItem-class weapons categorize as trident instead of heavy_weapon.
-- A broken third-party affix no longer takes down the affix blacklist rebuild on server start; it is logged and skipped.
-- README trident wording corrected.
-
-## v2.0.0
+## v2.0.2
 
 ### Changed
-- Rebuilt categorization around a universal rule: any item that deals melee attack damage is sorted into sword or heavy_weapon by its live attack speed, with a heavy damage cutoff for fast weapons that still hit hard. Bows, crossbows, tridents, tools, shields, and armor are read from the vanilla class hierarchy. Explicit per mod overrides now remain only for items the class hierarchy and speed read cannot place.
-- A second pass at mod load complete reruns categorization after mods that finalize weapon stats during deferred init, correcting items that read stale on the first scan.
-- Renamed the config file from apothic_compat.toml to apothic_compat-common.toml to follow Forge's COMMON config naming. Breaking change: the old file is not migrated, so a fresh default is generated on first launch and any previous per item, per tag, and affix blacklist entries are lost. Copy them into the new file.
-- /apothiccompat reload now reports what actually changed: the override count split into new, changed, and unchanged, the affix blacklist diff, and a note when the categorization toggles were edited (those still need a restart). It says "No changes detected." when the file is untouched.
-
-### Added
-- Name based staff detection: with Fallen Gems & Affixes loaded, any item whose registry id names a staff, scepter, or wand routes to its staffs category, so modded casters no longer each need an explicit override. Battle and war staves and quarterstaves stay melee.
-- Iron's Spellbooks staffs route to the Fallen Gems & Affixes staffs category.
-- Forbidden and Arcanus draco_arcanus_scepter and Alex's Caves sea and sugar staves defer to the staffs category when present.
-- Born in Chaos pumpkinhandgun (Pumpkin Pistol) categorized as crossbow.
-- Configurable name based heavy override, name_based_heavy_override, off by default: when on, items whose registry id contains a heavy weapon name such as greatsword, claymore, or zweihander are forced to heavy_weapon regardless of attack speed and damage.
-- Configurable dual-purpose pickaxe handling, weapon_pickaxes_as_heavy, on by default: combat tools that subclass PickaxeItem (the Void Forge, Infernal Forge, and Blacksmith Gavels) categorize as heavy_weapon instead of pickaxe.
-
-### Fixed
-- Traveloptics scepters and staffs emit the staffs category explicitly instead of relying on Fallen Gems autodetection, which never claimed them.
-- Malum scythes route by attack speed as melee weapons again, rather than deferring to staffs.
-- MULTIPLY_BASE attack attribute math now matches vanilla: the base and addition sum is scaled together by the multiplier instead of dropping the base term, so weapons carrying a MULTIPLY_BASE modifier read the correct attack damage and speed.
+- Twilight Forest Block and Chain now maps to bow instead of melee weapon, and Cube of Annihilation is added as bow. Both deal their damage through a thrown projectile entity, which is what Apotheosis's bow affixes hook, so melee was the wrong category.
 
 ### Removed
-- Per mod modules whose items the universal rule already covers: Simply Swords, Integrated Simply Swords, Spartan Weaponry, Spartan Shields, Epic Knights, Samurai Dynasty, Dread Steel, Mowzie's Mobs, Bosses of Mass Destruction, Deeper and Darker, Knight Quest, Enigmatic Legacy, and RPG Style More Weapons.
+- Dropped the Alex's Mobs Shield Of The Deep override. Apotheosis 8.x already categorizes it as a shield on its own, so the entry was redundant.
 
-## v1.8.0
+## v2.0.1
 
-### Added
-- Affix blacklist: a config list that stops specific affixes from rolling on newly generated gear (loot drops, reforging, trades, and gem application), reapplied on server start and after /reload.
-- Malum, Twilight Forest, and Undergarden compat modules.
+First NeoForge 1.21.1 build, against Apotheosis 8.5.x. Apotheosis 8.x dropped the sword/heavy_weapon split (one melee_weapon category now), removed the IMC override channel, and moved category overrides to a NeoForge data map, so this is a much smaller mod than the 1.20.1 line rather than a feature for feature port.
 
 ### Changed
-- Routed Twilight Forest scepters to the Fallen Gems & Affixes staffs category when present.
-- Consolidated the per mod compat modules.
-
-### Fixed
-- /apothiccompat reload now reapplies overrides correctly instead of dropping them.
-
-## v1.7.1
-
-### Fixed
-- Simply Swords warglaives were being miscategorized as heavy weapon due to a suffix matching collision with the glaive heavy suffix; now short circuited to sword before the heavy pass
-- Prevented potential crash when FG&A was loaded without Iron's Spellbooks since FG&A's staffs category requires Iron's; Dungeons and Combat scepter routing now checks both mods are loaded
-- Added trident to the loot category list in the generated config comment
-- Fixed spurious minecraft:air overrides being dispatched when configured item ids did not exist in the current modpack; ForgeRegistries.ITEMS.getValue returns Items.AIR for unregistered keys instead of null, so the existing null guard never fired; added a RegistryLookup helper that checks containsKey first and logs misses at warn so version skew entries surface in user logs
-- Removed stale Cataclysm throwing weapon ids (astrape_throwing, ceraunus_throwing, coral_spear_throwing, coral_bardiche_throwing) which were consolidated into base items in Cataclysm 2.x
-- Removed stale Weapons of Miracles netherite_tachi id which was renamed or removed in the 2.x rewrite
-- Reverted Simply Swords and Integrated Simply Swords claymores back to sword since they play at sword speed (gameplay observation, not historical naming)
-- Moved Cataclysm zweiender from heavy weapon to sword for the same reason
-- Moved Epic Fight Resurrection longswords from heavy weapon to sword for the same reason
-
-## v1.7.0
+- Overrides now live in a data map at data/apotheosis/data_maps/item/loot_category_overrides.json. Apotheosis loads it the same way it loads its own, so no code applies them.
+- Affix blacklist ported to the Apotheosis 8.x affix package. It still rebuilds the affix-by-type pool without the blacklisted ids, reapplied on server start and after /reload.
 
 ### Added
-- Epic Fight compat for greatswords as heavy weapons; longswords, daggers, spears, tachis, bokken, uchigatana, and glove as swords
-- Integrated Simply Swords compat for cross mod material variants, matching the Simply Swords mapping; alexscaves polarizer integration as heavy weapon
-- RPG Style More Weapons compat for battle axes and greatswords as heavy, knives as swords
+- Data map overrides for ranged weapons, shields, and odd melee weapons Apotheosis 8.x does not categorize: Alex's Caves Raygun and Dreadbow, Alex's Mobs Hemolymph Blaster and Blood Sprayer (bows) and Shield Of The Deep (shield), Born in Chaos Pumpkin Pistol, L_Ender's Cataclysm Cursed Bow, Wrath of the Desert, Void and Wither Assault Shoulder Weapons, and Laser Gatling, The Undergarden Slingshot (bow), and Twilight Forest Block and Chain (melee weapon).
 
-### Changed
-- Bosses of Mass Destruction module now covers earthdive_spear; legacy nether_staff and obsidian_spear entries kept as no-ops for older mod versions
-- Dungeons and Combat module now categorizes greatswords (including dragon_greatsword_bone, dragon_greatsword_fire, dragon_greatsword_ice, dragon_greatsword_lightning) and claymores as heavy weapons
-- Simply Swords and Integrated Simply Swords claymores moved from sword to heavy weapon
-- Epic Knights module dropped the flamberge and greatsword tokens that had no matching items in current versions
-- Migrated all compat modules to ResourceLocation.fromNamespaceAndPath
-- Removed unused wo_traveloptics dependency declaration
-
-## v1.6.3
-
-### Fixed
-- Moved wither assault shoulder weapon, laser gatling, and void assault shoulder weapon from heavy weapon to crossbow category since they fire projectiles
-
-## v1.6.2
-
-### Fixed
-- Corrected wrath of the desert categorization
-- Routed Dungeons and Combat scepters to Fallen Gems' staffs when present, otherwise sword
-- Fixed blackstar and solar (Weapons of Miracles) categorization
-
-## v1.6.1
-
-### Added
-- Runtime registered loot category support; config now accepts categories like Fallen Gems' staffs, celestial_melee, and celestial_ranged when those mods are loaded
-- The "none" category for fully blacklisting items from rolling any affixes
-
-## v1.6.0
-
-### Added
-- Fallen Gems and Affixes detection helper; Iron's Spellbooks and Celestisynth defer to it when present
-- T.O Magic 'n Extras (traveloptics) compat covering boss weapons across all four upgrade tiers, with staff lines gated on Fallen Gems and Affixes
-
-## v1.5.0
-
-### Added
-- Epic Fight Resurrection (cdmoveset) compat for greatsword, longsword, and great tachi as heavy weapons
-- Epic Fight Nightfall (efn) compat for ruins greatsword and Ghiza's Wheel as heavy weapons
-- Alex's Caves compat for spears, dagger, staves, ortholance, gauntlet, primitive club, dreadbow, and raygun
-
-## v1.4.1
-
-### Fixed
-- Epic Knights mod ID was checking `epicknights`, actual is `magistuarmory`. Module now works.
-- Armageddon mod ID was checking `armageddon`, actual is `armageddon_mod`.
-
-### Added
-- Knight Quest (Count Grimhart variant `knight_quest`) support alongside GPL `knightquest`.
-- Spartan Weaponry `_javelin` suffix support.
-
-### Changed
-- Spears across all modules now categorized as SWORD instead of HEAVY_WEAPON. Affects Spartan Weaponry, Simply Swords, Samurai Dynasty, Bosses of Mass Destruction, Knight Quest, Marium's Soulslike, Mowzie's Mobs, Dungeons and Combat, Epic Knights, L'Ender's Cataclysm.
-- Cataclysm `void_core` removed from HEAVY_WEAPON (it's a mage cast item).
-
-## v1.4.0
-
-Added compat modules for:
-
-- Marium's Soulslike Weaponry
-- Born in Chaos
-- Celestisynth
-- Alex's Mobs
-- Forbidden and Arcanus
-- Bosses of Mass Destruction
-- Meet Your Fight
-- Deeper and Darker
-- Knight Quest Reforged
-- Enigmatic Legacy
-
-Removed the Cataclysm Weaponry module. Its items extend vanilla weapon classes, so the universal fallback already categorizes them correctly.
+### Removed
+- The universal attack speed rule. Apotheosis 8.x categorizes any melee weapon with attack damage on its own.
+- The sword/heavy_weapon split and the name_based_heavy_override and weapon_pickaxes_as_heavy settings, since there is no heavy_weapon category to route to.
+- Per item and per tag TOML overrides. Use a datapack data map instead.
+- The per mod IMC modules and the universal scan, replaced by the static data map.

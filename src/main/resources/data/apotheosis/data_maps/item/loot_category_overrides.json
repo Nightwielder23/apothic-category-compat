@@ -1,0 +1,17 @@
+{
+  "values": {
+    "alexscaves:raygun": "apotheosis:bow",
+    "alexscaves:dreadbow": "apotheosis:bow",
+    "alexsmobs:hemolymph_blaster": "apotheosis:bow",
+    "alexsmobs:blood_sprayer": "apotheosis:bow",
+    "born_in_chaos_v1:pumpkinhandgun": "apotheosis:bow",
+    "cataclysm:cursed_bow": "apotheosis:bow",
+    "cataclysm:wrath_of_the_desert": "apotheosis:bow",
+    "cataclysm:void_assault_shoulder_weapon": "apotheosis:bow",
+    "cataclysm:wither_assault_shoulder_weapon": "apotheosis:bow",
+    "cataclysm:laser_gatling": "apotheosis:bow",
+    "undergarden:slingshot": "apotheosis:bow",
+    "twilightforest:block_and_chain": "apotheosis:bow",
+    "twilightforest:cube_of_annihilation": "apotheosis:bow"
+  }
+}
