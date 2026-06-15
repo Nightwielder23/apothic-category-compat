@@ -1,5 +1,12 @@
 # Apothic Compat changelog
 
+## v2.1.0
+
+### Added
+- Lands of Icaria overrides: the seven bidents map to trident. These load unconditionally.
+- Weapon pickaxes tag and overrides. L_Ender's Cataclysm Void Forge and Infernal Forge and the Forbidden Arcanus blacksmith gavels extend the pickaxe class, so Apotheosis sorted them into its breaker (mining) category ahead of melee and they rolled mining gem bonuses on items used as weapons. They now map to melee weapon through the `apothic_compat:weapon_pickaxes` item tag, which a datapack can extend.
+- Staff routing for setups that run Apothic Compats (by ianm1647) with Malum. Staffs, scepters, and wands from Iron's Spellbooks, Twilight Forest, Ice and Fire, Ice and Fire Spellbooks, Forbidden Arcanus, Mahoutsukai, Deeper Darker, the Aether, Alex's Caves, Born in Chaos, and Traveloptics route to `apothic_compats:staff` so they can socket gems and roll affixes instead of falling into no category. Lands of Icaria's scythes route to `apothic_compats:scythe`. Each of these entries loads only when both `apothic_compats` and `malum` are present, so a setup missing either keeps the rest of the file.
+
 ## v2.0.2
 
 ### Changed

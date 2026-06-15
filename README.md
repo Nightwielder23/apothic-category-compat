@@ -19,6 +19,22 @@ Apothic Compat adds those overrides as a NeoForge data map (`data/apotheosis/dat
 
 Apotheosis has one melee category on 8.x, so "bow" is the right home for any ranged weapon, crossbows included. The Block and Chain and Cube of Annihilation deal their damage through a thrown projectile entity rather than an attack damage attribute, so Apotheosis leaves them uncategorized; bow fits because its affixes hook projectile hits. Everything else from these mods, the melee weapons, bows, shields, and armor, is already categorized by Apotheosis.
 
+## Lands of Icaria
+
+The seven bidents (chert, chalkos, kassiteros, orichalcum, vanadiumsteel, sideros, molybdenumsteel) become tridents. A bident throws like a trident but extends a plain tiered item, so Apotheosis reads it as a melee weapon on its own; trident is the closer home for a thrown weapon, and its affixes hook the throw.
+
+The bident overrides load unconditionally. Icaria's scythes route to the Apothic Compats scythe category and load only under the staff routing conditions below.
+
+## Weapon pickaxes
+
+L_Ender's Cataclysm's Void Forge and Infernal Forge and Forbidden Arcanus's blacksmith gavels extend the pickaxe class. Apotheosis sorts pickaxe-class items into its breaker (mining) category before melee, so these weapons would roll mining gem bonuses and mining affixes. The override moves them to melee. The default list is the `apothic_compat:weapon_pickaxes` item tag (Void Forge, Infernal Forge, and the wooden through reinforced deorum gavels); add ids to that tag from a datapack to cover more dual-purpose pickaxes.
+
+## Staff routing
+
+Needs Apothic Compats (by ianm1647) and Malum, both loaded. Apothic Compats registers a `staff` and a `scythe` loot category, but only when Malum is present, and its staff predicate matches Malum's own staff class alone. Staffs and scepters from other mods fall into no category, so they cannot socket gems or roll affixes. With both mods loaded, this routes staffs, scepters, and wands from Iron's Spellbooks, Twilight Forest, Ice and Fire, Ice and Fire Spellbooks, Forbidden Arcanus, Mahoutsukai, Deeper Darker, the Aether, Alex's Caves, Born in Chaos, and Traveloptics into `apothic_compats:staff`. Lands of Icaria's scythes go to `apothic_compats:scythe`.
+
+Every routed entry carries a load condition for both `apothic_compats` and `malum`. Without either mod the entry is skipped and the rest of the file still loads. Staffs that already carry attack damage, and so already read as melee weapons, are left alone.
+
 ## What it does not do (changed from 1.20.1)
 
 The 1.20.1 build read every item's attack speed at load time and split melee weapons into `sword` or `heavy_weapon`. Apotheosis 8.x removed that split (there is one `melee_weapon` category now) and replaced the old override channel with the data map. So this version drops the universal speed rule, the per item and per tag TOML overrides, and the categorization toggles. Apotheosis 8.x's own melee detection covers what the universal rule used to.

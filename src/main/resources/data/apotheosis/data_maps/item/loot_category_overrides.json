@@ -12,6 +12,270 @@
     "cataclysm:laser_gatling": "apotheosis:bow",
     "undergarden:slingshot": "apotheosis:bow",
     "twilightforest:block_and_chain": "apotheosis:bow",
-    "twilightforest:cube_of_annihilation": "apotheosis:bow"
+    "twilightforest:cube_of_annihilation": "apotheosis:bow",
+
+    "landsoficaria:chert_bident": "apotheosis:trident",
+    "landsoficaria:chalkos_bident": "apotheosis:trident",
+    "landsoficaria:kassiteros_bident": "apotheosis:trident",
+    "landsoficaria:orichalcum_bident": "apotheosis:trident",
+    "landsoficaria:vanadiumsteel_bident": "apotheosis:trident",
+    "landsoficaria:sideros_bident": "apotheosis:trident",
+    "landsoficaria:molybdenumsteel_bident": "apotheosis:trident",
+
+    "#apothic_compat:weapon_pickaxes": "apotheosis:melee_weapon",
+
+    "irons_spellbooks:staff_of_the_nines": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "twilightforest:lifedrain_scepter": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "twilightforest:twilight_scepter": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "twilightforest:zombie_scepter": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "twilightforest:fortification_scepter": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "iceandfire:cockatrice_scepter": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "iceandfire:dread_queen_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "iceandfire:lich_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "iceandfire:pixie_wand": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "ice_and_fire_spellbooks:dragon_priest_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "ice_and_fire_spellbooks:draconic_inferno_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "ice_and_fire_spellbooks:draconic_cryonic_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "ice_and_fire_spellbooks:draconic_tempest_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "forbidden_arcanus:draco_arcanus_scepter": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "forbidden_arcanus:draco_arcanus_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "forbidden_arcanus:magic_wand": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "mahoutsukai:mystic_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "mahoutsukai:spatial_disorientation_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "mahoutsukai:staff_emrys": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "deeperdarker:sonorous_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "aether:cloud_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "aether:nature_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "alexscaves:sea_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "alexscaves:sugar_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "born_in_chaos_v1:bonescaller_staff": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "born_in_chaos_v1:staffof_blindness": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "traveloptics:titanlord_scepter": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "traveloptics:titanlord_scepter_retro": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+    "traveloptics:titanlord_scepter_tectonic": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:staff"
+    },
+
+    "landsoficaria:chert_scythe": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:scythe"
+    },
+    "landsoficaria:chalkos_scythe": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:scythe"
+    },
+    "landsoficaria:kassiteros_scythe": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:scythe"
+    },
+    "landsoficaria:orichalcum_scythe": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:scythe"
+    },
+    "landsoficaria:vanadiumsteel_scythe": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:scythe"
+    },
+    "landsoficaria:sideros_scythe": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:scythe"
+    },
+    "landsoficaria:molybdenumsteel_scythe": {
+      "neoforge:conditions": [
+        { "type": "neoforge:mod_loaded", "modid": "apothic_compats" },
+        { "type": "neoforge:mod_loaded", "modid": "malum" }
+      ],
+      "value": "apothic_compats:scythe"
+    }
   }
 }

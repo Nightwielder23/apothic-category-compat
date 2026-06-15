@@ -10,7 +10,7 @@ displayName="Apothic Compat"
 authors="Nightwielder23"
 # Server only: do not flag a version mismatch when present on the server but not the client.
 displayTest="IGNORE_SERVER_VERSION"
-description='''Adds a loot category data map for items Apotheosis 8.x does not categorize on its own, mostly gun style ranged weapons that use no recognizable item class. Also keeps the config driven affix blacklist.'''
+description='''Adds a loot category data map for items Apotheosis 8.x does not categorize on its own: gun style ranged weapons, Lands of Icaria bidents, and dual purpose pickaxe weapons. With Apothic Compats and Malum present, it also routes modded staffs and scythes to their categories. Keeps the config driven affix blacklist.'''
 
 [[dependencies.apothic_compat]]
 modId="neoforge"

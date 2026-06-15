@@ -11,7 +11,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import org.slf4j.Logger;
 
-// Loot category overrides live in a data map, so Apotheosis applies those itself. The only code here is
+// Loot category overrides are in a data map, so Apotheosis applies those itself. The only code here is
 // the reload command and the affix blacklist, which must be reapplied after the affix pool loads.
 @Mod(ApothicCompat.MODID)
 public final class ApothicCompat {

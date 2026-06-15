@@ -49,8 +49,7 @@ public final class ApothicCompatConfig {
 
     private ApothicCompatConfig() {}
 
-    // Reads affix_blacklist from the toml and reapplies it. Only safe once affixes have loaded (server
-    // start, datapack reload), never while the registry is still empty.
+    // Only safe once affixes have loaded (server start, datapack reload), never while the registry is empty.
     public static int loadAffixBlacklist() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
         ensureDefaultFile(path);
