@@ -1,4 +1,4 @@
-package com.nightwielder.apothiccompat.util;
+package com.nightwielder.apothiccategorycompat.util;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;

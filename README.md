@@ -1,10 +1,10 @@
-# Apothic Compat
+# Apothic Category Compat
 
 A small server side 1.19.2 Forge mod that fills in Apotheosis loot category assignments for weapon/armor mods that don't set them. Uses Apotheosis's own IMC override API, so nothing is patched or mixin'd.
 
 ## What it does
 
-Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. A lot of modded weapons either don't have a category at all or get the wrong one, so affixes never appear on them. Apothic Compat sends the right categories at load time over Apotheosis's IMC override API.
+Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. A lot of modded weapons either don't have a category at all or get the wrong one, so affixes never appear on them. Apothic Category Compat sends the right categories at load time over Apotheosis's IMC override API.
 
 The core rule is universal: every registered item is categorized by what it actually is, not by a hardcoded list. Any item that deals melee attack damage is split into `sword` or `heavy_weapon` by its attack speed, using the same thresholds Obscure API shows in its weapon tooltips: a weapon at or below 1.0 attack speed reads as heavy, anything faster reads as a sword, and a fast weapon that still hits very hard (10.0 or more effective damage) is bumped to heavy. This works for any mod's weapons no matter which Java class they extend, including plain `Item`, `TieredItem`, `DiggerItem`, and modular subclasses. Bows, crossbows, pickaxes, shovels, shields, and armor are read straight from the vanilla class hierarchy, and anything extending `TridentItem` goes to the `trident` category.
 
@@ -30,14 +30,14 @@ The universal rule covers almost everything on its own. A few mods register rang
 
 ## Categorization settings
 
-Two toggles in `apothic_compat-common.toml` adjust how the universal rule categorizes items. They apply during mod load, so edit the file and restart the server to change them.
+Two toggles in `apothic_category_compat-common.toml` adjust how the universal rule categorizes items. They apply during mod load, so edit the file and restart the server to change them.
 
 - `name_based_heavy_override` (default `false`): when enabled, any item whose registry id contains a heavy weapon name (greatsword, claymore, zweihander, warhammer, halberd, bardiche, glaive, battleaxe, greataxe, lance, pike, maul, naginata, odachi, flamberge, scythe, and the like) is categorized as `heavy_weapon` regardless of its attack speed and damage. Leave it off to categorize purely by speed and damage.
 - `weapon_pickaxes_as_heavy` (default `true`): the dual-purpose pickaxe list holds combat tools that extend `PickaxeItem` but are swung as weapons. When enabled they categorize as `heavy_weapon` instead of `pickaxe`. The list covers L'Ender's Cataclysm's Void Forge and Infernal Forge and Forbidden and Arcanus's Blacksmith Gavels (every material tier). Disable it for plain `PickaxeItem` behavior.
 
 ## Config
 
-A config file shows up at `config/apothic_compat-common.toml` on first launch. Per item and per tag overrides go there:
+A config file shows up at `config/apothic_category_compat-common.toml` on first launch. Per item and per tag overrides go there:
 
 ```toml
 [item_overrides]
@@ -51,7 +51,7 @@ Valid category names: `sword`, `heavy_weapon`, `trident`, `bow`, `crossbow`, `sh
 
 ## Affix blacklist
 
-Stops specific affixes from rolling on newly generated gear (loot drops, reforging, trades, and gem application) without editing datapacks. List the affix ids in the `affix_blacklist` array in `apothic_compat-common.toml`:
+Stops specific affixes from rolling on newly generated gear (loot drops, reforging, trades, and gem application) without editing datapacks. List the affix ids in the `affix_blacklist` array in `apothic_category_compat-common.toml`:
 
 ```toml
 affix_blacklist = ["apotheosis:sword/attribute/vampiric", "apotheosis:heavy_weapon/attribute/berserking"]
@@ -63,11 +63,11 @@ Notes:
 
 - This blocks future rolls only. Items that already carry a blacklisted affix keep it.
 - Apotheosis's own datapack affix overrides still take precedence.
-- The blacklist reapplies automatically on server start and after `/reload`. Edit the list and run `/ac reload` (or `/apothiccompat reload`) to apply it without a restart.
+- The blacklist reapplies automatically on server start and after `/reload`. Edit the list and run `/acc reload` (or `/apothiccategorycompat reload`) to apply it without a restart.
 
 ## Reload command
 
-`/apothiccompat reload` or `/ac reload` (op level 2) rereads the config and reapplies it without a restart, every time it's run.
+`/apothiccategorycompat reload` or `/acc reload` (op level 2) rereads the config and reapplies it without a restart, every time it's run.
 
 ## Requirements
 

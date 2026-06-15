@@ -1,7 +1,7 @@
-package com.nightwielder.apothiccompat.util;
+package com.nightwielder.apothiccategorycompat.util;
 
 import com.google.common.collect.Multimap;
-import com.nightwielder.apothiccompat.compat.RegistryLookup;
+import com.nightwielder.apothiccategorycompat.compat.RegistryLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;

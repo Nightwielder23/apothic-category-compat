@@ -1,6 +1,6 @@
-package com.nightwielder.apothiccompat.compat;
+package com.nightwielder.apothiccategorycompat.compat;
 
-import com.nightwielder.apothiccompat.ApothicCompat;
+import com.nightwielder.apothiccategorycompat.ApothicCategoryCompat;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -13,7 +13,7 @@ public final class RegistryLookup {
     // instead of dispatching overrides onto minecraft:air.
     public static Item item(ResourceLocation id) {
         if (!ForgeRegistries.ITEMS.containsKey(id)) {
-            ApothicCompat.LOGGER.warn("Skipping override for unknown item id {}", id);
+            ApothicCategoryCompat.LOGGER.warn("Skipping override for unknown item id {}", id);
             return null;
         }
         return ForgeRegistries.ITEMS.getValue(id);

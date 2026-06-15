@@ -1,8 +1,8 @@
-package com.nightwielder.apothiccompat.compat;
+package com.nightwielder.apothiccategorycompat.compat;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.nightwielder.apothiccompat.ApothicCompat;
+import com.nightwielder.apothiccategorycompat.ApothicCategoryCompat;
 import shadows.apotheosis.adventure.affix.Affix;
 import shadows.apotheosis.adventure.affix.AffixManager;
 import shadows.apotheosis.adventure.affix.AffixType;
@@ -35,7 +35,7 @@ public final class AffixBlacklist {
         Collection<Affix> all = AffixManager.INSTANCE.getValues();
         if (all.isEmpty()) {
             // Affixes haven't loaded yet so rebuilding now would wipe the whole pool
-            ApothicCompat.LOGGER.debug("Affix registry empty; skipping blacklist apply.");
+            ApothicCategoryCompat.LOGGER.debug("Affix registry empty; skipping blacklist apply.");
             return 0;
         }
 
@@ -63,7 +63,7 @@ public final class AffixBlacklist {
                     badId = affix.getId();
                 } catch (Throwable ignored) {
                 }
-                ApothicCompat.LOGGER.warn("Skipping affix {} while rebuilding the pool: {}", badId, t.toString());
+                ApothicCategoryCompat.LOGGER.warn("Skipping affix {} while rebuilding the pool: {}", badId, t.toString());
             }
         }
 
@@ -75,7 +75,7 @@ public final class AffixBlacklist {
             }
         }
         if (!unknown.isEmpty()) {
-            ApothicCompat.LOGGER.warn("Affix blacklist: {} unknown affix id(s) skipped: {}", unknown.size(), unknown);
+            ApothicCategoryCompat.LOGGER.warn("Affix blacklist: {} unknown affix id(s) skipped: {}", unknown.size(), unknown);
         }
 
         // Types the blacklist emptied out completely. Apoth rolls fewer affixes when a type has no
@@ -87,7 +87,7 @@ public final class AffixBlacklist {
             }
         }
         if (!emptied.isEmpty()) {
-            ApothicCompat.LOGGER.warn("Affix blacklist emptied these affix types completely: {}", emptied);
+            ApothicCategoryCompat.LOGGER.warn("Affix blacklist emptied these affix types completely: {}", emptied);
         }
 
         // AffixManager has getTypeMap() for reads but no setter, so the rebuilt map gets written straight
@@ -98,14 +98,14 @@ public final class AffixBlacklist {
             field.setAccessible(true);
             field.set(AffixManager.INSTANCE, rebuilt);
         } catch (ReflectiveOperationException | RuntimeException e) {
-            ApothicCompat.LOGGER.warn("Could not rewrite AffixManager.{}; affix blacklist not applied: {}", BY_TYPE_FIELD, e.toString());
+            ApothicCategoryCompat.LOGGER.warn("Could not rewrite AffixManager.{}; affix blacklist not applied: {}", BY_TYPE_FIELD, e.toString());
             return 0;
         }
 
         if (matched.isEmpty()) {
-            ApothicCompat.LOGGER.debug("Affix blacklist applied: nothing disabled.");
+            ApothicCategoryCompat.LOGGER.debug("Affix blacklist applied: nothing disabled.");
         } else {
-            ApothicCompat.LOGGER.info("Affix blacklist applied: {} affix(es) disabled.", matched.size());
+            ApothicCategoryCompat.LOGGER.info("Affix blacklist applied: {} affix(es) disabled.", matched.size());
         }
         return matched.size();
     }

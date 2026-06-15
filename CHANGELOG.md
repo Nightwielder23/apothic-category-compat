@@ -1,4 +1,10 @@
-# Apothic Compat changelog
+# Apothic Category Compat changelog
+
+## v2.1.0
+
+### Changed
+- Renamed the mod from Apothic Compat to Apothic Category Compat (mod id `apothic_compat` to `apothic_category_compat`) to avoid confusion with Apothic Compats by ianm1647. An existing `apothic_compat-common.toml` moves to `apothic_category_compat-common.toml` on first load, so your settings carry over.
+- Reload command short alias changed from `/ac` to `/acc`. The long form `/apothiccategorycompat reload` is unchanged.
 
 ## v2.0.2
 
@@ -19,8 +25,8 @@
 
 ### Changed
 - Rebuilt categorization around a universal attack speed and damage rule: any item that deals melee attack damage is sorted into sword or heavy_weapon by its live attack speed, while bows, crossbows, tridents, tools, shields, and armor are read from the vanilla class hierarchy. Explicit per mod overrides now remain only for items the class hierarchy and speed read cannot place.
-- Renamed the config file from apothic_compat.toml to apothic_compat-common.toml to follow Forge's COMMON config naming. Breaking change: the old file is not migrated, so a fresh default is generated on first launch and any previous per item, per tag, and affix blacklist entries are lost. Copy them into the new file.
-- /apothiccompat reload now reports what changed: the override count split into new, changed, and unchanged, the affix blacklist diff, and a note when the categorization toggles were edited (those still need a restart).
+- Renamed the config file from apothic_category_compat.toml to apothic_category_compat-common.toml to follow Forge's COMMON config naming. Breaking change: the old file is not migrated, so a fresh default is generated on first launch and any previous per item, per tag, and affix blacklist entries are lost. Copy them into the new file.
+- /apothiccategorycompat reload now reports what changed: the override count split into new, changed, and unchanged, the affix blacklist diff, and a note when the categorization toggles were edited (those still need a restart).
 
 ### Added
 - Configurable name based heavy override, name_based_heavy_override, off by default: when on, items whose registry id contains a heavy weapon name such as greatsword, claymore, or zweihander are forced to heavy_weapon regardless of attack speed and damage.
@@ -35,8 +41,8 @@
 
 ## v1.8.0
 
-Fixed the /apothiccompat reload command and updated the mod metadata.
+Fixed the /apothiccategorycompat reload command and updated the mod metadata.
 
 ## v1.0.0
 
-Initial 1.19.2 backport of Apothic Compat.
+Initial 1.19.2 backport of Apothic Category Compat.

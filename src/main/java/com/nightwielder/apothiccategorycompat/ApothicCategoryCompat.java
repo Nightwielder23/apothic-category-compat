@@ -1,21 +1,21 @@
-package com.nightwielder.apothiccompat;
+package com.nightwielder.apothiccategorycompat;
 
 import com.mojang.logging.LogUtils;
-import com.nightwielder.apothiccompat.compat.AlexsMobsCompat;
-import com.nightwielder.apothiccompat.compat.AquamiraeCompat;
-import com.nightwielder.apothiccompat.compat.BornInChaosCompat;
-import com.nightwielder.apothiccompat.compat.CelestisynthCompat;
-import com.nightwielder.apothiccompat.compat.EpicFightCompat;
-import com.nightwielder.apothiccompat.compat.EpicSamuraiCompat;
-import com.nightwielder.apothiccompat.compat.ForbiddenArcanusCompat;
-import com.nightwielder.apothiccompat.compat.LEnderCataclysmCompat;
-import com.nightwielder.apothiccompat.compat.MeetYourFightCompat;
-import com.nightwielder.apothiccompat.compat.TetraCompat;
-import com.nightwielder.apothiccompat.compat.TwilightForestCompat;
-import com.nightwielder.apothiccompat.compat.UndergardenCompat;
-import com.nightwielder.apothiccompat.compat.UniversalCompat;
-import com.nightwielder.apothiccompat.command.ReloadCommand;
-import com.nightwielder.apothiccompat.config.ApothicCompatConfig;
+import com.nightwielder.apothiccategorycompat.compat.AlexsMobsCompat;
+import com.nightwielder.apothiccategorycompat.compat.AquamiraeCompat;
+import com.nightwielder.apothiccategorycompat.compat.BornInChaosCompat;
+import com.nightwielder.apothiccategorycompat.compat.CelestisynthCompat;
+import com.nightwielder.apothiccategorycompat.compat.EpicFightCompat;
+import com.nightwielder.apothiccategorycompat.compat.EpicSamuraiCompat;
+import com.nightwielder.apothiccategorycompat.compat.ForbiddenArcanusCompat;
+import com.nightwielder.apothiccategorycompat.compat.LEnderCataclysmCompat;
+import com.nightwielder.apothiccategorycompat.compat.MeetYourFightCompat;
+import com.nightwielder.apothiccategorycompat.compat.TetraCompat;
+import com.nightwielder.apothiccategorycompat.compat.TwilightForestCompat;
+import com.nightwielder.apothiccategorycompat.compat.UndergardenCompat;
+import com.nightwielder.apothiccategorycompat.compat.UniversalCompat;
+import com.nightwielder.apothiccategorycompat.command.ReloadCommand;
+import com.nightwielder.apothiccategorycompat.config.ApothicCategoryCompatConfig;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -28,12 +28,12 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
-@Mod(ApothicCompat.MODID)
-public class ApothicCompat {
-    public static final String MODID = "apothic_compat";
+@Mod(ApothicCategoryCompat.MODID)
+public class ApothicCategoryCompat {
+    public static final String MODID = "apothic_category_compat";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public ApothicCompat(FMLJavaModLoadingContext context) {
+    public ApothicCategoryCompat(FMLJavaModLoadingContext context) {
         IEventBus modBus = context.getModEventBus();
         modBus.addListener(this::sendCategoryOverrides);
         modBus.addListener(this::reapplyAfterDeferredInit);
@@ -52,10 +52,10 @@ public class ApothicCompat {
         if (!ModList.get().isLoaded("apotheosis")) {
             return;
         }
-        ApothicCompatConfig.loadAffixBlacklist();
+        ApothicCategoryCompatConfig.loadAffixBlacklist();
         // Item tags are bound and the second pass has run by now, so reapply config overrides here: tag
         // overrides finally resolve and a user's per item overrides reclaim last-wins.
-        ApothicCompatConfig.applyOverridesAtRuntime();
+        ApothicCategoryCompatConfig.applyOverridesAtRuntime();
     }
 
     private void onDatapackSync(OnDatapackSyncEvent event) {
@@ -65,7 +65,7 @@ public class ApothicCompat {
         if (!ModList.get().isLoaded("apotheosis")) {
             return;
         }
-        ApothicCompatConfig.loadAffixBlacklist();
+        ApothicCategoryCompatConfig.loadAffixBlacklist();
     }
 
     // Apotheosis's IMC takes only (item, category), no slot, so "{mainhand}" tooltip lines come from vanilla
@@ -79,7 +79,7 @@ public class ApothicCompat {
             return;
         }
         dispatchModules();
-        ApothicCompatConfig.load();
+        ApothicCategoryCompatConfig.load();
     }
 
     // Some mods (e.g. Mowzie's Mobs) finalize attack stats in deferred init that runs after the IMC scan, so
@@ -89,15 +89,15 @@ public class ApothicCompat {
         if (!ModList.get().isLoaded("apotheosis")) {
             return;
         }
-        int changed = ApothicCompatConfig.reapply(this::dispatchModules);
-        LOGGER.info("Apothic Compat second pass recategorized {} item(s) after deferred mod init.", changed);
+        int changed = ApothicCategoryCompatConfig.reapply(this::dispatchModules);
+        LOGGER.info("Apothic Category Compat second pass recategorized {} item(s) after deferred mod init.", changed);
     }
 
     // Shared dispatch used by both passes. The active CompatImc sink (IMC for the first pass, runtime
     // override map writes for the second) decides where the results land, so the module code is identical.
     private void dispatchModules() {
         // UniversalCompat reads the categorization toggles, so refresh them before it runs.
-        ApothicCompatConfig.loadSettings();
+        ApothicCategoryCompatConfig.loadSettings();
         UniversalCompat.send();
         if (ModList.get().isLoaded("tetra")) {
             TetraCompat.send();

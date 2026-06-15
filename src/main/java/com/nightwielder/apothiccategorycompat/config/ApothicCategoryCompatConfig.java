@@ -1,11 +1,11 @@
-package com.nightwielder.apothiccompat.config;
+package com.nightwielder.apothiccategorycompat.config;
 
 import com.electronwill.nightconfig.core.UnmodifiableConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.ParsingException;
-import com.nightwielder.apothiccompat.ApothicCompat;
-import com.nightwielder.apothiccompat.compat.AffixBlacklist;
-import com.nightwielder.apothiccompat.util.CompatImc;
+import com.nightwielder.apothiccategorycompat.ApothicCategoryCompat;
+import com.nightwielder.apothiccategorycompat.compat.AffixBlacklist;
+import com.nightwielder.apothiccategorycompat.util.CompatImc;
 import shadows.apotheosis.adventure.AdventureConfig;
 import shadows.apotheosis.adventure.AdventureModule;
 import shadows.apotheosis.adventure.loot.LootCategory;
@@ -30,17 +30,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-public final class ApothicCompatConfig {
-    private static final String FILE_NAME = "apothic_compat-common.toml";
+public final class ApothicCategoryCompatConfig {
+    private static final String FILE_NAME = "apothic_category_compat-common.toml";
+    private static final String LEGACY_FILE_NAME = "apothic_compat-common.toml";
 
     private static final String DEFAULT_CONTENTS = """
-            # User defined loot category overrides for Apothic Compat.
+            # User defined loot category overrides for Apothic Category Compat.
             #
             # Maps Minecraft items (or item tags) to Apotheosis loot categories so the
             # affinity system can roll the right gem/affix pools on modded gear that
             # Apotheosis does not categorize on its own. Entries here are sent to
             # Apotheosis via IMC at startup, alongside the mod's built in compat
-            # modules. Edit this file then run /apothiccompat reload (op 2) to apply
+            # modules. Edit this file then run /apothiccategorycompat reload (op 2) to apply
             # changes without restarting the server.
             #
             # Valid loot category names (Apotheosis 6.5.2):
@@ -77,7 +78,7 @@ public final class ApothicCompatConfig {
             #
             # Find affix ids from JEI tooltips on affixed gear, or from the files
             # under data/<namespace>/affixes/ inside a mod's jar. Edit this list then
-            # run /apothiccompat reload (op 2) to reapply without a restart.
+            # run /apothiccategorycompat reload (op 2) to reapply without a restart.
             #
             # Example:
             #   affix_blacklist = ["apotheosis:sword/attribute/vampiric", "apotheosis:heavy_weapon/attribute/berserking"]
@@ -101,7 +102,7 @@ public final class ApothicCompatConfig {
             #   value = loot category name from the list above
             #
             # Tags are resolved at apply time, so datapack only tags that load with a
-            # world may not be visible during early startup. /apothiccompat reload
+            # world may not be visible during early startup. /apothiccategorycompat reload
             # runs after world load, so tag expansion there sees datapack tags.
             #
             # Example:
@@ -113,7 +114,7 @@ public final class ApothicCompatConfig {
     private static boolean nameBasedHeavyOverride = false;
     private static boolean weaponPickaxesAsHeavy = true;
 
-    // Snapshot of the last applied state, so /apothiccompat reload can skip a no-op reload and report a diff.
+    // Snapshot of the last applied state, so /apothiccategorycompat reload can skip a no-op reload and report a diff.
     private static int lastFileHash;
     private static long lastFileMtime;
     private static boolean reloadStateCaptured;
@@ -125,7 +126,7 @@ public final class ApothicCompatConfig {
 
     public record ReloadResult(String message, String warning, int count) {}
 
-    private ApothicCompatConfig() {}
+    private ApothicCategoryCompatConfig() {}
 
     public static boolean nameBasedHeavyOverride() {
         return nameBasedHeavyOverride;
@@ -161,7 +162,7 @@ public final class ApothicCompatConfig {
             nameOverride = config.getOrElse("name_based_heavy_override", false);
             pickaxesHeavy = config.getOrElse("weapon_pickaxes_as_heavy", true);
         } catch (Exception e) {
-            ApothicCompat.LOGGER.error("Failed to read categorization settings from {}", FILE_NAME, e);
+            ApothicCategoryCompat.LOGGER.error("Failed to read categorization settings from {}", FILE_NAME, e);
         }
         return new boolean[]{nameOverride, pickaxesHeavy};
     }
@@ -201,9 +202,9 @@ public final class ApothicCompatConfig {
             additions.add(0, "");
             lines.addAll(settingsInsertIndex(lines), additions);
             Files.writeString(path, String.join("\n", lines) + "\n");
-            ApothicCompat.LOGGER.info("Added missing categorization toggles to {}", FILE_NAME);
+            ApothicCategoryCompat.LOGGER.info("Added missing categorization toggles to {}", FILE_NAME);
         } catch (IOException e) {
-            ApothicCompat.LOGGER.error("Failed to add categorization toggles to {}", FILE_NAME, e);
+            ApothicCategoryCompat.LOGGER.error("Failed to add categorization toggles to {}", FILE_NAME, e);
         }
     }
 
@@ -285,7 +286,7 @@ public final class ApothicCompatConfig {
         reloadStateCaptured = true;
     }
 
-    // Reapply for /apothiccompat reload. IMC is dead after load, so write to Apoth's live override map and
+    // Reapply for /apothiccategorycompat reload. IMC is dead after load, so write to Apoth's live override map and
     // mirror into IMC_TYPE_OVERRIDES by reflection, or the entries vanish when AdventureConfig.load recopies
     // on the next Apoth reload. Skips when the file is byte for byte unchanged (mtime alone misses fast
     // writes, so the content hash backs it up). Additive only, so restart to drop a removed entry.
@@ -341,7 +342,7 @@ public final class ApothicCompatConfig {
 
         int total = tally[0] + tally[1] + tally[2];
         String message = reloadMessage(total, tally[0], tally[1], tally[2], disabled, blAdded, blRemoved);
-        ApothicCompat.LOGGER.info(message);
+        ApothicCategoryCompat.LOGGER.info(message);
         return new ReloadResult(message, warning, total);
     }
 
@@ -420,7 +421,7 @@ public final class ApothicCompatConfig {
             count[0] += processItemOverrides(config, action);
             count[0] += processTagOverrides(config, action);
         } catch (Exception e) {
-            ApothicCompat.LOGGER.error("Failed to read {}", FILE_NAME, e);
+            ApothicCategoryCompat.LOGGER.error("Failed to read {}", FILE_NAME, e);
         }
         return count[0];
     }
@@ -434,7 +435,7 @@ public final class ApothicCompatConfig {
             loadTolerant(config);
             count[0] += processItemOverrides(config, action);
         } catch (Exception e) {
-            ApothicCompat.LOGGER.error("Failed to read {}", FILE_NAME, e);
+            ApothicCategoryCompat.LOGGER.error("Failed to read {}", FILE_NAME, e);
         }
         return count[0];
     }
@@ -446,7 +447,7 @@ public final class ApothicCompatConfig {
             // NightConfig throws this when the file ends without a trailing newline after a table header
             // like [tag_overrides]. Everything above the EOF is already parsed so keep going.
             if (e.getMessage() != null && e.getMessage().contains("Not enough data available")) {
-                ApothicCompat.LOGGER.debug("Tolerating trailing EOF parse hiccup in {}: {}", FILE_NAME, e.getMessage());
+                ApothicCategoryCompat.LOGGER.debug("Tolerating trailing EOF parse hiccup in {}: {}", FILE_NAME, e.getMessage());
             } else {
                 throw e;
             }
@@ -454,6 +455,7 @@ public final class ApothicCompatConfig {
     }
 
     private static void ensureDefaultFile(Path path) {
+        migrateLegacyFile(path);
         if (Files.exists(path)) {
             return;
         }
@@ -461,7 +463,23 @@ public final class ApothicCompatConfig {
             Files.createDirectories(path.getParent());
             Files.writeString(path, DEFAULT_CONTENTS);
         } catch (IOException e) {
-            ApothicCompat.LOGGER.error("Failed to create default {}", FILE_NAME, e);
+            ApothicCategoryCompat.LOGGER.error("Failed to create default {}", FILE_NAME, e);
+        }
+    }
+
+    // The mod was renamed from apothic_compat, so move a pre-rename config to the new name once to keep the
+    // user's settings. The new file wins if both exist, and after the move the old file is gone, so later
+    // calls do nothing.
+    private static void migrateLegacyFile(Path path) {
+        Path legacy = path.resolveSibling(LEGACY_FILE_NAME);
+        if (Files.exists(path) || !Files.exists(legacy)) {
+            return;
+        }
+        try {
+            Files.move(legacy, path);
+            ApothicCategoryCompat.LOGGER.info("Migrated config from {} to {}", LEGACY_FILE_NAME, FILE_NAME);
+        } catch (IOException e) {
+            ApothicCategoryCompat.LOGGER.error("Failed to migrate {} to {}", LEGACY_FILE_NAME, FILE_NAME, e);
         }
     }
 
@@ -475,21 +493,21 @@ public final class ApothicCompatConfig {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (!(value instanceof String categoryName)) {
-                ApothicCompat.LOGGER.warn("[item_overrides] Key '{}' must map to a string category, got {}", key, value);
+                ApothicCategoryCompat.LOGGER.warn("[item_overrides] Key '{}' must map to a string category, got {}", key, value);
                 continue;
             }
             if (LootCategory.byId(categoryName) == null) {
-                ApothicCompat.LOGGER.warn("[item_overrides] Key '{}' uses unknown category '{}'", key, categoryName);
+                ApothicCategoryCompat.LOGGER.warn("[item_overrides] Key '{}' uses unknown category '{}'", key, categoryName);
                 continue;
             }
             ResourceLocation id = ResourceLocation.tryParse(key);
             if (id == null) {
-                ApothicCompat.LOGGER.warn("[item_overrides] Invalid item id '{}'", key);
+                ApothicCategoryCompat.LOGGER.warn("[item_overrides] Invalid item id '{}'", key);
                 continue;
             }
             Item item = ForgeRegistries.ITEMS.getValue(id);
             if (item == null) {
-                ApothicCompat.LOGGER.info("[item_overrides] Item '{}' not present; skipping", key);
+                ApothicCategoryCompat.LOGGER.info("[item_overrides] Item '{}' not present; skipping", key);
                 continue;
             }
             action.accept(item, categoryName);
@@ -508,22 +526,22 @@ public final class ApothicCompatConfig {
             String key = entry.getKey();
             Object value = entry.getValue();
             if (!(value instanceof String categoryName)) {
-                ApothicCompat.LOGGER.warn("[tag_overrides] Key '{}' must map to a string category, got {}", key, value);
+                ApothicCategoryCompat.LOGGER.warn("[tag_overrides] Key '{}' must map to a string category, got {}", key, value);
                 continue;
             }
             if (LootCategory.byId(categoryName) == null) {
-                ApothicCompat.LOGGER.warn("[tag_overrides] Key '{}' uses unknown category '{}'", key, categoryName);
+                ApothicCategoryCompat.LOGGER.warn("[tag_overrides] Key '{}' uses unknown category '{}'", key, categoryName);
                 continue;
             }
             ResourceLocation id = ResourceLocation.tryParse(key);
             if (id == null) {
-                ApothicCompat.LOGGER.warn("[tag_overrides] Invalid tag id '{}'", key);
+                ApothicCategoryCompat.LOGGER.warn("[tag_overrides] Invalid tag id '{}'", key);
                 continue;
             }
             TagKey<Item> tagKey = TagKey.create(Registry.ITEM_REGISTRY, id);
             ITag<Item> tag = ForgeRegistries.ITEMS.tags().getTag(tagKey);
             if (tag.isEmpty()) {
-                ApothicCompat.LOGGER.info("[tag_overrides] Tag '{}' empty or not yet bound; skipping", key);
+                ApothicCategoryCompat.LOGGER.info("[tag_overrides] Tag '{}' empty or not yet bound; skipping", key);
                 continue;
             }
             for (Item item : tag) {
@@ -544,7 +562,7 @@ public final class ApothicCompatConfig {
             loadTolerant(config);
             ids = readAffixBlacklist(config);
         } catch (Exception e) {
-            ApothicCompat.LOGGER.error("Failed to read affix blacklist from {}", FILE_NAME, e);
+            ApothicCategoryCompat.LOGGER.error("Failed to read affix blacklist from {}", FILE_NAME, e);
         }
         AffixBlacklist.setBlacklist(ids);
         lastAppliedBlacklist = ids;
@@ -557,18 +575,18 @@ public final class ApothicCompatConfig {
             return Set.of();
         }
         if (!(raw instanceof List<?> list)) {
-            ApothicCompat.LOGGER.warn("[affix_blacklist] Must be an array of affix ids, got {}", raw);
+            ApothicCategoryCompat.LOGGER.warn("[affix_blacklist] Must be an array of affix ids, got {}", raw);
             return Set.of();
         }
         Set<ResourceLocation> ids = new LinkedHashSet<>();
         for (Object entry : list) {
             if (!(entry instanceof String s)) {
-                ApothicCompat.LOGGER.warn("[affix_blacklist] Entries must be strings, got {}", entry);
+                ApothicCategoryCompat.LOGGER.warn("[affix_blacklist] Entries must be strings, got {}", entry);
                 continue;
             }
             ResourceLocation id = ResourceLocation.tryParse(s);
             if (id == null) {
-                ApothicCompat.LOGGER.warn("[affix_blacklist] Invalid affix id '{}'", s);
+                ApothicCategoryCompat.LOGGER.warn("[affix_blacklist] Invalid affix id '{}'", s);
                 continue;
             }
             ids.add(id);
@@ -583,7 +601,7 @@ public final class ApothicCompatConfig {
             field.setAccessible(true);
             return (Map<ResourceLocation, LootCategory>) field.get(null);
         } catch (ReflectiveOperationException e) {
-            ApothicCompat.LOGGER.warn("Could not access AdventureModule.IMC_TYPE_OVERRIDES; reload will not persist across Apotheosis config reloads", e);
+            ApothicCategoryCompat.LOGGER.warn("Could not access AdventureModule.IMC_TYPE_OVERRIDES; reload will not persist across Apotheosis config reloads", e);
             return null;
         }
     }

@@ -1,8 +1,8 @@
-package com.nightwielder.apothiccompat.compat;
+package com.nightwielder.apothiccategorycompat.compat;
 
-import com.nightwielder.apothiccompat.ApothicCompat;
-import com.nightwielder.apothiccompat.config.ApothicCompatConfig;
-import com.nightwielder.apothiccompat.util.CompatImc;
+import com.nightwielder.apothiccategorycompat.ApothicCategoryCompat;
+import com.nightwielder.apothiccategorycompat.config.ApothicCategoryCompatConfig;
+import com.nightwielder.apothiccategorycompat.util.CompatImc;
 import shadows.apotheosis.adventure.loot.LootCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ArmorItem;
@@ -67,7 +67,7 @@ public final class UniversalCompat {
                     CompatImc.send(item, cat.getName());
                 }
             } catch (Throwable t) {
-                ApothicCompat.LOGGER.warn("Skipping {} during categorization: {}", id, t.toString());
+                ApothicCategoryCompat.LOGGER.warn("Skipping {} during categorization: {}", id, t.toString());
             }
         }
     }
@@ -86,7 +86,7 @@ public final class UniversalCompat {
         }
         // Combat tools that subclass PickaxeItem (the forges and gavels) read as weapons, not mining gear, so
         // route them to heavy when the toggle is on. With it off they fall through to the pickaxe branch below.
-        if (ApothicCompatConfig.weaponPickaxesAsHeavy() && DUAL_PURPOSE_PICKAXES.contains(id.toString())) {
+        if (ApothicCategoryCompatConfig.weaponPickaxesAsHeavy() && DUAL_PURPOSE_PICKAXES.contains(id.toString())) {
             return LootCategory.HEAVY_WEAPON;
         }
         if (item instanceof PickaxeItem) {
@@ -123,7 +123,7 @@ public final class UniversalCompat {
             }
             // Opt-in name override: a heavy weapon name forces heavy even when the speed read landed on sword,
             // so a fast greatsword still classes as heavy. Off by default, so the stat read stands.
-            if (ApothicCompatConfig.nameBasedHeavyOverride() && isHeavyByName(id)) {
+            if (ApothicCategoryCompatConfig.nameBasedHeavyOverride() && isHeavyByName(id)) {
                 return LootCategory.HEAVY_WEAPON;
             }
             return category;

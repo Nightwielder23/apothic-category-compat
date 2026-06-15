@@ -1,6 +1,6 @@
-package com.nightwielder.apothiccompat.compat;
+package com.nightwielder.apothiccategorycompat.compat;
 
-import com.nightwielder.apothiccompat.util.CompatScan;
+import com.nightwielder.apothiccategorycompat.util.CompatScan;
 import shadows.apotheosis.adventure.loot.LootCategory;
 
 import java.util.Set;
