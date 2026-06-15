@@ -1,9 +1,9 @@
-package com.nightwielder.apothiccompat.config;
+package com.nightwielder.apothiccategorycompat.config;
 
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import com.electronwill.nightconfig.core.io.ParsingException;
-import com.nightwielder.apothiccompat.ApothicCompat;
-import com.nightwielder.apothiccompat.compat.AffixBlacklist;
+import com.nightwielder.apothiccategorycompat.ApothicCategoryCompat;
+import com.nightwielder.apothiccategorycompat.compat.AffixBlacklist;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.loading.FMLPaths;
 
@@ -17,14 +17,15 @@ import java.util.Set;
 
 // Category overrides moved to a data map on 1.21.1, so the toml only holds the affix blacklist. Apotheosis
 // rebuilds its affix pool on every reload, so this reapplies from server start and after /reload.
-public final class ApothicCompatConfig {
-    private static final String FILE_NAME = "apothic_compat-common.toml";
+public final class ApothicCategoryCompatConfig {
+    private static final String FILE_NAME = "apothic_category_compat-common.toml";
+    private static final String LEGACY_FILE_NAME = "apothic_compat-common.toml";
 
     private static final String DEFAULT_CONTENTS = """
             # Route dual purpose pickaxe weapons (Cataclysm forges, Forbidden Arcanus gavels) to melee weapon. False keeps Apotheosis's breaker category.
             weapon_pickaxes_as_melee = true
 
-            # Apothic Compat affix blacklist.
+            # Apothic Category Compat affix blacklist.
             #
             # Stops the listed affixes from rolling on newly generated gear (loot drops, reforging, trades,
             # gem application). Existing items keep any affixes they already have; this only blocks future
@@ -33,7 +34,7 @@ public final class ApothicCompatConfig {
             #   value = array of affix ids, each "namespace:path"
             #
             # Find affix ids from JEI tooltips on affixed gear, or from the files under
-            # data/<namespace>/affixes/ inside a mod's jar. Edit this list then run /ac reload (op 2) to
+            # data/<namespace>/affixes/ inside a mod's jar. Edit this list then run /acc reload (op 2) to
             # reapply without a restart.
             #
             # Example:
@@ -42,7 +43,7 @@ public final class ApothicCompatConfig {
             affix_blacklist = []
             """;
 
-    // Snapshot of the last applied state so /ac reload can skip a no-op and report what changed.
+    // Snapshot of the last applied state so /acc reload can skip a no-op and report what changed.
     private static int lastFileHash;
     private static long lastFileMtime;
     private static boolean reloadStateCaptured;
@@ -50,7 +51,7 @@ public final class ApothicCompatConfig {
 
     public record ReloadResult(String message, int count) {}
 
-    private ApothicCompatConfig() {}
+    private ApothicCategoryCompatConfig() {}
 
     // Read live from the file: the data map condition tests this during datapack load, before the server
     // start and reload hooks run, so a cached field would not be populated in time for the first load.
@@ -67,14 +68,14 @@ public final class ApothicCompatConfig {
             loadTolerant(config);
             ids = readAffixBlacklist(config);
         } catch (Exception e) {
-            ApothicCompat.LOGGER.error("Failed to read affix blacklist from {}", FILE_NAME, e);
+            ApothicCategoryCompat.LOGGER.error("Failed to read affix blacklist from {}", FILE_NAME, e);
         }
         AffixBlacklist.setBlacklist(ids);
         lastAppliedBlacklist = ids;
         return AffixBlacklist.apply();
     }
 
-    // Reapply for /ac reload. Skips when the file is byte for byte unchanged since the last apply: the mtime
+    // Reapply for /acc reload. Skips when the file is byte for byte unchanged since the last apply: the mtime
     // alone misses fast successive writes that leave it untouched, so the content hash backs it up.
     public static ReloadResult reload() {
         Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
@@ -95,7 +96,7 @@ public final class ApothicCompatConfig {
         reloadStateCaptured = true;
 
         String message = reloadMessage(disabled, added, removed);
-        ApothicCompat.LOGGER.info(message);
+        ApothicCategoryCompat.LOGGER.info(message);
         return new ReloadResult(message, disabled);
     }
 
@@ -135,18 +136,18 @@ public final class ApothicCompatConfig {
             return Set.of();
         }
         if (!(raw instanceof List<?> list)) {
-            ApothicCompat.LOGGER.warn("[affix_blacklist] Must be an array of affix ids, got {}", raw);
+            ApothicCategoryCompat.LOGGER.warn("[affix_blacklist] Must be an array of affix ids, got {}", raw);
             return Set.of();
         }
         Set<ResourceLocation> ids = new LinkedHashSet<>();
         for (Object entry : list) {
             if (!(entry instanceof String s)) {
-                ApothicCompat.LOGGER.warn("[affix_blacklist] Entries must be strings, got {}", entry);
+                ApothicCategoryCompat.LOGGER.warn("[affix_blacklist] Entries must be strings, got {}", entry);
                 continue;
             }
             ResourceLocation id = ResourceLocation.tryParse(s);
             if (id == null) {
-                ApothicCompat.LOGGER.warn("[affix_blacklist] Invalid affix id '{}'", s);
+                ApothicCategoryCompat.LOGGER.warn("[affix_blacklist] Invalid affix id '{}'", s);
                 continue;
             }
             ids.add(id);
@@ -164,11 +165,11 @@ public final class ApothicCompatConfig {
                 return bool;
             }
             if (value != null) {
-                ApothicCompat.LOGGER.warn("[{}] '{}' must be true or false, got {}; using {}", FILE_NAME, key, value, fallback);
+                ApothicCategoryCompat.LOGGER.warn("[{}] '{}' must be true or false, got {}; using {}", FILE_NAME, key, value, fallback);
             }
             return fallback;
         } catch (Exception e) {
-            ApothicCompat.LOGGER.error("Failed to read {} from {}", key, FILE_NAME, e);
+            ApothicCategoryCompat.LOGGER.error("Failed to read {} from {}", key, FILE_NAME, e);
             return fallback;
         }
     }
@@ -180,7 +181,7 @@ public final class ApothicCompatConfig {
             // NightConfig throws this when the file ends without a trailing newline after the last value.
             // Everything above the EOF is already parsed by then, so it's fine to keep going.
             if (e.getMessage() != null && e.getMessage().contains("Not enough data available")) {
-                ApothicCompat.LOGGER.debug("Tolerating trailing EOF parse hiccup in {}: {}", FILE_NAME, e.getMessage());
+                ApothicCategoryCompat.LOGGER.debug("Tolerating trailing EOF parse hiccup in {}: {}", FILE_NAME, e.getMessage());
             } else {
                 throw e;
             }
@@ -188,6 +189,7 @@ public final class ApothicCompatConfig {
     }
 
     private static void ensureDefaultFile(Path path) {
+        migrateLegacyFile(path);
         if (Files.exists(path)) {
             return;
         }
@@ -195,7 +197,23 @@ public final class ApothicCompatConfig {
             Files.createDirectories(path.getParent());
             Files.writeString(path, DEFAULT_CONTENTS);
         } catch (IOException e) {
-            ApothicCompat.LOGGER.error("Failed to create default {}", FILE_NAME, e);
+            ApothicCategoryCompat.LOGGER.error("Failed to create default {}", FILE_NAME, e);
+        }
+    }
+
+    // The mod was renamed from apothic_compat, so move a pre-rename config to the new name once to keep the
+    // user's settings. The new file wins if both exist, and after the move the old file is gone, so later
+    // calls do nothing.
+    private static void migrateLegacyFile(Path path) {
+        Path legacy = path.resolveSibling(LEGACY_FILE_NAME);
+        if (Files.exists(path) || !Files.exists(legacy)) {
+            return;
+        }
+        try {
+            Files.move(legacy, path);
+            ApothicCategoryCompat.LOGGER.info("Migrated config from {} to {}", LEGACY_FILE_NAME, FILE_NAME);
+        } catch (IOException e) {
+            ApothicCategoryCompat.LOGGER.error("Failed to migrate {} to {}", LEGACY_FILE_NAME, FILE_NAME, e);
         }
     }
 

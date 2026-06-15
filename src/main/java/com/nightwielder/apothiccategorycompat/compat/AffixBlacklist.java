@@ -1,8 +1,8 @@
-package com.nightwielder.apothiccompat.compat;
+package com.nightwielder.apothiccategorycompat.compat;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import com.nightwielder.apothiccompat.ApothicCompat;
+import com.nightwielder.apothiccategorycompat.ApothicCategoryCompat;
 import dev.shadowsoffire.apotheosis.affix.Affix;
 import dev.shadowsoffire.apotheosis.affix.AffixRegistry;
 import dev.shadowsoffire.apotheosis.affix.AffixType;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 // Rebuilds Apotheosis's affix-by-type map without the blacklisted ids, mirroring AffixRegistry.onReload.
-// Apoth rebuilds that map on every datapack reload, so this reruns each time (see ApothicCompat's hooks).
+// Apoth rebuilds that map on every datapack reload, so this reruns each time (see ApothicCategoryCompat's hooks).
 // The backing registry is left alone, so existing affixed items keep working.
 public final class AffixBlacklist {
     private static final String BY_TYPE_FIELD = "byType";
@@ -41,7 +41,7 @@ public final class AffixBlacklist {
         Collection<Affix> all = AffixRegistry.INSTANCE.getValues();
         if (all.isEmpty()) {
             // Affixes haven't loaded yet, so rebuilding now would wipe the whole pool.
-            ApothicCompat.LOGGER.debug("Affix registry empty; skipping blacklist apply.");
+            ApothicCategoryCompat.LOGGER.debug("Affix registry empty; skipping blacklist apply.");
             return 0;
         }
 
@@ -59,7 +59,7 @@ public final class AffixBlacklist {
                 }
                 builder.put(affix.definition().type(), AffixRegistry.INSTANCE.holder(affix));
             } catch (Throwable t) {
-                ApothicCompat.LOGGER.warn("Skipping an affix while rebuilding the pool: {}", t.toString());
+                ApothicCategoryCompat.LOGGER.warn("Skipping an affix while rebuilding the pool: {}", t.toString());
             }
         }
 
@@ -71,7 +71,7 @@ public final class AffixBlacklist {
             }
         }
         if (!unknown.isEmpty()) {
-            ApothicCompat.LOGGER.warn("Affix blacklist: {} unknown affix id(s) skipped: {}", unknown.size(), unknown);
+            ApothicCategoryCompat.LOGGER.warn("Affix blacklist: {} unknown affix id(s) skipped: {}", unknown.size(), unknown);
         }
 
         Multimap<AffixType, DynamicHolder<Affix>> rebuilt = builder.build();
@@ -80,14 +80,14 @@ public final class AffixBlacklist {
             field.setAccessible(true);
             field.set(AffixRegistry.INSTANCE, rebuilt);
         } catch (ReflectiveOperationException | RuntimeException e) {
-            ApothicCompat.LOGGER.warn("Could not rewrite AffixRegistry.{}; affix blacklist not applied: {}", BY_TYPE_FIELD, e.toString());
+            ApothicCategoryCompat.LOGGER.warn("Could not rewrite AffixRegistry.{}; affix blacklist not applied: {}", BY_TYPE_FIELD, e.toString());
             return 0;
         }
 
         if (matched.isEmpty()) {
-            ApothicCompat.LOGGER.debug("Affix blacklist applied: nothing disabled.");
+            ApothicCategoryCompat.LOGGER.debug("Affix blacklist applied: nothing disabled.");
         } else {
-            ApothicCompat.LOGGER.info("Affix blacklist applied: {} affix(es) disabled.", matched.size());
+            ApothicCategoryCompat.LOGGER.info("Affix blacklist applied: {} affix(es) disabled.", matched.size());
         }
         return matched.size();
     }

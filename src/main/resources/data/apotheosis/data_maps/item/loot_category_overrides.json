@@ -22,9 +22,9 @@
     "landsoficaria:sideros_bident": "apotheosis:trident",
     "landsoficaria:molybdenumsteel_bident": "apotheosis:trident",
 
-    "#apothic_compat:weapon_pickaxes": {
+    "#apothic_category_compat:weapon_pickaxes": {
       "neoforge:conditions": [
-        { "type": "apothic_compat:config_flag", "key": "weapon_pickaxes_as_melee" }
+        { "type": "apothic_category_compat:config_flag", "key": "weapon_pickaxes_as_melee" }
       ],
       "value": "apotheosis:melee_weapon"
     },

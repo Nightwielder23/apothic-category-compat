@@ -1,10 +1,10 @@
-package com.nightwielder.apothiccompat;
+package com.nightwielder.apothiccategorycompat;
 
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
-import com.nightwielder.apothiccompat.command.ReloadCommand;
-import com.nightwielder.apothiccompat.condition.ConfigFlagCondition;
-import com.nightwielder.apothiccompat.config.ApothicCompatConfig;
+import com.nightwielder.apothiccategorycompat.command.ReloadCommand;
+import com.nightwielder.apothiccategorycompat.condition.ConfigFlagCondition;
+import com.nightwielder.apothiccategorycompat.config.ApothicCategoryCompatConfig;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -19,9 +19,9 @@ import org.slf4j.Logger;
 
 // Loot category overrides are in a data map, so Apotheosis applies those itself. The code here registers
 // the config_flag condition that gates one of those entries, the reload command, and the affix blacklist.
-@Mod(ApothicCompat.MODID)
-public final class ApothicCompat {
-    public static final String MODID = "apothic_compat";
+@Mod(ApothicCategoryCompat.MODID)
+public final class ApothicCategoryCompat {
+    public static final String MODID = "apothic_category_compat";
     public static final Logger LOGGER = LogUtils.getLogger();
 
     private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITION_CODECS =
@@ -31,7 +31,7 @@ public final class ApothicCompat {
         CONDITION_CODECS.register("config_flag", () -> ConfigFlagCondition.CODEC);
     }
 
-    public ApothicCompat(IEventBus modBus) {
+    public ApothicCategoryCompat(IEventBus modBus) {
         CONDITION_CODECS.register(modBus);
         NeoForge.EVENT_BUS.register(this);
     }
@@ -43,7 +43,7 @@ public final class ApothicCompat {
 
     @SubscribeEvent
     public void onServerStarted(ServerStartedEvent event) {
-        ApothicCompatConfig.loadAffixBlacklist();
+        ApothicCategoryCompatConfig.loadAffixBlacklist();
     }
 
     // A /reload rebuilds Apotheosis's affix pool and drops the blacklist filter, so reapply after datapacks
@@ -51,7 +51,7 @@ public final class ApothicCompat {
     @SubscribeEvent
     public void onDatapackSync(OnDatapackSyncEvent event) {
         if (event.getPlayer() == null) {
-            ApothicCompatConfig.loadAffixBlacklist();
+            ApothicCategoryCompatConfig.loadAffixBlacklist();
         }
     }
 }
