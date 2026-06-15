@@ -27,7 +27,7 @@ The bident overrides load unconditionally. Icaria's scythes route to the Apothic
 
 ## Weapon pickaxes
 
-L_Ender's Cataclysm's Void Forge and Infernal Forge and Forbidden Arcanus's blacksmith gavels extend the pickaxe class. Apotheosis sorts pickaxe-class items into its breaker (mining) category before melee, so these weapons would roll mining gem bonuses and mining affixes. The override moves them to melee. The default list is the `apothic_compat:weapon_pickaxes` item tag (Void Forge, Infernal Forge, and the wooden through reinforced deorum gavels); add ids to that tag from a datapack to cover more dual-purpose pickaxes.
+L_Ender's Cataclysm's Void Forge and Infernal Forge and Forbidden Arcanus's blacksmith gavels extend the pickaxe class. Apotheosis sorts pickaxe-class items into its breaker (mining) category before melee, so these weapons would roll mining gem bonuses and mining affixes. The override moves them to melee. The default list is the `apothic_compat:weapon_pickaxes` item tag (Void Forge, Infernal Forge, and the wooden through reinforced deorum gavels); add ids to that tag from a datapack to cover more dual-purpose pickaxes. The `weapon_pickaxes_as_melee` flag in `apothic_compat-common.toml` (default true) controls this; set it false to leave these items in Apotheosis's native breaker category. A change to the flag applies on a vanilla `/reload`, since the override is a data map condition; `/ac reload` only touches the affix blacklist.
 
 ## Staff routing
 

@@ -21,6 +21,9 @@ public final class ApothicCompatConfig {
     private static final String FILE_NAME = "apothic_compat-common.toml";
 
     private static final String DEFAULT_CONTENTS = """
+            # Route dual purpose pickaxe weapons (Cataclysm forges, Forbidden Arcanus gavels) to melee weapon. False keeps Apotheosis's breaker category.
+            weapon_pickaxes_as_melee = true
+
             # Apothic Compat affix blacklist.
             #
             # Stops the listed affixes from rolling on newly generated gear (loot drops, reforging, trades,
@@ -48,6 +51,12 @@ public final class ApothicCompatConfig {
     public record ReloadResult(String message, int count) {}
 
     private ApothicCompatConfig() {}
+
+    // Read live from the file: the data map condition tests this during datapack load, before the server
+    // start and reload hooks run, so a cached field would not be populated in time for the first load.
+    public static boolean weaponPickaxesAsMelee() {
+        return readBoolean("weapon_pickaxes_as_melee", true);
+    }
 
     // Only safe once affixes have loaded (server start, datapack reload), never while the registry is empty.
     public static int loadAffixBlacklist() {
@@ -143,6 +152,25 @@ public final class ApothicCompatConfig {
             ids.add(id);
         }
         return ids;
+    }
+
+    private static boolean readBoolean(String key, boolean fallback) {
+        Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
+        ensureDefaultFile(path);
+        try (CommentedFileConfig config = CommentedFileConfig.builder(path).sync().build()) {
+            loadTolerant(config);
+            Object value = config.get(key);
+            if (value instanceof Boolean bool) {
+                return bool;
+            }
+            if (value != null) {
+                ApothicCompat.LOGGER.warn("[{}] '{}' must be true or false, got {}; using {}", FILE_NAME, key, value, fallback);
+            }
+            return fallback;
+        } catch (Exception e) {
+            ApothicCompat.LOGGER.error("Failed to read {} from {}", key, FILE_NAME, e);
+            return fallback;
+        }
     }
 
     private static void loadTolerant(CommentedFileConfig config) {

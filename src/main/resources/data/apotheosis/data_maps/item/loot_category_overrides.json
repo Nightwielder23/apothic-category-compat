@@ -22,7 +22,12 @@
     "landsoficaria:sideros_bident": "apotheosis:trident",
     "landsoficaria:molybdenumsteel_bident": "apotheosis:trident",
 
-    "#apothic_compat:weapon_pickaxes": "apotheosis:melee_weapon",
+    "#apothic_compat:weapon_pickaxes": {
+      "neoforge:conditions": [
+        { "type": "apothic_compat:config_flag", "key": "weapon_pickaxes_as_melee" }
+      ],
+      "value": "apotheosis:melee_weapon"
+    },
 
     "irons_spellbooks:staff_of_the_nines": {
       "neoforge:conditions": [

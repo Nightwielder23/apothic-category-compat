@@ -1,24 +1,38 @@
 package com.nightwielder.apothiccompat;
 
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.MapCodec;
 import com.nightwielder.apothiccompat.command.ReloadCommand;
+import com.nightwielder.apothiccompat.condition.ConfigFlagCondition;
 import com.nightwielder.apothiccompat.config.ApothicCompatConfig;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.slf4j.Logger;
 
-// Loot category overrides are in a data map, so Apotheosis applies those itself. The only code here is
-// the reload command and the affix blacklist, which must be reapplied after the affix pool loads.
+// Loot category overrides are in a data map, so Apotheosis applies those itself. The code here registers
+// the config_flag condition that gates one of those entries, the reload command, and the affix blacklist.
 @Mod(ApothicCompat.MODID)
 public final class ApothicCompat {
     public static final String MODID = "apothic_compat";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public ApothicCompat() {
+    private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITION_CODECS =
+            DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, MODID);
+
+    static {
+        CONDITION_CODECS.register("config_flag", () -> ConfigFlagCondition.CODEC);
+    }
+
+    public ApothicCompat(IEventBus modBus) {
+        CONDITION_CODECS.register(modBus);
         NeoForge.EVENT_BUS.register(this);
     }
 
