@@ -1,4 +1,10 @@
-# Apothic Compat changelog
+# Apothic Category Compat changelog
+
+## v2.1.0
+
+### Changed
+- Renamed the mod from Apothic Compat to Apothic Category Compat (mod id `apothic_compat` to `apothic_category_compat`) to avoid confusion with Apothic Compats by ianm1647. An existing `apothic_compat-common.toml` moves to `apothic_category_compat-common.toml` on first load, so your settings carry over.
+- Reload command short alias changed from `/ac` to `/acc`. The long form `/apothiccategorycompat reload` is unchanged.
 
 ## v2.0.2
 
@@ -20,8 +26,8 @@
 ### Changed
 - Rebuilt categorization around a universal rule: any item that deals melee attack damage is sorted into sword or heavy_weapon by its live attack speed, with a heavy damage cutoff for fast weapons that still hit hard. Bows, crossbows, tridents, tools, shields, and armor are read from the vanilla class hierarchy. Explicit per mod overrides now remain only for items the class hierarchy and speed read cannot place.
 - A second pass at mod load complete reruns categorization after mods that finalize weapon stats during deferred init, correcting items that read stale on the first scan.
-- Renamed the config file from apothic_compat.toml to apothic_compat-common.toml to follow Forge's COMMON config naming. Breaking change: the old file is not migrated, so a fresh default is generated on first launch and any previous per item, per tag, and affix blacklist entries are lost. Copy them into the new file.
-- /apothiccompat reload now reports what actually changed: the override count split into new, changed, and unchanged, the affix blacklist diff, and a note when the categorization toggles were edited (those still need a restart). It says "No changes detected." when the file is untouched.
+- Renamed the config file from apothic_category_compat.toml to apothic_category_compat-common.toml to follow Forge's COMMON config naming. Breaking change: the old file is not migrated, so a fresh default is generated on first launch and any previous per item, per tag, and affix blacklist entries are lost. Copy them into the new file.
+- /apothiccategorycompat reload now reports what actually changed: the override count split into new, changed, and unchanged, the affix blacklist diff, and a note when the categorization toggles were edited (those still need a restart). It says "No changes detected." when the file is untouched.
 
 ### Added
 - Name based staff detection: with Fallen Gems & Affixes loaded, any item whose registry id names a staff, scepter, or wand routes to its staffs category, so modded casters no longer each need an explicit override. Battle and war staves and quarterstaves stay melee.
@@ -50,7 +56,7 @@
 - Consolidated the per mod compat modules.
 
 ### Fixed
-- /apothiccompat reload now reapplies overrides correctly instead of dropping them.
+- /apothiccategorycompat reload now reapplies overrides correctly instead of dropping them.
 
 ## v1.7.1
 
