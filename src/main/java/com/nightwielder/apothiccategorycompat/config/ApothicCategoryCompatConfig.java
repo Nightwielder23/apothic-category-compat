@@ -54,17 +54,19 @@ public final class ApothicCategoryCompatConfig {
             # ----------------------------------------------------------------------
             # Categorization settings.
             #
-            # name_based_heavy_override (default false): When enabled, items whose
-            # registry id contains a heavy weapon name (greatsword, claymore,
-            # zweihander, etc.) are categorized as HEAVY_WEAPON regardless of their
-            # attack speed and damage. Disable to use pure speed and damage.
+            # name_based_heavy_override (default true): name-based fixups in both directions. An id whose
+            # path contains a heavy weapon name (greatsword, claymore, zweihander, etc.) is forced to
+            # HEAVY_WEAPON, and an id whose path ends in "sword" is forced to SWORD, so the speed and damage
+            # read can't misfile an obvious weapon. Heavy is checked first, so a greatsword stays heavy.
+            # Disable to use pure speed and damage.
             #
             # weapon_pickaxes_as_heavy (default true): When enabled, items in the
             # dual-purpose pickaxe list (combat tools like the Void Forge, Infernal
-            # Forge, and Blacksmith Gavels) categorize as HEAVY_WEAPON instead of
-            # PICKAXE. Disable for pure PickaxeItem-class behavior.
+            # Forge, Cube of Annihilation, and Blacksmith Gavels) categorize as
+            # HEAVY_WEAPON instead of PICKAXE. Disable to categorize them as
+            # PICKAXE instead.
             # ----------------------------------------------------------------------
-            name_based_heavy_override = false
+            name_based_heavy_override = true
             weapon_pickaxes_as_heavy = true
 
             # ----------------------------------------------------------------------
@@ -111,7 +113,7 @@ public final class ApothicCategoryCompatConfig {
             [tag_overrides]
             """;
 
-    private static boolean nameBasedHeavyOverride = false;
+    private static boolean nameBasedHeavyOverride = true;
     private static boolean weaponPickaxesAsHeavy = true;
 
     // Snapshot of the last applied state, so /apothiccategorycompat reload can skip a no-op reload and report a diff.
@@ -155,11 +157,11 @@ public final class ApothicCategoryCompatConfig {
 
     // index 0 is name_based_heavy_override, index 1 is weapon_pickaxes_as_heavy.
     private static boolean[] readToggles(Path path) {
-        boolean nameOverride = false;
+        boolean nameOverride = true;
         boolean pickaxesHeavy = true;
         try (CommentedFileConfig config = CommentedFileConfig.builder(path).sync().build()) {
             loadTolerant(config);
-            nameOverride = config.getOrElse("name_based_heavy_override", false);
+            nameOverride = config.getOrElse("name_based_heavy_override", true);
             pickaxesHeavy = config.getOrElse("weapon_pickaxes_as_heavy", true);
         } catch (Exception e) {
             ApothicCategoryCompat.LOGGER.error("Failed to read categorization settings from {}", FILE_NAME, e);
@@ -190,7 +192,7 @@ public final class ApothicCategoryCompatConfig {
             List<String> lines = new ArrayList<>(Files.readAllLines(path));
             List<String> additions = new ArrayList<>();
             if (!hasTopLevelKey(lines, "name_based_heavy_override")) {
-                additions.add("name_based_heavy_override = false");
+                additions.add("name_based_heavy_override = true");
             }
             if (!hasTopLevelKey(lines, "weapon_pickaxes_as_heavy")) {
                 additions.add("weapon_pickaxes_as_heavy = true");

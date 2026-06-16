@@ -2,9 +2,18 @@
 
 ## v2.1.0
 
+### Added
+- Name-based sword rule for the universal categorizer: with `name_based_heavy_override` on, an item whose id path ends in `sword` is categorized as `sword`, which demotes a formula-classified `heavy_weapon` back to `sword` when no heavy keyword matched. Heavy keywords are checked first, so a greatsword stays heavy.
+
 ### Changed
+- `name_based_heavy_override` now defaults to true, so the name-based rules apply without editing the config. Set it false for categorization by attack speed and damage alone.
+  - Existing configs keep their current `name_based_heavy_override` value; the new default applies only to fresh installs. Set it to `true` or delete the config file to pick up the name-based rules.
 - Renamed the mod from Apothic Compat to Apothic Category Compat (mod id `apothic_compat` to `apothic_category_compat`) to avoid confusion with Apothic Compats by ianm1647. An existing `apothic_compat-common.toml` moves to `apothic_category_compat-common.toml` on first load, so your settings carry over.
 - Reload command short alias changed from `/ac` to `/acc`. The long form `/apothiccategorycompat reload` is unchanged.
+
+### Fixed
+- Twilight Forest Block and Chain moved from bow to crossbow. It is a slow returning chained shot, so crossbow suits it better than bow.
+- Twilight Forest Cube of Annihilation now routes through the `weapon_pickaxes_as_heavy` toggle (default `heavy_weapon`), the same as the Cataclysm forges, since it both breaks blocks and deals damage. v2.0.2 had categorized it as bow.
 
 ## v2.0.2
 
