@@ -29,7 +29,7 @@ The universal rule covers almost everything on its own. A few mods register rang
 - **Epic Fight**: greatswords as heavy weapons, the other weapon types as swords. Epic Fight keeps each weapon's combat power in its own attribute system and leaves the vanilla attributes at tier defaults, so the speed rule can't place these on its own
 - **EpicFight Resurrection / Nightfall**: greatswords, the great tachi, the scythe, and Ghiza's Wheel as heavy weapons
 - **T.O Magic 'n Extras**: Galenic Polarizer as a heavy weapon, Trident of the Eternal Maelstrom as a trident, the staffs as Fallen Gems & Affixes staffs or sword. The sword shaped boss weapons go through the universal rule
-- **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters as staffs or sword, Block and Chain and Cube of Annihilation as bows (damage comes from a thrown projectile entity), Ice Bomb as none (utility item with no attack damage)
+- **Twilight Forest**: the lifedrain/fortification/twilight/zombie scepters as staffs or sword, Block and Chain as a crossbow (slow returning chained shot), Ice Bomb as none (utility item with no attack damage)
 - **The Undergarden**: Slingshot as a bow (extends `ProjectileWeaponItem`)
 - **Fallen Gems & Affixes**: when present, any item whose registry id names a staff, scepter, or wand routes to its Staffs category, and Celestisynth defers to its Celestial Melee/Ranged categories
 
@@ -41,8 +41,8 @@ These mods extend the right vanilla classes or carry real attack stats, so the u
 
 Two toggles in `apothic_category_compat-common.toml` adjust how the universal rule categorizes items. They apply during mod load, so edit the file and restart the server to change them.
 
-- `name_based_heavy_override` (default `false`): when enabled, any item whose registry id contains a heavy weapon name (greatsword, claymore, zweihander, warhammer, halberd, bardiche, glaive, battleaxe, greataxe, lance, pike, maul, naginata, odachi, flamberge, scythe, and the like) is categorized as `heavy_weapon` regardless of its attack speed and damage. Leave it off to categorize purely by speed and damage. Staff, scepter, and wand items are unaffected, since name based staff routing runs first.
-- `weapon_pickaxes_as_heavy` (default `true`): the dual-purpose pickaxe list holds combat tools that extend `PickaxeItem` but are swung as weapons. When enabled they categorize as `heavy_weapon` instead of `pickaxe`. The list covers L'Ender's Cataclysm's Void Forge and Infernal Forge and Forbidden and Arcanus's Blacksmith Gavels (every material tier). Disable it for plain `PickaxeItem` behavior.
+- `name_based_heavy_override` (default `true`): name-based fixups in both directions for the universal rule. An item whose registry id contains a heavy weapon name (greatsword, claymore, zweihander, warhammer, halberd, bardiche, glaive, battleaxe, greataxe, lance, pike, maul, naginata, odachi, flamberge, scythe, and the like) is categorized as `heavy_weapon`, and an item whose id path ends in `sword` is categorized as `sword`, so the speed and damage read can't misfile an obvious weapon. Heavy is checked first, so a greatsword stays heavy. Leave it off to categorize purely by speed and damage. Staff, scepter, and wand items are unaffected, since name based staff routing runs first.
+- `weapon_pickaxes_as_heavy` (default `true`): a list of block breakers that are also swung as weapons. When enabled they categorize as `heavy_weapon`. The list covers L'Ender's Cataclysm's Void Forge and Infernal Forge, Twilight Forest's Cube of Annihilation, and Forbidden and Arcanus's Blacksmith Gavels (every material tier). Disable it to categorize all of them as `pickaxe` instead.
 
 ## Config
 

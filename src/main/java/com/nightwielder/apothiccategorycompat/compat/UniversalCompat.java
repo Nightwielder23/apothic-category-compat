@@ -25,11 +25,12 @@ import java.util.Set;
 // heavy_weapon by attack speed (high damage cutoff), read live so combat mods like Epic Fight are reflected.
 // With FG&A loaded, an id naming a staff, scepter, or wand routes to staffs before the speed split.
 public final class UniversalCompat {
-    // PickaxeItem items wielded as weapons, not mining tools. weapon_pickaxes_as_heavy routes these to
-    // heavy_weapon. Full registry ids so the match never catches an unrelated mod's same-named item.
+    // Block breakers that are also swung as weapons, not mined with. weapon_pickaxes_as_heavy routes these
+    // to heavy_weapon. Full registry ids so the match never catches an unrelated mod's same-named item.
     private static final Set<String> DUAL_PURPOSE_PICKAXES = Set.of(
             "cataclysm:void_forge",
             "cataclysm:infernal_forge",
+            "twilightforest:cube_of_annihilation",
             "forbidden_arcanus:wooden_blacksmith_gavel",
             "forbidden_arcanus:stone_blacksmith_gavel",
             "forbidden_arcanus:golden_blacksmith_gavel",
@@ -104,10 +105,13 @@ public final class UniversalCompat {
         if (item instanceof TridentItem) {
             return LootCategory.TRIDENT;
         }
-        // Combat tools that subclass PickaxeItem (the forges and gavels) read as weapons, not mining gear, so
-        // route them to heavy when the toggle is on. With it off they fall through to the pickaxe branch below.
-        if (ApothicCategoryCompatConfig.weaponPickaxesAsHeavy() && DUAL_PURPOSE_PICKAXES.contains(id.toString())) {
-            return LootCategory.HEAVY_WEAPON;
+        // Dual-purpose block breakers route to heavy when the toggle is on, pickaxe when off. Decided by id
+        // here, not the PickaxeItem branch below, since cube_of_annihilation is a plain Item and would
+        // otherwise miss the pickaxe case and drop through to the speed rule.
+        if (DUAL_PURPOSE_PICKAXES.contains(id.toString())) {
+            return ApothicCategoryCompatConfig.weaponPickaxesAsHeavy()
+                    ? LootCategory.HEAVY_WEAPON
+                    : LootCategory.PICKAXE;
         }
         if (item instanceof PickaxeItem) {
             return LootCategory.PICKAXE;
@@ -147,10 +151,16 @@ public final class UniversalCompat {
         } else {
             category = LootCategory.SWORD;
         }
-        // Opt-in name override: a heavy weapon name forces heavy even when the speed read landed on sword, so
-        // a fast greatsword still classes as heavy. Off by default, so the stat read stands.
-        if (ApothicCategoryCompatConfig.nameBasedHeavyOverride() && isHeavyByName(id)) {
-            return LootCategory.HEAVY_WEAPON;
+        // Name override (on by default): a heavy weapon name forces heavy, and a name ending in "sword"
+        // forces sword, so the stat read can't misfile a fast greatsword as sword or a high-damage sword as
+        // heavy. Heavy is checked first, so a greatsword (which also ends in "sword") stays heavy.
+        if (ApothicCategoryCompatConfig.nameBasedHeavyOverride()) {
+            if (isHeavyByName(id)) {
+                return LootCategory.HEAVY_WEAPON;
+            }
+            if (isSwordByName(id)) {
+                return LootCategory.SWORD;
+            }
         }
         return category;
     }
@@ -188,5 +198,9 @@ public final class UniversalCompat {
             }
         }
         return false;
+    }
+
+    private static boolean isSwordByName(ResourceLocation id) {
+        return id.getPath().toLowerCase(Locale.ROOT).endsWith("sword");
     }
 }
