@@ -499,7 +499,7 @@ public final class ApothicCategoryCompatConfig {
                 continue;
             }
             if (LootCategory.byId(categoryName) == null) {
-                ApothicCategoryCompat.LOGGER.warn("[item_overrides] Key '{}' uses unknown category '{}'", key, categoryName);
+                ApothicCategoryCompat.LOGGER.warn("[item_overrides] Unknown loot category '{}', skipping override for '{}'. Either misspelled or registered by a mod that isn't installed.", categoryName, key);
                 continue;
             }
             ResourceLocation id = ResourceLocation.tryParse(key);
@@ -532,7 +532,7 @@ public final class ApothicCategoryCompatConfig {
                 continue;
             }
             if (LootCategory.byId(categoryName) == null) {
-                ApothicCategoryCompat.LOGGER.warn("[tag_overrides] Key '{}' uses unknown category '{}'", key, categoryName);
+                ApothicCategoryCompat.LOGGER.warn("[tag_overrides] Unknown loot category '{}', skipping override for '{}'. Either misspelled or registered by a mod that isn't installed.", categoryName, key);
                 continue;
             }
             ResourceLocation id = ResourceLocation.tryParse(key);
