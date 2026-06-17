@@ -96,7 +96,9 @@ public class ApothicCategoryCompat {
             return;
         }
         int changed = ApothicCategoryCompatConfig.reapply(this::dispatchModules);
-        LOGGER.info("Apothic Category Compat second pass recategorized {} item(s) after deferred mod init.", changed);
+        if (changed > 0) {
+            LOGGER.info("Apothic Category Compat second pass recategorized {} item(s) after deferred mod init.", changed);
+        }
     }
 
     // Shared dispatch for both passes. The active CompatImc sink (IMC for the first pass, runtime override
