@@ -2,6 +2,16 @@
 
 A small server-side NeoForge 1.21.1 mod that fills in Apotheosis loot categories for a few modded items that Apotheosis 8.x does not place on its own. No mixins, no patching.
 
+## Version differences
+
+This is the NeoForge release for Minecraft 1.21.1 on Apotheosis 8.x. Apothic Category Compat works differently across Minecraft versions because Apotheosis itself does:
+
+- **1.21.1 NeoForge: data map driven, with conditional entries that gate staff and scythe routing on Apothic Compats and Malum.**
+- 1.20.1 Forge: a universal attack speed and damage rule, per mod compatibility modules, and a name based classifier.
+- 1.19.2 Forge: the same approach as 1.20.1 with a smaller mod list.
+
+See the other branches on GitHub for those releases.
+
 ## What it does
 
 Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. On 8.x it already categorizes most gear by itself: any melee weapon with attack damage becomes a melee weapon, bows and crossbows are read from the item class, tridents and shields from their class and behavior, and armor by slot. The items it still misses are ranged and thrown weapons that are not `BowItem` or `CrossbowItem`: gun style items and projectile throwers built on a plain `Item` or `ProjectileWeaponItem`.
@@ -37,7 +47,7 @@ Every routed entry carries a load condition for both `apothic_compats` and `malu
 
 ## What it does not do (changed from 1.20.1)
 
-The 1.20.1 build read every item's attack speed at load time and split melee weapons into `sword` or `heavy_weapon`. Apotheosis 8.x removed that split (there is one `melee_weapon` category now) and replaced the old override channel with the data map. So this version drops the universal speed rule, the per item and per tag TOML overrides, and the categorization toggles. Apotheosis 8.x's own melee detection covers what the universal rule used to.
+The 1.20.1 build read every item's attack speed at load time and split melee weapons into `sword` or `heavy_weapon`. Apotheosis 8.x removed that split (there is one `melee_weapon` category now) and replaced the old override channel with the data map. So this version drops the universal speed rule, its name based classifier, and the per item and per tag TOML overrides, keeping the dual purpose pickaxe routing as the `weapon_pickaxes_as_melee` toggle. Apotheosis 8.x's own melee detection covers what the universal rule used to.
 
 ## Affix blacklist
 
