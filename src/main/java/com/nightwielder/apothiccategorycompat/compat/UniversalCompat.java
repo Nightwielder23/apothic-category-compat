@@ -116,7 +116,7 @@ public final class UniversalCompat {
         }
         // Static damage precheck confirms a melee weapon before the live reads, which fire
         // ItemAttributeModifierEvent and reflect combat mod stats. Slow weapons read heavy, as do hard hitters.
-        if (CompatImc.getAttackDamageGeneric(item) > 0) {
+        if (CompatImc.getAttackDamageGeneric(stack) > 0) {
             LootCategory category;
             if (CompatImc.getAttackSpeed(stack) <= CompatImc.SLOW_SPEED_MAX) {
                 category = LootCategory.HEAVY_WEAPON;

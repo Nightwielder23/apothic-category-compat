@@ -9,6 +9,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -76,9 +77,35 @@ public final class CompatImc {
     }
 
     // Cheap static precheck on the item's defaults (no event fires): a positive ADDITION on attack damage
-    // means it swings as a melee weapon, so callers confirm that before paying for the live read.
-    public static double getAttackDamageGeneric(Item item) {
-        Multimap<Attribute, AttributeModifier> mods = item.getDefaultAttributeModifiers(EquipmentSlot.MAINHAND);
+    // means it swings as a melee weapon, so the stack overload confirms that before paying for the live read.
+    private static double getAttackDamageGeneric(Item item) {
+        return sumAdditionAttackDamage(item.getDefaultAttributeModifiers(EquipmentSlot.MAINHAND));
+    }
+
+    // Same precheck, but falls back to the stack-level read when the item default reads zero. Epic Fight
+    // weapons and its addons (Weapons of Miracles) leave the item default at zero and add their attack damage
+    // through the stack-level getAttributeModifiers, so the item-only read would drop them before the speed
+    // and name rules ever run. The stack read fires ItemAttributeModifierEvent, which a few mods throw out of
+    // (Enigmatic Addons), so a failure counts as no attack damage, the same outcome as an item-level zero.
+    public static double getAttackDamageGeneric(ItemStack stack) {
+        double itemLevel = getAttackDamageGeneric(stack.getItem());
+        if (itemLevel > 0) {
+            return itemLevel;
+        }
+        // Gate the stack read on TieredItem so ItemAttributeModifierEvent only fires for weapon-class items,
+        // not the BlockItems, food, and plain Items that make up most of the registry. SwordItem and
+        // DiggerItem extend TieredItem, so Epic Fight's WeaponItem and the WoM greataxes still get read.
+        if (!(stack.getItem() instanceof TieredItem)) {
+            return 0;
+        }
+        try {
+            return sumAdditionAttackDamage(stack.getAttributeModifiers(EquipmentSlot.MAINHAND));
+        } catch (Throwable t) {
+            return 0;
+        }
+    }
+
+    private static double sumAdditionAttackDamage(Multimap<Attribute, AttributeModifier> mods) {
         double damage = 0;
         for (AttributeModifier m : mods.get(Attributes.ATTACK_DAMAGE)) {
             if (m.getOperation() == AttributeModifier.Operation.ADDITION) {

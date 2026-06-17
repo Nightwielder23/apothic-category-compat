@@ -14,6 +14,7 @@
 ### Fixed
 - Twilight Forest Block and Chain moved from bow to crossbow. It is a slow returning chained shot, so crossbow suits it better than bow.
 - Twilight Forest Cube of Annihilation now routes through the `weapon_pickaxes_as_heavy` toggle (default `heavy_weapon`), the same as the Cataclysm forges, since it both breaks blocks and deals damage. v2.0.2 had categorized it as bow.
+- Epic Fight style weapons that carry their attack damage only at the stack level, such as Weapons of Miracles greataxes, now reach the speed and name rules instead of defaulting to sword.
 
 ## v2.0.2
 
