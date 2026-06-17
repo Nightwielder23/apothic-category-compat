@@ -2,6 +2,16 @@
 
 A small server side 1.20.1 Forge mod that fills in Apotheosis loot category assignments for weapon/armor mods that don't set them. Uses the Apotheosis IMC override API, so nothing is patched or mixin'd.
 
+## Version differences
+
+This is the Forge release for Minecraft 1.20.1 on Apotheosis 7.4.x. Apothic Category Compat works differently across Minecraft versions because Apotheosis itself does:
+
+- **1.20.1 Forge: a universal attack speed and damage rule, per mod compatibility modules, and a name based classifier.**
+- 1.19.2 Forge: the same approach with a smaller mod list.
+- 1.21.1 NeoForge: data map driven, with conditional entries that gate staff and scythe routing on Apothic Compats and Malum.
+
+See the other branches on GitHub for those releases.
+
 ## What it does
 
 Apotheosis uses loot categories to decide which affixes and gem sockets an item can roll. A lot of modded weapons either don't have a category at all or get the wrong one, so affixes never appear on them. Apothic Category Compat sends the right categories at load time.
